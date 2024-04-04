@@ -1,0 +1,621 @@
+/*@import url(https://fonts.googleapis.com/css?family=Cabin);*/
+@font-face {
+    font-family: 'Fredoka';
+    src: url('../font.woff2') format('woff2');
+}
+
+.font-fredoka {
+    font-family: 'Fredoka'
+}
+.word-break {
+	word-wrap: break-word;
+}
+@font-face {
+    font-family: 'regular-bookweb';
+    src: url('../regular-bookweb.woff') format('woff');
+}
+[disabled] {
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: contrast(0.5);
+} 
+@keyframes to-fro-x {
+	0% {
+		transform: scaleX(0);
+	}
+
+	50% {
+		transform: scaleX(5);
+	}
+	100% {
+		transform: scaleX(5) translateX(100%);
+	}
+}
+.to-fro-x {
+	animation-timing-function: cubic-bezier(.4,0,1,1);
+	animation: to-fro-x 1s linear infinite;
+	transform-origin: 0 0;
+}
+html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .decorate > div, html *:hover > .decorate > div, html .decorate-parent:hover > .decorate > div {
+	--tw-scale-x: 8;
+	--tw-scale-y: 8;
+	transform: scale3d(var(--tw-scale-x),var(--tw-scale-y),1);
+	--tw-bg-opacity: 0.15;
+  }
+
+  html * > .decorate.out > div, html .decorate-parent > .decorate.out > div {
+	--tw-scale-x: 8;
+	--tw-scale-y: 8;
+  }
+
+  *:hover > .decorate.out > div, .decorate-parent:hover > .decorate.out > div {
+	--tw-scale-x: 1;
+	--tw-scale-y: 1
+  }
+
+.font-bookweb {
+    font-family: 'regular-bookweb'
+}
+
+.vh-full {
+    height: 100vh;
+}
+.rounded-inherit {
+    border-radius: inherit;
+}
+.top-unset {
+    top: unset;
+}
+
+.left-unset {
+    left: unset;
+}
+
+.bottom-unset {
+    bottom: unset;
+}
+
+.right-unset {
+    right: unset;
+}
+.precise-typo {
+    font-size: max(1.6em, calc(16px + (22 - 16) * ((100vw - 500px) / (790 - 500))));
+}
+.bg-inherit {
+  background:inherit;
+}
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-corner {
+    background: none;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #8D8D8D;
+}
+::-webkit-scrollbar-track {
+    opacity: 0;
+}
+.\[\&\>\*\]\:align-top > * {
+    vertical-align: top;
+}
+.\[\&\>\*\]\:align-bottom > * {
+    vertical-align: bottom;
+}
+@keyframes world-rotate {
+100% {
+    background-position-x: 320%;
+}
+}
+[contenteditable=true]:empty:before {
+  content: attr(data-placeholder);
+  pointer-events: none;
+  color: lightslategray;
+  font-size: 14px;							
+  display: block; /* For Firefox */
+}
+.stroked {
+    -webkit-text-fill-color: transparent;
+    -webkit-text-stroke: 2px black;
+}
+.\[\&\>\*\]\:overflow-y-scroll > * {
+	overflow-y: scroll;
+}
+.\[\&\>\*\]\:overflow-hidden > * {
+	overflow: hidden;
+}
+.\[\&\>\*\]\:rounded-full > * { border-radius: 1000px; }
+.\[\&\>\*\]\:text-left > * { text-align: left; } .\[\&\>\*\]\:rounded-xl > * { border-radius: .75rem; } .\[\&\>\*\]\:border > * { border: 2px solid transparent; } .\[\&\>\*\]\:cursor-pointer > * { cursor: pointer; } .\[\&\>\*\]\:rounded-inherit > * { border-radius: inherit; }.hover\:\[\&\>\*\]\:filter-unset > *:hover { filter: unset;}
+.\[\&\>\*\]\:whitespace-pre > * { white-space: pre; } .\[\&\>\*\]\:whitespace-normal > * { white-space: normal;}
+
+ html {--bg-opacity-pad:0.2} .\[\&\>\*\]\:relative > * { position: relative; } .\[\&\>\*\]\:p-1 > * { padding: var(--base-whole-number-unit); } button:disabled { opacity: 50%;cursor: not-allowed; color: initial; } .skeleton { color: transparent; animation: skeleton-loading 0.8s ease-in-out infinite alternate; } @keyframes skeleton-loading { 0% { background-color: hsl(200, 20%, 80%); } 100% { background-color: hsl(200, 20%, 95%); } } .ripple { overflow: hidden; }
+.\[\&\>\*\]\:inline-block > * { display: inline-block; } .\[\&\>\*\]\:align-middle > * { vertical-align: middle; } button > i, a > i { pointer-events: none; } .\[\&\>\*\]\:p-xy > * { --px: inherit; --py: inherit; padding: var(--py) var(--px)}.\[\&\>\*\]\:text-left > * { text-align: left; } .\[\&\>\*\]\:rounded-xl > * { border-radius: .75rem; } .\[\&\>\*\]\:rounded-inherit >*{border-radius: inherit;}.z-3 { z-index: 3; } .z-1 { z-index: 1; } /*growShrink component */ @media (min-width: 500px) { #growShrink .fluid.base\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; } }@media (min-width: 640px) { #growShrink .fluid.sm\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; } }@media (min-width: 768px) { #growShrink .fluid.md\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; } }@media (min-width: 1024px) { #growShrink .fluid.lg\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; } }@media (min-width: 1280px) { #growShrink .fluid.xl\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; } #growShrink a+div { visibility: hidden; pointer-events: none; } }#growShrink .fluid { opacity: 0; visibility: hidden; position: absolute; left:0px} #growShrink a+div a { margin: 0; display: block; padding: 1em; white-space: pre; } #growShrink a { transition: opacity 0.2s ease, visibility 0s; padding: 0.8em; margin: 0.2em; display: inline-block; color: inherit; text-decoration: inherit; } #growShrink a+div { display: inline-block; } #growShrink a+div > div a:first-child { border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; } #growShrink a+div > div a:last-child { border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; } #growShrink a+div > div { right: 0px; position: absolute; margin-top: -0.4em; opacity: 0; color: inherit; pointer-events: none; transition: margin-top 0.4s ease, opacity 0.2s 0.1s; border-radius: 12px; overflow: hidden; padding: 0.2em 0; } #growShrink a+div:hover > div,#growShrink a+div:focus-within > div { margin-top: 0em; opacity: 1; pointer-events: auto; } /*#growShrink { text-align: center; margin: 0.5em 1em; } */ #growShrink button { padding: 0.6em 1.2em; margin: 0.4em; color: inherit; border-radius: 50px; } #growShrink button /*, #growShrink a+div > div */ { border: 2px solid #ccc; } #growShrink a:hover,#growShrink button:hover { color: black; } #growShrink hr { border-bottom: 2px solid currentColor; position:absolute; left:26%; right:26%; top: 100%; } #growShrink svg { height: 1.5em; vertical-align:middle; fill:currentColor; }
+@keyframes anim-round { 0%,100% { transform: translate3d(var(--_reach), 0px, 0px); } 25% { transform: translate3d(0px, var(--_reach), 0px); } 50% { transform: translate3d(var(--reach), 0px, 0px); } 75% { transform: translate3d(0px, var(--reach), 0px); } } .mouse p { font-family: "Cabin", sans-serif; letter-spacing: 12px; -webkit-animation: colorText 5s ease-out infinite, nudgeText 5s ease-out infinite; animation: colorText 5s ease-out infinite, nudgeText 5s ease-out infinite; } .mouse { background: #4e5559 linear-gradient(transparent 0%, transparent 50%, #ffffff 50%, #ffffff 100%); --limit: 88; --thumb-limit: 10; --reduce: 0px; --size: calc(1px * var(--limit) - var(--reduce)); width: calc(var(--size) - 36px); height: var(--size); border-radius: 100px; background-size: 100% 200%; -webkit-animation: colorSlide 5s linear infinite, nudgeMouse 5s ease-out infinite; animation: colorSlide 5s linear infinite, nudgeMouse 5s ease-out infinite; } .mouse:before, .mouse:after { content: ""; position: absolute; top: 0; right: 0; bottom: 0; left: 0; margin: auto; } .mouse:before { width: calc(var(--size) - 42px); height: calc(var(--size) - 6px); background-color: #222a30; border-radius: 100px; } .mouse:after { background-color: #ffffff; --thumb: calc(var(--size) * var(--thumb-limit)/ var(--limit)); width: var(--thumb); height: var(--thumb); border-radius: 100%; -webkit-animation: trackBallSlide 5s linear infinite; animation: trackBallSlide 5s linear infinite; } @keyframes colorSlide { 0% { background-position: 0% 100%; } 20% { background-position: 0% 0%; } 21% { background-color: #4e5559; } 29.99% { background-color: #ffffff; background-position: 0% 0%; } 30% { background-color: #4e5559; background-position: 0% 100%; } 50% { background-position: 0% 0%; } 51% { background-color: #4e5559; } 59% { background-color: #ffffff; background-position: 0% 0%; } 60% { background-color: #4e5559; background-position: 0% 100%; } 80% { background-position: 0% 0%; } 81% { background-color: #4e5559; } 90%, 100% { background-color: #ffffff; } }@keyframes trackBallSlide { 0% { opacity: 1; transform: scale(1) translateY(-20px); } 6% { opacity: 1; transform: scale(0.9) translateY(5px); } 14% { opacity: 0; transform: scale(0.4) translateY(40px); } 15%, 19% { opacity: 0; transform: scale(0.4) translateY(-20px); } 28%, 29.99% { opacity: 1; transform: scale(1) translateY(-20px); } 30% { opacity: 1; transform: scale(1) translateY(-20px); } 36% { opacity: 1; transform: scale(0.9) translateY(5px); } 44% { opacity: 0; transform: scale(0.4) translateY(40px); } 45%, 49% { opacity: 0; transform: scale(0.4) translateY(-20px); } 58%, 59.99% { opacity: 1; transform: scale(1) translateY(-20px); } 60% { opacity: 1; transform: scale(1) translateY(-20px); } 66% { opacity: 1; transform: scale(0.9) translateY(5px); } 74% { opacity: 0; transform: scale(0.4) translateY(40px); } 75%, 79% { opacity: 0; transform: scale(0.4) translateY(-20px); } 88%, 100% { opacity: 1; transform: scale(1) translateY(-20px); } } @keyframes nudgeMouse { 0% { transform: translateY(0); } 20% { transform: translateY(8px); } 30% { transform: translateY(0); } 50% { transform: translateY(8px); } 60% { transform: translateY(0); } 80% { transform: translateY(8px); } 90% { transform: translateY(0); } }@keyframes nudgeText { 0% { transform: translateY(0); } 20% { transform: translateY(2px); } 30% { transform: translateY(0); } 50% { transform: translateY(2px); } 60% { transform: translateY(0); } 80% { transform: translateY(2px); } 90% { transform: translateY(0); } }@keyframes colorText { 21% { color: #4e5559; } 30% { color: #ffffff; } 51% { color: #4e5559; } 60% { color: #ffffff; } 81% { color: #4e5559; } 90% { color: #ffffff; } }
+
+/*compact loading animations */
+.dots-bars-5  {
+
+	width: 40px;
+
+	height: 30px;
+
+	--c: linear-gradient(currentColor 0 0);
+
+	background: var(--c) 0 100%/8px 30px, var(--c) 50% 100%/8px 20px, var(--c) 100% 100%/8px 10px;
+
+	background-repeat: no-repeat;
+
+	position: relative;
+
+	clip-path: inset(-100% 0);
+
+}
+
+.dots-bars-5::before  {
+
+	content: "";
+
+	position: absolute;
+
+	width: 8px;
+
+	height: 8px;
+
+	border-radius: 50%;
+
+	background: currentColor;
+
+	left: -16px;
+
+	top: 0;
+
+	animation: db5-1 2s linear infinite, db5-2 0.5s cubic-bezier(0,200,.8,200) infinite;
+
+}
+@keyframes db5-2 {
+	100% {
+		top: -0.1px;
+	}
+}
+@keyframes db5-1  {
+
+   0%  {
+
+	left: -16px;
+
+	transform: translateY(-8px);
+
+}
+
+100%  {
+
+	left: calc(100% + 8px);
+
+	transform: translateY(22px);
+
+}
+
+100%  {
+
+	top: -0.1px;
+
+}
+
+} .dots-6  {
+
+	width: 30px;
+
+	aspect-ratio: 1.154;
+
+	--_g: no-repeat radial-gradient(farthest-side,currentColor 90%,#0000);
+
+	background: var(--_g) 50% 0, var(--_g) 0 100%, var(--_g) 100% 100%;
+
+	background-size: 35% calc(35%*1.154);
+
+	animation: d6 0.58s infinite;
+
+}
+
+@keyframes d6  {
+
+	50%, 100%  {
+
+	background-position: 100% 100%,50% 0,0 100%;
+
+}
+}
+
+/*for marking clickable elements for visual effects*/
+.ripple {
+  overflow: hidden;
+}
+/*useful styling for marking tabs, is used with tooltip */
+.transition-hr {
+  transition: transform .2s cubic-bezier(0.215, 0.61, 0.355, 1);
+}
+/* useful for making text appearing in the center of lines */
+.bulge-center {
+	background: linear-gradient(to right, transparent, currentColor, transparent);
+}
+.bulge-left {
+ background: linear-gradient(to right, currentColor, transparent, transparent);
+}
+.bulge-right {
+ background: linear-gradient(to right, transparent, transparent, currentColor);
+}
+
+:root {
+	--base-fractional-unit: 0.125rem;/*for -0\.5*/
+	--base-whole-number-unit: 0.25rem; /* for -1*/
+}
+.\[\&\>\*\]\:p-2 > * {
+	padding: 0.5rem;
+}
+.\[\&\>\*\]\:rounded-md > * {border-radius:.375rem}
+.hover\:\[\&\>\*\]\:border-2\:border-orange > *:hover {
+	border: 2px solid orange;
+}
+.precise-typo-1  {
+ font-size: calc(110px + (240 - 100) * ((100vw - 400px) / (1200 - 400))) } 
+ 
+/* tooltip */
+.tooltip {
+   --delay: 0s;
+    font-family: inherit;
+    transition: opacity 0.2s, transform 0.2s ease, visibility 0s;
+	--arrow-x: 0%;
+	--arrow-y: 0%;
+    --arrow-color: currentcolor;
+	--arrow-degree: 0deg;
+}
+.tooltip:not(.vanish-hover) {
+  visibility: hidden;
+  opacity: 0;
+}
+.tooltip.no-hover {
+ --x: 0px;
+ --y: 0%;
+ --pad-x: 0px;
+ --pad-y: 0px;
+ --offset: calc(var(
+ --pad-x) + var(--x)), calc(var(--pad-y) + var(--y)), 0px;
+ transform: translate3d(var(--offset)) !important;
+}
+.tooltip.to-top {
+	--arrow-x: 0%;
+	--arrow-degree: 0deg;
+    bottom: calc(100% + 5px);
+	left: 50%;
+    transform: translateX(-50%);
+}
+.tooltip.to-bottom {
+	--arrow-x: 0%;
+	--arrow-degree: 0deg;
+	top: calc(100% + 5px);
+	left: 50%;
+	transform: translateX(-50%);
+}
+.tooltip.to-right {
+ --arrow-y: 50%;
+ --arrow-degree: 0deg;
+ left: calc(100% + 10px);
+ top: 50%;
+ transform: translateY(-50%);
+}
+.tooltip.to-left {
+ --arrow-y: 50%;
+ --arrow-degree: 0deg;
+ top: 50%;
+ right:calc(10px + 100%);
+ transform: translateY(-50%);
+}
+.tooltip:before {
+	content: attr(data-details);
+}
+.tooltip:after {
+	content: '';
+	--arrow-size:inherit;
+	position: absolute;
+	border: var(--arrow-size) solid transparent;
+	transform: translate(var(--arrow-x), var(--arrow-y)) rotate(var(--arrow-degree));
+}
+.tooltip.no-arrow:after {
+  content:unset;
+}
+.tooltip.to-top:after {
+	border-top-color: var(--arrow-color);
+	top: 100%;
+	left: 45%;
+}
+.tooltip.to-left:after {
+    bottom: 50%;
+    border-left-color: var(--arrow-color);
+    left: 100%;
+}
+.tooltip.to-bottom:after {
+	border-bottom-color: var(--arrow-color);
+	bottom: 100%;
+	left: 45%;
+}
+.tooltip.to-right:after {
+	bottom: 50%;
+    border-right-color: var(--arrow-color);
+    right: 100%;
+}
+
+*:hover > .tooltip:not(.no-hover),
+*:focus > .tooltip:not(.no-focus),
+*:focus-within > .tooltip:not(.no-focus),
+.tooltip:not(.no-hover):hover,
+.tooltip:not(.no-focus-within):focus-within,
+.tooltip.show {
+ visibility: visible;
+ opacity: 1;
+ z-index: 3;
+}
+/*
+
+IMPORTANT
+
+For a tooltip that is not shown, an explicit styling of its child
+with visibility: visible; triggers a hover event that then makes tooltip visible
+
+*/
+/*--------------recent-------------------*/
+
+.tooltip:not(.show).no-hover.no-focus .tooltip, .tooltip:not(.show).no-hover.no-focus .tooltip.md\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.sm\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.lg\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.xl\:show {
+	pointer-events: none;
+}
+*:not(:hover) > .tooltip:not(.no-focus) {
+  z-index: 2;
+ transition: opacity 0.1s var(--delay), transform 0.15s var(--delay) ease, visibility 0s calc(var(--delay) + 0.15s);
+}
+*:focus-within > .tooltip {
+  --focus-in-transition-duration:0s;
+  transition: opacity calc(var(--focus-in-transition-duration) + 0.08s), transform calc(var(--focus-in-transition-duration) + 0.09s) ease, visibility calc(var(--focus-in-no-focus-transition-duration) + 0s) 0.1s !important;
+}
+*:focus-within > .tooltip.no-focus {
+	/* a very good preset */
+	  --focus-within-no-focus-transition: opacity 0.5s ease, transform 0.3s 0.05s ease-out, visibility 0s 0.12s;
+	/*--focus-within-no-focus-transition: none;*/
+	transition: var(--focus-within-no-focus-transition) !important;
+}
+
+
+/*slide should be used with the no-hover class */
+.tooltip.slide {
+ --x: 20%;
+ /*the values below were as the result of a long-winded, sweaty tweaking, use them as increment for custom durations ^_~ */
+ transition: opacity 0.5s ease, transform 0.3s 0.17s ease-out, visibility 0s 0.12s;
+}
+.tooltip.slide-y {
+	--y: 20%;
+	transition: opacity 0.5s ease, transform 0.3s 0.17s ease-out, visibility 0s 0.12s;
+}
+.tooltip.-slide-y {
+	--y: -20%;
+	transition: opacity 0.5s ease, transform 0.3s 0.17s ease-out, visibility 0s 0.12s;
+}
+.tooltip.-slide-y.show,
+.tooltip.slide-y.show,
+.tooltip.slide.show {
+  --x: 0%;
+  --y: 0%;
+  z-index: 1;
+  transition: opacity 0.5s, transform 0.3s 0.12s ease, visibility 0s 0.06s;
+}
+
+*:focus-within > .tooltip:not(.no-hover),
+.tooltip:focus-within {
+	transition-duration: 0.1s;
+	transition-delay: 0s;
+}
+*:not(:focus-within) > .tooltip.no-hover:not(.no-focus):not(.show) {
+	transition: var(--focus-out-no-hover-transition);
+}
+
+*:hover > .tooltip.to-top,
+*:focus > .tooltip.to-top,
+*:focus > .tooltip.no-hover{
+ transform: translate(-50%, -4px);
+}
+*:hover > .tooltip.to-bottom,
+*:focus > .tooltip.to-bottom{
+ transform: translate(-50%, 4px);
+}
+*:hover > .tooltip.to-left,
+*:focus > .tooltip.to-left {
+ transform: translate(-4px, -50%);
+}
+*:hover > .tooltip.to-right,
+*:focus > .tooltip.to-right {
+ transform: translate(4px, -50%);
+}
+*:hover > .tooltip {
+  z-index: 2;
+}
+
+@media (min-width: 500px)  {
+
+	 .tooltip.base\:show  {
+
+	 visibility: visible;
+
+	 opacity: 1;
+
+	 z-index: 3;
+
+	 --x: 0%;
+
+}
+ .base\:relative  {
+    position: relative 
+  }
+}
+
+@media (min-width: 640px) {
+	.sm\:w-9_20 {
+		width: 45%;
+	}
+ .tooltip.sm\:show,
+ .tooltip.slide.sm\:show {
+	 visibility: visible;
+	 opacity: 1;
+	 z-index: 3;
+	 --x: 0%;
+
+}
+  .tooltip.sm\:show.no-hover, .tooltip.sm\:show.no-focus  {
+	 pointer-events: auto;
+  }
+}
+@media (min-width: 768px)  {
+
+	 .md\:left-unset  {
+
+	 left: unset;
+
+}
+
+ .tooltip.md\:show  {
+
+	 visibility: visible;
+
+	 opacity: 1;
+
+	 z-index: 3;
+
+	 --x: 0% !important;
+
+	 
+
+	/*needed in some cases 
+
+	*/
+
+ } .tooltip.md\:show.no-hover, .tooltip.md\:show.no-focus  {
+
+	 pointer-events: auto;
+
+}
+
+ } @media (min-width: 1024px)  {
+
+	 section.prots article > main > section iframe  {
+
+	 height: 85%;
+
+}
+
+ .tooltip.lg\:show  {
+
+	 visibility: visible;
+
+	 opacity: 1;
+
+	 z-index: 3;
+
+	 --x: 0%;
+
+}
+
+ .tooltip.lg\:show.no-hover, .tooltip.lg\:show.no-focus, .tooltip.lg\:show.no-hover .tooltip.show,.tooltip.lg\:show.no-focus .tooltip.show  {
+
+	 pointer-events: auto;
+
+}
+
+ } @media (min-width: 1280px)  {
+
+	 .tooltip.xl\:show  {
+
+	 visibility: visible;
+
+	 opacity: 1;
+
+	 z-index: 3;
+
+	 --x: 0%;
+
+}
+
+ .tooltip.xl\:show.no-hover, .tooltip.xl\:show.no-focus  {
+
+	 pointer-events: auto;
+
+}
+
+ }
+ 
+/*compact reusable form styles 
+*/
+ .compact input:focus ~ span  {
+	 animation: inputHighlighter 0.3s ease;
+}
+ .compact label  {
+	 transition: 0.2s ease all;
+	 -moz-transition: 0.2s ease all;
+	 -webkit-transition: 0.2s ease all;
+}
+ .compact > div:focus-within  {
+	 background-color: rgb(82 100 175/10%);
+}
+ .compact input:focus ~ label, .compact input:valid ~ label  {
+	 top: -20px;
+	 font-size: 14px;
+	 color: #5264AE;
+}
+ .compact > div > div:before, .compact > div > div:after  {
+	 content: '';
+	 height: 2px;
+	 width: 0;
+	 bottom: 1px;
+	 position: absolute;
+	 background: #5264AE;
+	 transition: 0.2s ease all;
+	 -moz-transition: 0.2s ease all;
+	 -webkit-transition: 0.2s ease all;
+}
+
+ .compact > div > div:before  {
+	 left: 50%;
+}
+ .compact > div > div:after  {
+	 right: 50%;
+}
+ .compact input:focus ~ div:before, .compact input:focus ~ div:after  {
+	 width: 50%;
+}
+/*preloading animation for hr*/
+.to-fro {
+animation: to-fro 1.4s ease-in-out infinite alternate;
+}
+@keyframes to-fro {
+                from {
+                    transform-origin: left;
+                    transform: scaleX(1%);
+                }
+
+                5% {
+                    transform: scaleX(100%)
+                }
+
+                10%, 50% {
+                    transform-origin: right;
+                }
+
+                60%, 70%, 80%, 82%, 84%, 86% {
+                    transform: scaleX(2%)
+                }
+
+                90%, 100% {
+                    transform: scaleX(100%)
+                }
+
+                to {
+                    transform-origin: left
+                }
+            }
