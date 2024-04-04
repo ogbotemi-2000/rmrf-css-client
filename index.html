@@ -1,0 +1,347 @@
+<!DOCTYPE HTML><html data-classname="unused-css"><head>
+        <title>Open source software for external stylesheet trimming and comparison</title><meta charset="utf-8"><meta name="theme-color" content="#ff056"><meta name="color-scheme" content="light"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="../css/tailwind.min.css">
+        <link rel="stylesheet" href="../css/all.min.css"><link rel="stylesheet" href="../css/page.css">
+        <script src="../js/ripples.js"></script><script src="../js/utils.js"></script>
+        <script src="both.js"></script>
+        <script src="shield.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <link rel="shortcut icon" href="../favicon.ico">
+        <script></script><script>
+window.onerror = function(e) {
+  alert('::ERROR:: '+ e)
+},        
+'unused-css',
+page={
+  mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
+  endIp:  function() {return this.mobile()?'http://192.168.1.108':'http://localhost'},
+  uA: navigator.userAgent,
+  detectAttrs: function(classes, flag, o, i, done) {
+    i||=0, setTimeout(_=>_=setInterval(n=>{
+      i>=classes.length&&(o(notify,['lEC', 'cL'])[flag?'add':'remove']('to-fro', 'border-2'), clearInterval(_), setTimeout(_=>qs('.__class__').querySelector('input').focus()),
+      !flag&&(o(notify, 'fEC').textContent='Press enter to continue. Input other attributes that do not end with `class` or `id` and, that equal CSS selectors to add them to the found selectors'),
+      done&&done()),
+      qs('.__class__').querySelector('code').textContent = i +' selectors found', ++i
+    }))
+  },
+  gen:length=>Array.from({length}),
+  fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, lat=2000, cls, xhr, srcs, els, t, write, url=page.url) {
+    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
+    srcs=this.resources.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
+    t.failed||=0, t.count||=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount ||=0,
+    
+    t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
+    t.getStrings=(arr, res, loop)=>{
+      if(!res) return;
+      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/`|'|"/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
+        if(e==='/'&&/\/|\*/.test(nxt=res.charAt(i+1))) cmt=loop(res, {from:i, cb:(s,f,e)=>{
+          return nxt==='/' ? s[f-1]==='\n': (s[f-2]+s[f-1]==='*/')
+        }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
+
+        tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
+        ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
+      }
+    },
+
+    onload = function(e, i, fromCDN, tgt, st, res, bool, arr) {
+      ++t.count, res=(tgt=e.target).response, st=tgt.status+'', bool=(/^(1|2)/.test(st.charAt(0))||304==st),
+      t.failed+=!bool, bool&&(t.responses[i]=res, !fromCDN&&t.getStrings(t.strings[i]||=[], res, both.loop)),
+
+      els[i].classList.add('bg-'+(bool?'green':'red')+'-200'), t.write()
+    }, onerror=function(e, i, bool) {
+      ++t.failed, t.write(t.count+=true), els[i]&&els[i].classList.add('bg-red-200')
+    },
+    /*lat represents the time delay required to make the user have a time to act on the page choices for concurrent requests */
+    /*the setTimeout delay in "request" is needed to prevent the browser from dropping the incoming response for the first request in favour of making the current one*/
+    request=_=>setTimeout(_=>{xhr.open('GET', srcs[t.count].match(/^(http|www)/)?srcs[t.count]:this.domain+srcs[t.count]), setTimeout(_=>xhr.send(), lat)}),
+    t.go=flag=>{/*nf stands for not fetched, it points to the numnber of empty elements in resources*/
+      if(t.simultaneous=flag) !t.responses[t.sentCount]&&t.abort(xhr), t.async.slice(t.sentCount).forEach((e, i, src, fromCDN)=>{ (src=srcs[i+=t.sentCount])&&(e.open('GET', /^(http|www)/.test(src)?(fromCDN=!0, src):this.domain+src), e.onload=ev=>onload(ev, i, fromCDN), e.onerror=ev=>onerror(ev, i), e.send()) });
+      else xhr.onerror=ev=>{ ++t.sentCount, t.count<(srcs.length-1)&&request(), onerror(ev, t.count) }, xhr.onload=ev=>{ ++t.sentCount, !t.simultaneous&&t.count<(srcs.length-1)&&request(), onload(ev, t.count) }, request();
+    },
+    cls=bool=>{o(ctx, 'cL')[bool?'add':'remove']('stroked-light-border'), hr[bool?'remove':'add']('to-fro', 'border-2')},
+    t.afterFetch_read =(sib, matched, len=t.strings.length)=> {
+      this.scripts.forEach((e, i)=>t.getStrings(t.strings[len+i]||=[], e, both.loop)), sib=o(ctx, 'nES'),
+      /*enforce that either a whitespace or a quote should flank each string by wanting the matches to equal 2*/
+      (matched=t.scriptStrings.filter((e, m)=>(m=this.html.match(e))&&[-1, m[0].length].map(i=>/\s|("|')/g.test(this.html.charAt(m.index+i))).filter(e=>e).length===2))
+      &&setTimeout(lEC=>{
+        (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
+        out.innerHTML = `You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
+        w.scrollTo(0, d.body.scrollHeight), setTimeout(_=>lEC.focus(), 120)
+      }, t.failed?3500:500)
+    },
+    !/Firefox/i.test(this.uA)&&cls(true),
+    setTimeout(_=>{
+      t.simultaneous=true,
+      (t.write=(failed, init, i=t.count, bool=t.count<srcs.length-1, diff=srcs.length-t.count, plu=diff?'':'s')=>{out.innerHTML=t.count<srcs.length?(`Fetching data for <code class='font-semibold'>`+(t.simultaneous?`${diff=t.responses.length-t.sentCount}</code> script${diff===1?'':'s'}`:`${diff}</code> external script${diff===1?'':'s'}
+        ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
+        :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="page.fetch_readScripts.write()">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
+        :(t.afterFetch_read(),
+        cls(false), `Fetched ${t.failed?'':'all'} ${diff=srcs.length-t.failed} script${diff===1?'':'s'}, ${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
+        animations.addRippleAnimations()})()
+      /*passing true to t.go beside makes an asynchronous request*/t.go(true)
+    }, 2500/*200*/)
+  },
+  done: function(txt, o, btn, t, _o, from) {
+    t=this.done;
+    /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
+    if(_o=o) txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' '), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
+      o(btn,['pN', 'nES']).setAttribute('disabled', ''), o(btn, ['pN', 'nES']).blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
+      this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from,
+      _=>setTimeout(_=>{
+        o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o)
+      }, 2500)),
+      o(notify, 'fEC').innerText = `Added the ${txt.length} extra class${txt.length==1?'':'es'} in the input field above to the number of found selectors.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
+
+    t.prepare=(o, ctx, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
+      if(_o) {
+        all=(css=this.resources.css).concat(fetched=Object.keys(this.stylesheet)), this.stylesIndex||=[],
+        css.forEach((e,i,bool)=>{bool=fetched.find(fe=>fe===e), this.stylesIndex.push(bool?i:null), html+=`<div class='font-bookweb ${bool?'border border-gray-400 ':'bg-red-200 '}truncate mr-4' style='max-width:18rem;'>${bool?'<hr style="--tw-translate-x:-100%" class="transform bg-green-200 h-full absolute inset-0">':''}<span class="relative">${e}</span></div>`}),
+        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-transparent h-full absolute inset-0 bg-green-200"><span class="relative">${(this.stylesIndex.push(css.length+i), e)}</span></div>`),
+
+        o(ctx=o(notify, 'nES').querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
+        /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
+        (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
+        this.styles = fetched.map(e=>this.stylesheet[e]).concat(this.styles),
+        o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96')
+      }
+      t.reset=_=>{
+        cancelAnimationFrame(page.done.frameId),
+        forEach(writeCSS.children, e=>e.firstElementChild.textContent='')
+      },
+      t.begin=n=>{
+        t.count||=0, n=t.count++, trimCSS(page.classes, /*progress*/function(i, tot, frameId, ratio){
+          t.frameId=frameId, ratio=100*i/tot, o(nES.children[n], 'fEC').style.setProperty('--tw-translate-x', -100+ratio+'%')
+        }, /*done*/function(used){
+          console.log('::DONE::')
+        }, n)
+      }
+    };
+      
+
+    /*the returned value is used to call the desired method defined on this function*/
+    return t;
+  },
+  continue:function(txt, rgx, o=objWalk, classes, out, hr, ctx) {
+    out=o(notify, 'fEC'), hr=o(notify,['lEC','cL']), hr.add('border-2', 'to-fro');
+    if(txt&&(txt=txt.split(' ').filter(e=>e!=='class'&&e!=='id').map(e=>e.trim())).length) {
+      rgx=txt.join('|'), rgx=[`)=('|")[^("|')]+('|")`, `)=|"`].map(e=>new RegExp('('+rgx+e, 'g')),
+
+      out.innerHTML=`Detecting CSS classes present in ${txt.map(e=>"<code class='font-semibold'>"+e+'</code>').join(', ')} attributes in the fetched document`,
+      (classes=both.getAttrs(this.html, rgx, each=>!~page.classes.indexOf(each)&&page.classes.push(each))).length
+      ? (this.detectAttrs(classes, false, o, this.classes.length, _=>(out.textContent=`Found ${classes.length} extra CSS selector${classes.length===1?'':'s'}, preparing to find more strings in document\'s scripts` )))
+      : out.textContent='FYI: No new CSS selectors were found, proceeding to interactively find strings in the document\'s scripts'
+    } else {
+      out.textContent = 'No new attributes were provided, continuing with an alternative of finding strings in the document\'s scripts instead'
+    }
+    (ctx=o(o(notify, 'pN').querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
+  },
+  
+  get: function(url, t, xhr=new XMLHttpRequest, endp='http://localhost', prot='', root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
+    if(this.gotten) return;
+    this.gotten=!0/*to prevent multiple calls of this function when the url is entered in the input field.
+    While it causes no errors if this happens, the side-effect of having linked assets details written to the DOM more than once is not desirable
+    */
+    endp=this.endIp(), prot = (prot=url.match(/^http[a-z]*:\/\//g))?prot[0]:'http://',
+    url=url.split('//'), url.length>1&&url.shift(), root=url[0].slice(0, ~(index=url[0].indexOf('/'))?index:url[0].length)+'/', this.domain = prot+root,
+    // (prot=url.match(/^http[a-z]*:\/\//g))?root=url.replace(prot=prot[0], '').split('/').shift():(prot='http://', root=url.split('/').shift(), url=prot+url),
+    setTimeout(_=>{o(_=qs('section>section'), 'cL').add('show'), o(_, ['nES', 'cL']).remove('show')}, 200), page.url = url=url=url.length===1?prot+url:url.join('//')
+    qs('section>article>code').textContent=url?'[URL]:: '+url:'[File Upload]:: '+(arr=slice(file.files).map(e=>e.name)).join(', '),
+    console.log('::URL::', url, this.domain),
+
+    (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
+    hr=o(notify, ['lEC', 'cL']);
+
+    if(url) xhr.open('GET', endp+'/?url='+url), xhr.send(), xhr.onload=(ev, res, pI, json, aside)=>{
+        (res=ev.target.response).charAt(0)==='_'
+        &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
+        this.splits&&(split=res.split((splits=page.splits)[0])),
+
+        aside=o(notify, 'pN').querySelector('aside'),
+        (json=res.charAt(0)==='{')&&(page.resources = assets = JSON.parse(split?split[0]:res), split&&(page.html=split[1]));
+        if(!assets.error) {
+          /*the if below handles response for the second request*/
+        if(!json) {
+          let classes = split[0].split(',').filter(e=>e), asides=[o(aside, {2:'nES'}), aside],
+          rgxes=[/script/g, /style/g], p=aside.querySelector('p'), inline=o(p, 'nES');
+
+          classes.length?(page.classes=classes, this.detectAttrs(classes, false, o), o(qs('.__class__'), 'cL').replace('absolute', 'show'))
+          : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2') /*page.retry()*/),
+          split[1].split(splits[1]).forEach((e, i, a)=>{
+            [/^script/, /^style/].forEach((rgx, _i, ast)=>{
+              ast = rgx.toString().replace(/\^|\//g, '')
+              _i===0&&(page.hasScript||=_i),
+              e.match(rgx)&&((page[ast+'s']||=[]).push(a[i+1]), p=asides[_i].querySelector('p'), (inline=o(p, 'nES')).innerHTML||='',
+              inline.innerHTML+=`<span class="p-0.5 px-2.5 border-transparent border-2 hover:border-current font-bookweb text-base mr-3 my-2">${(_i&&(this.inlineStyles||=[]).push(e), e)}<code class='text-black inline-block text-xs'>&nbsp;•&nbsp;${both.byteFormat(a[i+1].length)}</code></span>|`)
+            })
+          }),
+          asides.forEach((el, il)=>(il=el.querySelector('p+div')).innerHTML=il.innerHTML.replace(/\|$/,'')),
+          setTimeout(_=>rgxes.forEach((e, i, prop, p, inline, len)=>{
+            prop=(e+'').replace(/\/|g/g, ''), p=asides[i].querySelector('p'), inline=o(p, 'nES'),
+            p.textContent=inline.innerHTML?(o(inline, 'cL').replace('absolute', 'show'), `[ ${len=inline.innerHTML.match(e).length} ] Inline ${prop+(len?'s':'')} present`)
+            :`No inline ${prop+(len?'s':'')} detected`
+          }), 800)
+        } else {
+          let sTs = this.stylesheet||={}, css=assets.css, title, css_out=o(notify, 'nES').querySelector('section');
+          o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`,
+          css_out.innerHTML = '', this.domain, this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, bool, url)=>{
+            css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), bool=i===arr.length-1,
+            xhr.onerror=ev=>{o(css_out.children[i], ['fEC', 'cL']).replace('bg-blue-200', 'bg-red-200'), bool&&this.done().prepare(o, !0)},
+            xhr.onload=ev=>{sTs[url] = ev.target.response, o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&this.done().prepare(o)}
+          }),
+          (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
+          assets.icon&&(o(title, 'pES').src=this.domain+assets.icon);
+          let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
+          [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
+            /*min text length for the given font size and font is 40 on IPhone SE*/
+            el.querySelector('h4+div').innerHTML = assets[v=props[i]].map(e=>`<span class="${e.length>40?'sm:w-full w-80 truncate ':''}p-1 px-3 text-black text-base font-bookweb">${e}</span>`).join('<hr class="inline-block mx-2 p-0.5 border border-current">'),
+            out.innerHTML = `Detecting selectors present in <code class='font-semibold'>class</code>, <code class='font-semibold'>id</code> attributes in the fetched document`,
+            el.querySelector('h4').textContent=(assets[v].length?'Found ':'No ')+txt[i]
+          }),
+          /*make a second request*/
+          /*a timeout to prevent the browser from dropping the incoming response for the outgoing request above as it makes the delayed request below*/
+          setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__'), setTimeout(_=>{xhr.send()})})
+        };
+        /*reset notify.classList*/
+      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full');
+    }
+  }
+}
+        </script>
+        <style>.stroked-light-border {/*--border-gradient-angle is specified from 0turn to 1turn in a keyframe, --runtime is for the colour of the stroke-light*/
+            --runtime: #e07c17;
+            background-image: conic-gradient(from var(--border-gradient-angle) at 50% 50%, transparent, var(--runtime) 14%, transparent 17%);
+            animation: 2s linear 0ms infinite light-border;
+            background-size: contain;
+          }
+          @keyframes light-border {
+            0% {
+              --border-gradient-angle: 0deg;
+            }
+            100% {
+              --border-gradient-angle: 360deg;
+            }
+          }
+          html {
+            --border-gradient-angle:0deg;
+          }
+          @property --border-gradient-angle {
+            syntax: "<angle>";
+            inherits: true;
+            initial-value: 360deg;
+          }
+        </style>
+        <style class="ef94-4e32-4d5b-ac04-f297fc564b23">.hljs-comment, .hljs-quote {
+                color: #A2A09F;
+                font-style: italic;
+            }
+
+            .hljs-doctag, .hljs-keyword, .hljs-formula {
+                color: #B08CFF;
+            }
+
+            .hljs-section, .hljs-name, .hljs-selector-tag, .hljs-deletion, .hljs-subst {
+                color: #FF7C72;
+            }
+
+            .hljs-literal {
+                color: #1CE2B2;
+            }
+
+            .hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute, .hljs-attr, .hljs-meta-string {
+                color: #A6FF8F;
+            }
+
+            .hljs-built_in, .hljs-class .hljs-title {
+                color: #FBF38C;
+            }
+
+            .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number {
+                color: #FF7C72;
+            }
+
+            .hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title {
+                color: #61C3FF;
+            }
+
+            .hljs-emphasis {
+                font-style: italic;
+            }
+
+            .hljs-strong {
+                font-weight: bold;
+            }
+
+            .hljs-link {
+                text-decoration: underline;
+            }</style>
+    </head>
+    <body>
+        <section class="mb-10 pt-14 relative text-center px-10">
+          <!--overflow-hidden class on section below showed only the elements in .__class__ -  had to remove it-->
+          <section class="m-auto sm:w-5/6 bg-white text-left tooltip no-hover no-focus-within no-focus slide-y text-sm">
+            <button class="hidden absolute right-1/4 bottom-3 border-2 rounded rounded-tr-xl p-3 ripple">Another?</button><span class="text-gray-600 mr-4">Received as:</span>
+            <article class="mb-2 lg:mb-7 [&amp;>*]:inline-block [&amp;>*]:align-middle sm:w-96 inline-block mr-2"><code class="mr-4">[URL]:: http://localhost:8000/dump.html</code>
+              <div class="inline-block [&amp;>*]:inline-block"><img src="fallback.ico" width="52" class="mr-2"><code>• [TITLE::]</code></div>
+            </article>
+
+            <aside class="mb-5 w-full sm:w-5/6 md:w-2/3 lg:w-1/3 mt-2 absolute align-middle inline-block rounded-md bg-gradient-to-br from-gray-200 via-transparent tooltip no-hover no-focus slide-y p-4 mt-3 sm:mr-10 left-0 text-gray-700">
+              •<h4 class="inline-block ml-1 mb-1 text-gray-700">Found linked stylesheets</h4><div class="[&>*]:align-middle [&>*]:rounded-full"></div>•<p class="mb-1.5 ml-1 mt-3 inline-block">checking for inline styles...</p><div class="absolute tooltip no-hover no-focus -slide-y [&>*]:align-middle"></div></aside>
+            <aside class="sm:mr-4 bg-inherit __class__ left-0 tooltip no-hover no-focus inline-block slide-y no-focus-within absolute"><span class="inline-block mt-2"><code>115 classes found</code><br><button class="w-full focus:bg-yellow-300 hover:bg-yellow-100 rounded-t-xl border-l border-r  border-t border-current pt-2 ripple relative mt-1 leading-8"
+              onclick="let t, o, ctx=(o=objWalk)(t=this, [{2:'pN'},'lEC']), bool=t.textContent.charAt(0)=='s'; o(t, [{2:'pN'}, 'cL']).toggle('w-full'), ctx.textContent=bool?page.classes.join('&nbsp; • &nbsp;'):'', ctx.classList[cLs(bool)]('show'), t.textContent=(bool?'hide':(o(t,['pN','nES']).focus(), 'show'))+' selectors'">show selectors</button></span><input onkeyup="this.textContent||(event.key==='Enter'||event.keyCode===13)&&(page.continue(this.textContent=this.value.trim()), this.setAttribute('disabled', ''))" class="placeholder-gray-700 sm:w-80 focus:bg-blue-100 text-xs w-full mr-2 sm:mr-0 sm:inline-block sm:px-4 rounded-tr-md rounded-bl-md p-2 border-l border-b border-current text-gray-800 sm:-ml-px align-bottom sm:-mb-1 bg-transparent outline-none" spellcheck="s" placeholder="add HTML attributes in document here with spaces">
+<div class="-mt-1 p-2 pt-3 tooltip no-hover no-focus -slide-y no-focus-within border-r-0 border-t-0 border border-current rounded-bl-xl"></div>
+</aside>
+<aside class="mt-5 bg-inherit sm:w-5/6 md:w-2/3 lg:w-1/3 m-2 absolute align-bottom inline-block rounded-lg tooltip no-hover no-focus slide-y p-4 mt-3 sm:mr-5 left-0 text-gray-800"><div class="rounded-inherit inset-0.5 bg-white absolute"></div><div class="border-gray-500 rounded-tl-xl p-10 border-l border-t absolute top-0 left-0 -m-1"></div><div class="border-gray-500 rounded-br-xl p-10 border-r border-b absolute bottom-0 right-0 -m-1"></div><span class="relative">•</span><h4 class="relative inline-block ml-1 mb-1 text-gray-700 space-y-1.5">Found external scripts</h4><div class="relative [&>*]:inline-block [&>*]:rounded-full space-y-1.5"></div><span class="relative">•</span><p class="mb-1.5 ml-1 mt-3 inline-block relative">[ 2 ] Inline scripts present</p><div class="absolute tooltip no-hover no-focus relative -slide-y"></div></aside>
+<aside class="bg-inherit left-0 ml-0.5 absolute tooltip no-hover no-focus-within no-focus slide-y inline-block my-3">
+    <h4 class="text-gray-700 inline-block mr-3">CSS classes matched in scripts (filtered)</h4>
+    <!--fancy button -->
+    <div class="relative inline-block rounded align-middle"><div class="rounded-lg pointer-events-none decorate inset-0 absolute overflow-hidden"><div style="--tw-bg-opacity: 0.7" class="duration-500 origin-bottom-right -right-6 top-3/4 p-4 bg-blue-200 shadow rounded-full transform-gpu scale-150 absolute"></div><div style="--tw-bg-opacity: 0.6" class="duration-500 origin-top-left -left-6 bottom-3/4 p-4 bg-blue-300 shadow rounded-full transform-gpu scale-150 absolute"></div></div>
+    <button class="px-6 relative ripple text-xs sm:text-sm p-2" onclick="let o=objWalk; page.done(o(this, ['pN', 'nES', 'tC']), o, this)">done ?</button></div>
+    <!-- fancy button end -->
+    <div class="leading-6 text-xs mt-2 px-3 p-2 no-focus-within border-r-0 border-b-0 border border-current rounded-tl-xl" contenteditable="" spellcheck="false"
+    onkeyup="let o=objWalk; (event.key==='Enter'||event.keyCode===13)&&page.done(this.textContent=this.textContent.replace(/\n/, ''), o, o(this, ['pES','lEC']))">font-semibold • mb-2 • inline-block</div>
+</aside>
+<br>
+<div class="inline-block word-break  bg-inherit relative mr-8" id="notify"><i>Press enter to continue. Add spaces between the custom attributes you provide above</i>
+<hr class="border-2 mt-1 to-fro border-0 border-blue-300 w-full relative"></div>
+
+<!-- MAIN | START -->
+<main class="left-0 absolute mt-4 tooltip no-hover no-focus -slide-y">
+    <h3 class="mt-4">Fetching linked stylesheets (<N>)</h3>
+    <section class="left-0 text-base tooltip -slide no-hover no-focus show font-bookweb pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block">
+    <div><hr class="h-full absolute to-fro inset-0 bg-blue-100"><span class="relative">css/tailwind.min.css</span></div>
+</section>
+<section class="mt-3 tooltip absolute no-hover no-focus left-0 slide-y text-base pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block"></section>
+
+<button onclick="let o=objWalk; page.done.begin(), this.disabled=true, setTimeout(_=>o(this,['nES','cL']).replace('absolute', 'show'), 3000)" id=begin class="mr-3 ripple relative bg-yellow-500 rounded-lg px-3 p-2 text-base"><i class="mr-1.5 fa fa-play"></i> start</button>
+<button onclick='page.done.reset(), page.done.begin()' class="px-3 p-2 border-gray-400 left-0 tooltip slide absolute no-hover no-focus rounded-lg border-2">slow? go to the next</button>
+
+  <section id=writeCSS class="sm:-mx-16 mx-8 mt-7 sm:mt-12 [&>*]:text-left text-center [&>*]:relative absolute font-mono left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
+    <div class="sm:w-9_20 m-auto h-full leading-6 tracking-wide mb-10 sm:mb-0">
+      <div class="h-full overflow-y-scroll word-break"></div>
+      <pre class="p-1 border-r border-b rounded-br-lg bordrer-current absolute right-0 -top-8">used CSS styles</pre>
+    </div>
+    <div class="sm:w-9_20 m-auto h-full leading-6 tracking-wide">
+      <div class="h-full overflow-y-scroll word-break"></div>
+      <pre class="absolute left-0 p-1 border-l border-b rounded-bl-lg bordrer-current -top-8">unused CSS styles</pre>  
+    </div>
+  </section>
+</main>
+
+</section>
+<section class="right-0 left-0 mx-10 tooltip no-hover no-focus no-focus-within absolute -slide-y show top-20">
+<form method="get" action="/" onsubmit="return !!page.get(this.url.value)" class="sm:w-1/2 sm:inline-block relative compact"><div><input autofocus required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here and press enter" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-1 top-0">input the url to a webpage and press enter</label></div></form>
+          <span class="bulge-center font-mono text-gray-700 w-1/2 mx-auto sm:inline-flex relative sm:mx-6 sm:my-0 my-5 text-sm sm:h-20 sm:w-px h-px flex items-center justify-center"><span class="px-4 p-1 text-black bg-white">or</span></span>
+          <button class="w-full sm:w-auto ripple relative sm:inline-block p-3 bg-blue-100 rounded-md" onclick="this.firstElementChild.click()"><input class="absolute hidden pointer-events-none" type="file" accept=".html" oninput="let res=this.files[0];
+  res&&res.text().then(str=>{
+    page.get()
+  })" id="file"><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
+          </section>
+      <script>
+window.addEventListener('DOMContentLoaded', _=>{
+  animations.addRippleAnimations()
+})</script><style>
+  /* got this one baby, it should that it detects three inline styles as
+  style tag when run again*/</style>
+</body></html>

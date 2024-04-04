@@ -1,0 +1,19 @@
+{
+  "name": "RemCSS",
+  "version": "1.0.0",
+  "description": "",
+  "main": "service.js",
+  "dependencies": {
+    "pm2": "5.3.1",
+    "loadtest": "8.0.9"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npm install && echo \"<Installed Dependencies>\"
+    "start": "pm2 start service.js -i max"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "GPL"
+}
