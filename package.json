@@ -10,10 +10,10 @@
   "devDependencies": {},
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && echo \"<Installed Dependencies>\"
+    "build": "npm install && echo \"<Installed Dependencies>\"",
     "start": "pm2 start service.js -i max"
   },
   "keywords": [],
-  "author": "",
+  "author": "Ogbotemi Akin Ogungbamila",
   "license": "GPL"
 }

@@ -16,7 +16,9 @@ http.createServer((req, res, str, params={})=>{
 
     // req.url.match(/tail|page|all/)&&(req.url=req.url.replace('css', 'trimmed')),
     console.log('::URL::', req.url),
-
+    res.writeHead(200, {
+      'Access-Control-Allow-Origin': '*'
+    })
     new Promise((resolve, rej, cached)=>{
     /*(cached=cache[req.url])?resolve(cached):*/fs.readFile(req.url, (err, buf)=>{
         if(err) rej(err);

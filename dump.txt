@@ -20,7 +20,7 @@ page={
   gen:length=>Array.from({length}),
   fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, lat=2000, cls, xhr, srcs, els, t, write, url=page.url) {
     t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
-    srcs=this.resources.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
+    srcs=this.assets.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
     t.failed||=0, t.count||=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount ||=0,
     
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
@@ -32,7 +32,7 @@ page={
         }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/;|\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
         ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
       }
     },
@@ -56,8 +56,9 @@ page={
     t.afterFetch_read =(sib, matched, len=t.strings.length)=> {
       this.scripts.forEach((e, i)=>t.getStrings(t.strings[len+i]||=[], e, both.loop)), sib=o(ctx, 'nES'),
       /*enforce that either a whitespace or a quote should flank each string by wanting the matches to equal 2*/
-      (matched=t.scriptStrings.filter((e, m)=>(m=this.html.match(e))&&[-1, m[0].length].map(i=>/\s|("|')/g.test(this.html.charAt(m.index+i))).filter(e=>e).length===2))
-      &&setTimeout(lEC=>{
+      // (matched=t.scriptStrings.filter((e, m)=>(m=this.html.match(e))&&[-1, m[0].length].map(i=>/\s|("|')/g.test(this.html.charAt(m.index+i))).filter(e=>e).length===2))&&
+      matched=t.scriptStrings,
+      setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
         out.innerHTML = `You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
         w.scrollTo(0, d.body.scrollHeight), setTimeout(_=>lEC.focus(), 120)
@@ -82,31 +83,35 @@ page={
       o(btn,['pN', 'nES']).setAttribute('disabled', ''), o(btn, ['pN', 'nES']).blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from,
       _=>setTimeout(_=>{
-        o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o)
+        o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o),
+        w.scrollTo(0, d.body.scrollHeight)
       }, 2500)),
       o(notify, 'fEC').innerText = `Added the ${txt.length} extra class${txt.length==1?'':'es'} in the input field above to the number of found selectors.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
 
-    t.prepare=(o, ctx, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
+    t.count=0,
+    t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
+      fetched_css=t.fetched_css||=fetched_css;
       if(_o) {
-        all=(css=this.resources.css).concat(fetched=Object.keys(this.stylesheet)), this.stylesIndex||=[],
-        css.forEach((e,i,bool)=>{bool=fetched.find(fe=>fe===e), this.stylesIndex.push(bool?i:null), html+=`<div class='font-bookweb ${bool?'border border-gray-400 ':'bg-red-200 '}truncate mr-4' style='max-width:18rem;'>${bool?'<hr style="--tw-translate-x:-100%" class="transform bg-green-200 h-full absolute inset-0">':''}<span class="relative">${e}</span></div>`}),
-        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-transparent h-full absolute inset-0 bg-green-200"><span class="relative">${(this.stylesIndex.push(css.length+i), e)}</span></div>`),
+        all=this.inlineStyles.concat(t.fetched_css.filter(e=>e)), css=this.assets.css,
+        /*increment count to jump over the absent css assets when matching used classnames*/
+        fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0">':''}<span class="relative">${css[i]}</span></div>`}),
+        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200"><span class="relative">${e}</span></div>`),
 
         o(ctx=o(notify, 'nES').querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = fetched.map(e=>this.stylesheet[e]).concat(this.styles),
-        o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96')
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96')
       }
-      t.reset=_=>{
-        cancelAnimationFrame(page.done.frameId),
-        forEach(writeCSS.children, e=>e.firstElementChild.textContent='')
+      t.reset=ctx=>{
+        trimCSS.reset(), forEach(writeCSS.children, e=>e.firstElementChild.textContent=''),
+        o(ctx=nES.children[t.count-1], 'cL').remove('bg-yellow-200')
       },
-      t.begin=n=>{
-        t.count||=0, n=t.count++, trimCSS(page.classes, /*progress*/function(i, tot, frameId, ratio){
-          t.frameId=frameId, ratio=100*i/tot, o(nES.children[n], 'fEC').style.setProperty('--tw-translate-x', -100+ratio+'%')
-        }, /*done*/function(used){
-          console.log('::DONE::')
+      console.log('::COUNT::', t.count),
+      t.begin=(n, ctx)=>{
+        o(ctx=nES.children[n=t.count++], 'cL').add('bg-yellow-200'), trimCSS(page.classes, /*progress*/function(i, tot, frameId, ratio){
+          ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+ratio+'%')
+        }, /*done*/function(index, used, frameId){
+          console.log('::DONE::', both.byteFormat(used.length))
         }, n)
       }
     };
@@ -151,7 +156,7 @@ page={
         this.splits&&(split=res.split((splits=page.splits)[0])),
 
         aside=o(notify, 'pN').querySelector('aside'),
-        (json=res.charAt(0)==='{')&&(page.resources = assets = JSON.parse(split?split[0]:res), split&&(page.html=split[1]));
+        (json=res.charAt(0)==='{')&&(this.assets = assets = JSON.parse(split?split[0]:res), split&&(page.html=split[1]));
         if(!assets.error) {
           /*the if below handles response for the second request*/
         if(!json) {
@@ -175,20 +180,21 @@ page={
             :`No inline ${prop+(len?'s':'')} detected`
           }), 800)
         } else {
-          let sTs = this.stylesheet||={}, css=assets.css, title, css_out=o(notify, 'nES').querySelector('section');
-          o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`,
-          css_out.innerHTML = '', this.domain, this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, bool, url)=>{
-            css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), bool=i===arr.length-1,
-            xhr.onerror=ev=>{o(css_out.children[i], ['fEC', 'cL']).replace('bg-blue-200', 'bg-red-200'), bool&&this.done().prepare(o, !0)},
-            xhr.onload=ev=>{sTs[url] = ev.target.response, o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&this.done().prepare(o)}
+          let sort=[], css=assets.css, title, css_out=o(notify, 'nES').querySelector('section'), fetched_css=[],
+          done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&(this.assets.css=sort, this.done().prepare(o, fetched_css))};
+
+          o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
+          this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
+            css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
+            bool=i===arr.length-1,
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=ev=>done(ev.target.response, i===arr.length-1, i)
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
           assets.icon&&(o(title, 'pES').src=this.domain+assets.icon);
           let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
           [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
             /*min text length for the given font size and font is 40 on IPhone SE*/
-            el.querySelector('h4+div').innerHTML = assets[v=props[i]].map(e=>`<span class="${e.length>40?'sm:w-full w-80 truncate ':''}p-1 px-3 text-black text-base font-bookweb">${e}</span>`).join('<hr class="inline-block mx-2 p-0.5 border border-current">'),
+            el.querySelector('h4+div').innerHTML = assets[v=props[i]].map(e=>`<span class="${e.length>40?'sm:w-full w-72 truncate ':''}p-1 px-3 text-black text-base font-bookweb">${e}</span>`).join('<hr class="inline-block mx-2 p-0.5 border border-current">'),
             out.innerHTML = `Detecting selectors present in <code class='font-semibold'>class</code>, <code class='font-semibold'>id</code> attributes in the fetched document`,
             el.querySelector('h4').textContent=(assets[v].length?'Found ':'No ')+txt[i]
           }),
@@ -278,5 +284,7 @@ window.addEventListener('DOMContentLoaded', _=>{
 })
 _____
 
-  /* got this one baby, it should that it detects three inline styles as
+  /* got this one baby, it should detect three inline styles as
   style tag when run again*/
+_____
+/*nuther one, actually the last -  just using it to know whether the count of scanned stylesheets is accurate: it should be 4 if unicorns aren't real*/

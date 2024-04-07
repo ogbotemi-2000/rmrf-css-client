@@ -1,5 +1,5 @@
 let loop =  both.loop;
-function trimCSS(attrs, progress, done, at, frameId, end, callback, matches_arr=[], i=0, matches=new Set, comments=[], css='', ruleEnd, used='', rkeys, files, file, vw_breaks, styles, fn, endDump={}, dump={}) {
+function trimCSS(attrs, progress, done, at, frameId, end, callback, atRules=['import', 'keyframes', 'charset', 'font-face', 'property'], i=0, matches=new Set, comments=[], css='', ruleEnd, used='', rkeys, files, file, vw_breaks, styles, fn, endDump={}, dump={}) {
     /** vw_breaks will be provided by the user when normal media query matching code fails */
     files = page.styles,
     rkeys = new RegExp('('+Object.keys(vw_breaks = {base:500,sm:640,md:768,lg:1024,xl:1280, '32xl':1536}).join('|')+')\\\\:'),
@@ -25,25 +25,28 @@ function trimCSS(attrs, progress, done, at, frameId, end, callback, matches_arr=
         console.log('::DONE MATCHING.TRIMMING ATTRS::', attrs.length, attrs_index)
         
         // for(
-            let canAdd, at_rule, index=0, each, len=styles.length; canAdd=!0, each = styles.charAt(index); index<len;
+            let canAdd, at_rule, keepIndex=0, index=0, each, len=styles.length; canAdd=!0, each = styles.charAt(index); index<len;
             // );
         // setImmediate(
             callback=(canAdd=!0, each)=>{
           each = styles.charAt(index),
-          progress(index, len, frameId),
+          progress(keepIndex, len, frameId),
           index&&index/20000 === Math.round(index/20000)&&console.log('::MATCHING.INDEX::', index, loop(styles, {from:index, to:10})[0], styles.length);
           
-          if(each+styles.charAt(index+1)==='/*') canAdd=0, index = storeComments(index, styles, comments); //, console.log('::COMMENT::', loop(styles, {from:index, to:30}));
+          // if(each+styles.charAt(index+1)==='/*') canAdd=0, index = storeComments(index, styles, comments); //, console.log('::COMMENT::', loop(styles, {from:index, to:30}));
           
           if(each==='@'&&!attrs_index) {
             let temp='', res='', add=0, kFrame, added='';
             temp=loop(styles, {from:index, cb:(s,f,t,r)=>{
+              /**do nothing for unsupported @-rules */
+              if(!atRules.find(e=>e===loop(styles, {from:index+1, cb:(s,f)=>s[f]===' '})[0])) return true;
+
               if(/@media[^{]+\{/.test(res+=s[add=f])) {(res=res.match(/[0-9]+/g))&&(at_rule=res.join('_')); return true;}
               else if(kFrame||=res.match('keyframes')) {
                 if(s[f]==='}'&&(ruleEnd=atRuleEnd(styles, f))[0]) { add=ruleEnd[1], canAdd=(s[ruleEnd[1]]!=='}'), added=ruleEnd[2]; return ruleEnd[0]; }
               }
               else if(s[f]===';') {add=f; return true}
-            }}), res=temp[0].match('@font-face')?temp[0]+loop(styles, {from:temp[1]+1, cb:(s,f,t,r)=>(add=f, s[f-1]==='}')})[0]:temp[0];
+            }}), res=/@(font-face|property)/.test(temp[0])?temp[0]+loop(styles, {from:temp[1]+1, cb:(s,f,t,r)=>(add=f, s[f-1]==='}')})[0]:temp[0];
   
             if(res.charAt(0)) kFrame=loop(styles, {from:index-1, back:!0, cb:(s,f,t,r)=>!s[f-1]||!s[f].match(/\s/)})[0], res='\n'.repeat(!kFrame.match('\n'))+kFrame+res, !res.match('@media')
               ? (used+=res+added+added+(res.match('@import')?(canAdd=0, ';'):''), index=add) : (dump[at_rule]||=res+'{', index=add, css+=res);
@@ -76,10 +79,12 @@ function trimCSS(attrs, progress, done, at, frameId, end, callback, matches_arr=
           });
   
           if(styles.charAt(index)==='}') at_rule&&(ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], at_rule=0);
-          index++;
-          writeCSS.children[0].firstElementChild.textContent=used, writeCSS.children[1].firstElementChild.textContent=css;
-          if(index>len-1) end(), console.log('::DONE::', index, attrs_index);
-          else /*setImmediate*/frameId=requestAnimationFrame(_=>callback())
+          keepIndex = index++;
+          writeCSS.children[0].firstElementChild.textContent=used, writeCSS.children[1].firstElementChild.textContent=css,
+          trimCSS.reset=_=>index=len;
+
+          if(index>len-1) cancelAnimationFrame(frameId), done(keepIndex, used, frameId)/*end()*/;
+          else frameId=requestAnimationFrame(_=>callback())
         },
         callback()
         // )
