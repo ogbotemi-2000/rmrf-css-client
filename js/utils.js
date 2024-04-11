@@ -90,10 +90,15 @@ window.addEventListener('DOMContentLoaded', _=>{
       return (type?(type === a || a.toUpperCase()===type.toUpperCase()):a)
   }
   function objWalk(e,a,logStack) {
+     objWalk.dict||={},
+     objWalk.setDict =function(arr){
+       if(arr) for(let str, val, i = arr.length; i;  str=(val=arr[--i]).charAt(0), val.replace(/[A-Z]/g, _=>str+=_), this.dict[str]=val);
+     };
     let errs=[], trace=[], is_a=Is(a), and=_=>_!==void 0&&_, dict=objWalk.dict;
    
-    objWalk.walk_arr=function(e,a,logStack){let i=0; if(Is(a,'Array')) for(let val, j=a.length; (e=Is(val=dict[a[i]]||a[i],'Object')?this.walk_obj(e,val):and(e[val])||(logStack&&errs.push(`${e[dict[a[i-1]]||a[i-1]]} for ${dict[a[i-1]]||a[i-1]} at index ${i-1}`),e))&&(i++, i<j);); return e},
-    objWalk.walk_obj=function(e,a,logStack){if(Is(a,'object')) for(let key in a) for(let val, j=+key; j--;) e=Is(val=dict[a[key]]||a[key],'String')?and(e[val])||e:this.walk_arr(e,val, logStack)/*▶*/; return e};
+    objWalk.walk_arr=function(e,a,logStack){let i=0; if(Is(a,'Array')) for(let val=(a=a.filter(Boolean), ''), j=a.length; (e=Is(val=dict[a[i]]||a[i],'Object')?this.walk_obj(e,val):and(e[val])||(logStack&&errs.push(`${e[dict[a[i-1]]||a[i-1]]} for ${dict[a[i-1]]||a[i-1]} at index ${i-1}`), logStack?e[val]:e))&&(i++, i<j);); return e},
+     //[...Is(a[key],'string')?[a[key]]:a[key]].forEach(_=>e=e[_]||(e)) was where ▶ is at.
+    objWalk.walk_obj=function(e,a,logStack){if(Is(a,'object')) for(let key in a) for(let val, j=+key; j--;) e=Is(val=dict[a[key]]||a[key],'String')?and(e[val])||(logStack?e[val]:e):this.walk_arr(e,val, logStack)/*▶*/; return e};
    
     switch(is_a) {
       case 'Object':

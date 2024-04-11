@@ -76,42 +76,50 @@ page={
       /*passing true to t.go beside makes an asynchronous request*/t.go(true)
     }, 2500/*200*/)
   },
-  done: function(txt, o, btn, t, _o, from) {
+  done: function(txt, o, btn, t, _o, from, out, len, cb) {
     t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
-    if(_o=o) txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' '), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
+    if(_o=o) txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
       o(btn,['pN', 'nES']).setAttribute('disabled', ''), o(btn, ['pN', 'nES']).blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
-      this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from,
-      _=>setTimeout(_=>{
-        o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o),
-        w.scrollTo(0, d.body.scrollHeight)
-      }, 2500)),
-      o(notify, 'fEC').innerText = `Added the ${txt.length} extra class${txt.length==1?'':'es'} in the input field above to the number of found selectors.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
+      txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
+      cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
+        out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
+      },
+      out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0], this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
+      !len&&setTimeout(_=>cb(len), 500)
 
-    t.count=0,
+    t.least=t.count=0,
     t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
       fetched_css=t.fetched_css||=fetched_css;
       if(_o) {
         all=this.inlineStyles.concat(t.fetched_css.filter(e=>e)), css=this.assets.css,
         /*increment count to jump over the absent css assets when matching used classnames*/
-        fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0">':''}<span class="relative">${css[i]}</span></div>`}),
-        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200"><span class="relative">${e}</span></div>`),
+        fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(t.least=++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0 -left-2 -right-2">':''}<span class="relative">${css[i]}</span></div>`}),
+        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200 -left-2 -right-2"><span class="relative">${e}</span></div>`),
 
         o(ctx=o(notify, 'nES').querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96')
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96'),
+        t.all=this.styles.length
       }
-      t.reset=ctx=>{
+      t.reset=(ctx, cls)=>{
         trimCSS.reset(), forEach(writeCSS.children, e=>e.firstElementChild.textContent=''),
-        o(ctx=nES.children[t.count-1], 'cL').remove('bg-yellow-200')
+        forEach(ctx=nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e, 'cL').remove(cls))
       },
-      console.log('::COUNT::', t.count),
-      t.begin=(n, ctx)=>{
-        o(ctx=nES.children[n=t.count++], 'cL').add('bg-yellow-200'), trimCSS(page.classes, /*progress*/function(i, tot, frameId, ratio){
-          ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+ratio+'%')
-        }, /*done*/function(index, used, frameId){
-          console.log('::DONE::', both.byteFormat(used.length))
+      t.begin=(trigger, n, ctx, outs, format)=>{
+	t.count===t.all&&(t.count=t.least), outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')),
+        o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
+	console.log('::T.COUNT::', n, t.count),
+        format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
+        trimCSS(page.styles, page.classes, /*progress*/function(arr, i, tot, frameId, ratio, frmt){
+	  trigger.disabled=true, outs.forEach((e, i)=>{
+            e.innerText = arr[i], setTimeout(_=>e.scrollTop = e.scrollHeight, 2000)
+          }), ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
+        }, /*done*/function(i, tot, arr, frameId, not_reset, ratio) {
+	  ratio=100*i/tot, clearTimeout(page.done.interval),
+          trigger.removeAttribute('disabled'), o(trigger, 'lC').data='continue',
+          outs.forEach((e, i)=>e.innerText = arr[i])
         }, n)
       }
     };
@@ -187,7 +195,7 @@ page={
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
             bool=i===arr.length-1,
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=ev=>done(ev.target.response, i===arr.length-1, i)
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, i===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
           assets.icon&&(o(title, 'pES').src=this.domain+assets.icon);

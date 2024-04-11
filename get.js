@@ -43,11 +43,11 @@ let fs=require('fs');
 function getAssets(buf, hasTextMime='', loop) {
   loop=both.loop, buf=buf.trim();
   for(let i=0; i<15; hasTextMime+=buf.charAt(i++));
-  // fs.writeFile('./dump.html', buf, _=>console.log('::DUMPED::'));
+  fs.writeFile('./dump.html', buf, _=>console.log('::DUMPED::'));
 
   if(hasTextMime.match(/<\!DOCTYPE\s*HTML/ig)) {
     error='';
-    for(let title, attrs, strip=str=>/^(http|www)/.test(str)?str:str.replace(/[^\/]*\//, ''), tags=['style', 'script', 'link'], cTags=['lin', 'sty', 'scr'], if_tag, canAdd, check, checkElse, i=0, j, ast, ext, tEnd=i=>loop(buf, {from:i, cb:(s,f)=>s[f-1]==='>'}), len=buf.length, tag, sort=['js', 'css'], each;
+    for(let title, attrs, strip=str=>str.replace(/^\.*\//, ''), tags=['style', 'script', 'link'], cTags=['lin', 'sty', 'scr'], if_tag, canAdd, check, checkElse, i=0, j, ast, ext, tEnd=i=>loop(buf, {from:i, cb:(s,f)=>s[f-1]==='>'}), len=buf.length, tag, sort=['js', 'css'], each;
     checkElse=if_tag=>(if_tag=if_tag[0]).charAt(0)==='/'&&cTags.find(e=>if_tag.slice(1)===e)&&(j=tEnd(i)[1]||0, canAdd=false), check=i=>tags.find(e=>(if_tag=loop(buf, {from:i+1, to:e.length}))[0]===e),
     j=ast=0, i<len;) {
       

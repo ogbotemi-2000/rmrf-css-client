@@ -1,1 +1,7 @@
-stroked-light-border
+font-bookweb
+\[\&\>\*\]\:rounded-full
+ripple
+\[\&\>\*\]\:align-middle
+\[\&\>\*\]\:p-2
+tooltip
+to-fro

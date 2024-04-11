@@ -2,13 +2,11 @@ inline-block
 border-b
 border-current
 align-bottom
-ripple
 p-1
 relative
 pb-0
 font-semibold
 mb-2
-\[\&\>\*\]\:p-2
 rounded-l-lg
 border-2
 border-r-2
@@ -30,7 +28,6 @@ px-3
 ml-2
 fa
 fa-external-link-alt
-font-bookweb
 ${bool?
 transform
 bg-green-200
@@ -49,7 +46,6 @@ mr-3
 my-2
 text-black
 text-xs
-to-fro
 bg-blue-200
 ${e\.length\>40?
 mx-2
@@ -62,7 +58,6 @@ m-auto
 sm\:w-5\/6
 bg-white
 text-left
-tooltip
 no-hover
 no-focus-within
 no-focus
@@ -95,6 +90,5 @@ left-0
 text-gray-700
 ml-1
 mb-1
-\[\&\>\*\]\:align-middle
-\[\&\>\*\]\:rounded-full
 mb-1\.5
+stroked-light-border
