@@ -504,12 +504,13 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
  } @media (min-width: 1024px)  {
 
+/* for basefex: (。_。)
 	 section.prots article > main > section iframe  {
 
 	 height: 85%;
 
 }
-
+*/
  .tooltip.lg\:show  {
 
 	 visibility: visible;

@@ -83,28 +83,34 @@ page={
       /*passing true to t.go beside makes an asynchronous request*/t.go(true)
     }, 2500/*200*/)
   },
-  done: function(txt, o, btn, t, _o, from, out, len, cb) {
+  done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
     t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
-    if(_o=o) txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
-      o(btn,['pN', 'nES']).setAttribute('disabled', ''), o(btn, ['pN', 'nES']).blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
+    if(_o=o) (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
+      strs.setAttribute('disabled', ''), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
-      cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
+      cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
         out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
       },
-      out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0], this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
+      out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
       !len&&setTimeout(_=>cb(len), 500)
 
-    t.least=t.count=0,
+    t.least=t.count=0, t.files=[],
+    t.download=(index, blob, name, names, ext)=>{
+	names=['matched', 'unmatched', 'used', 'unused'], ext=index>1?'txt':'css',
+        name = (name=page.assets.css[t.count])?name.split('/').pop().replace('.css', ''):'file',
+	name+='--'+names[index]+'.'+ext, blob = new Blob([t.files[index]], {type:`text/${ext}`}),
+	save(blob, name, !index)
+    },
     t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
-      fetched_css=t.fetched_css||=fetched_css;
+      fetched_css=t.fetched_css||=fetched_css||[];
       if(_o) {
         all=this.inlineStyles.concat(t.fetched_css.filter(e=>e)), css=this.assets.css,
         /*increment count to jump over the absent css assets when matching used classnames*/
-        fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(t.least=++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0 -left-2 -right-2">':''}<span class="relative">${css[i]}</span></div>`}),
-        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200 -left-2 -right-2"><span class="relative">${e}</span></div>`),
+        fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(t.least=++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-bg-opacity:0.7; --tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0 -left-2 -right-2">':''}<span class="relative">${css[i]}</span></div>`}),
+        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-bg-opacity:0.7; --tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200 -left-2 -right-2"><span class="relative">${e}</span></div>`),
 
-        o(ctx=o(notify, 'nES').querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
+        o(ctx=o(notify, ['pN', 'nES']).querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
         this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96'),
@@ -112,26 +118,28 @@ page={
       }
       t.reset=(ctx, cls)=>{
         trimCSS.reset(), forEach(writeCSS.children, e=>e.firstElementChild.textContent=''),
-        forEach(ctx=nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e, 'cL').remove(cls))
+	 forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
-	t.count===t.all&&(t.count=t.least), outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')),
-        o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
-	console.log('::T.COUNT::', n, t.count),
+	t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
+	t.count===t.all&&(t.count=t.least),
+	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
-        trimCSS(page.styles, page.classes, /*progress*/function(arr, i, tot, frameId, ratio, frmt){
-	  trigger.disabled=true, outs.forEach((e, i)=>{
+        trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
+	  t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
             e.innerText = arr[i], setTimeout(_=>e.scrollTop = e.scrollHeight, 2000)
-          }), ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
-        }, /*done*/function(i, tot, arr, frameId, not_reset, ratio) {
-	  ratio=100*i/tot, clearTimeout(page.done.interval),
-          trigger.removeAttribute('disabled'), o(trigger, 'lC').data='continue',
-          outs.forEach((e, i)=>e.innerText = arr[i])
+          }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
+	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
+        }, /*done*/function(i, tot, arr, classes, thresheld, not_reset, ratio) {
+     	  if(!not_reset) clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
+	    o(trigger, ['nES','cL']).replace('show', 'absolute'), o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
+	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
+	    classes.forEach((e, i)=>t.files[i+2]=e);
+          o(outs[0], 'nES').textContent = `used styles of size ${both.byteFormat(arr[0].length)} out of ${both.byteFormat(tot)}`
         }, n)
       }
     };
       
-
     /*the returned value is used to call the desired method defined on this function*/
     return t;
   },
@@ -147,7 +155,7 @@ page={
     } else {
       out.textContent = 'No new attributes were provided, continuing with an alternative of finding strings in the document\'s scripts instead'
     }
-    (ctx=o(o(notify, 'pN').querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
+    (ctx=o(o(notify, {2:'pN'}).querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
   },
   
   get: function(url, t, xhr=new XMLHttpRequest, endp='http://localhost', prot='', root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
@@ -170,7 +178,7 @@ page={
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
 
-        aside=o(notify, 'pN').querySelector('aside'),
+        aside=o(notify, {2:'pN'}).querySelector('aside'),
         (json=res.charAt(0)==='{')&&(this.assets = assets = JSON.parse(split?split[0]:res), split&&(page.html=split[1]));
         if(!assets.error) {
           /*the if below handles response for the second request*/
@@ -195,7 +203,7 @@ page={
             :`No inline ${prop+(len?'s':'')} detected`
           }), 800)
         } else {
-          let sort=[], css=assets.css, title, css_out=o(notify, 'nES').querySelector('section'), fetched_css=[],
+          let sort=[], css=assets.css, title, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
           done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&(this.assets.css=sort, this.done().prepare(o, fetched_css))};
 
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
@@ -205,7 +213,7 @@ page={
             xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, i===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
-          assets.icon&&(o(title, 'pES').src=this.domain+assets.icon);
+          assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
           let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
           [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
             /*min text length for the given font size and font is 40 on IPhone SE*/
@@ -307,8 +315,8 @@ page={
 <div class="mb-3 -mt-1 p-2 pt-3 tooltip no-hover no-focus -slide-y no-focus-within border-r-0 border-t-0 border border-current rounded-bl-xl"></div>
 </aside>
 <aside class="mt-5 bg-inherit w-full sm:w-5/6 md:w-2/3 lg:w-1/3 m-2 absolute align-bottom inline-block rounded-lg tooltip no-hover no-focus slide-y p-4 mt-3 sm:mr-5 left-0 text-gray-800"><div class="rounded-inherit inset-0.5 bg-white absolute"></div><div class="border-gray-500 rounded-tl-xl p-10 border-l border-t absolute top-0 left-0 -m-1"></div><div class="border-gray-500 rounded-br-xl p-10 border-r border-b absolute bottom-0 right-0 -m-1"></div><span class="relative">•</span><h4 class="relative inline-block ml-1 mb-1 text-gray-700 space-y-1.5">Found external scripts</h4><div class="relative [&>*]:inline-block [&>*]:rounded-full space-y-1.5"></div><span class="relative">•</span><p class="mb-1.5 ml-1 mt-3 inline-block relative">[ 2 ] Inline scripts present</p><div class="absolute tooltip no-hover no-focus relative -slide-y"></div></aside>
-<aside class="bg-inherit left-0 ml-0.5 absolute tooltip no-hover no-focus-within no-focus slide-y inline-block my-3">
-    <h4 class="text-gray-700 inline-block mr-3">CSS classes matched in scripts (filtered)</h4>
+<aside class="w-full bg-inherit left-0 ml-0.5 absolute tooltip no-hover no-focus-within no-focus slide-y inline-block my-3">
+    <h4 class="text-gray-700 inline-block mr-3">Likely CSS classes matched in scripts (filtered)</h4>
     <!--fancy button -->
     <div class="relative inline-block rounded align-middle"><div class="rounded-lg pointer-events-none decorate inset-0 absolute overflow-hidden"><div style="--tw-bg-opacity: 0.7" class="duration-500 origin-bottom-right -right-6 top-3/4 p-4 bg-blue-200 shadow rounded-full transform-gpu scale-150 absolute"></div><div style="--tw-bg-opacity: 0.6" class="duration-500 origin-top-left -left-6 bottom-3/4 p-4 bg-blue-300 shadow rounded-full transform-gpu scale-150 absolute"></div></div>
     <button class="px-6 relative ripple text-xs sm:text-sm p-2" onclick="let o=objWalk; page.done(o(this, ['pN', 'nES', 'tC']), o, this)">done ?</button></div>
@@ -317,9 +325,10 @@ page={
     onkeyup="let o=objWalk; (event.key==='Enter'||event.keyCode===13)&&page.done(this.textContent=this.textContent.replace(/\n/, ''), o, o(this, ['pES','lEC']))">font-semibold • mb-2 • inline-block</div>
 </aside>
 <br>
-<div class="w-full inline-block word-break  bg-inherit relative mr-8" id="notify"><i>Press enter to continue. Add spaces between the custom attributes you provide above</i>
+<div class='w-full mr-8'>
+<div class="inline-block word-break text-left bg-inherit relative" id="notify"><i>Press enter to continue. Add spaces between the custom attributes you provide above</i>
 <hr class="border-2 mt-1 to-fro border-0 border-blue-300 w-full relative"></div>
-
+</div>
 <!-- MAIN | START -->
 <main class="w-full left-0 absolute mt-4 tooltip no-hover no-focus -slide-y">
     <h3 class="mt-4">Fetching linked stylesheets (<N>)</h3>
@@ -328,8 +337,8 @@ page={
 </section>
 
 <section class="tooltip absolute no-hover no-focus left-0 slide-y text-base pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block"></section>
-<button onclick="let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='c'&&ctx.count++, ctx.begin(this), ctx.interval=setTimeout(_=>o(this,['nES','cL']).replace('absolute', 'show'), 3000)" id=begin class="mr-3 ripple relative bg-yellow-500 rounded-lg px-3 p-2"><i class="mr-1.5 fa fa-play"></i> start</button>
-<div class="my-3 [&>*]:inline-block [&>*]:align-middle px-3 [&>*]:relative border-l-2 border-gray-300 inline-block align-middle left-0 tooltip slide-y absolute no-hover no-focus">
+<button onclick="let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='d'&&ctx.count++, ctx.begin(this)" class="mr-3 ripple relative bg-yellow-500 rounded-lg px-3 p-2"><i class="mr-1.5 fa fa-play"></i> start</button>
+<div class="my-3 [&>*]:inline-block [&>*]:align-middle px-3 [&>*]:relative border-l-2 border-gray-300 inline-block align-middle left-0 tooltip slide-y absolute no-hover no-focus no-focus-within">
   Slow? 
   <div class="[&>*]:inline-block [&>*]:relative [&>*]:rounded-full" onclick="let e=event.target, ctx=page.done; e.tagName==='BUTTON'&&(e=e.parentNode), e.textContent.match('previous')?(ctx.count===ctx.least?ctx.count=ctx.all-1:--ctx.count):++ctx.count, ctx.reset(), ctx.begin(objWalk(this, ['pN', 'pES']))">
     <div class="pl-1">
@@ -349,19 +358,23 @@ page={
     <input  min="0" class="placeholder-gray-600 border-l-2 rounded-bl-lg w-24 border-gray-400 border-b-2 p-4 bg-transparent text-center mr-3.5" type="number" placeholder="<N>x" oninput="trimCSS.boost=+this.value|0">
     <div>
       <button class="ripple relative sm:mt-1 border-l-2 border-r-2 border-gray-400 p-2.5 hover:bg-gray-100 focus:bg-gray-300"><i class="pointer-events-none mr-2 fa fa-fast-forward"></i>Ultra fast</button>
-      <div class="bg-white shadow text-xs p-1.5 whitespace-pre absolute tooltip to-bottom show" style="--arrow-size:6px;">hangs UI for &gt;=~600ms</div>
+      <div class="bg-white shadow text-xs p-1.5 whitespace-pre absolute tooltip to-bottom show" style="--arrow-size:6px;">in passive development</div>
     </div>
   </div>
 </div>
-
-  <section id=writeCSS class="w-full mt-12 [&>*]:text-left text-center [&>*]:relative absolute left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
+<!-- download -->
+<div onclick="let t=event.target, btns=this.querySelectorAll('button'), which; find(btns, (e, i)=>e===t&&(which=i)+1)&&page.done.download(which)" id='downloadCSS' class="[&>*]:align-bottom mt-4 absolute tooltip no-hover no-focus -slide-y [&>*]:relative"><span class='inline-block -ml-1 pb-2'>Or download</span>
+  <button class="ripple ml-4 rounded-br border-gray-500 p-3 px-4 border-2 border-l-0 border-t-0">used styles</button><button class="ripple mb-1 -mx-px rounded-t border-2 border-gray-500 p-3 px-4 border-b-0">unused styles</button>
+  <button class="mt-1 -ml-1 ripple rounded-b border-gray-500 p-3 px-4 border-2 border-t-0">used CSS classes</button><button class="ripple mb-1 -ml-1 rounded-tl border-2 border-gray-500 p-3 px-4 border-r-0 border-b-0">unused classes</button>
+</div>
+  <section id=writeCSS class="w-full mt-20 [&>*]:text-left text-center [&>*]:relative absolute left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide mb-10 sm:mb-0" style="max-width:100%;">
-      <div class="font-mono overflow-y-scroll word-break" style="overflow-anchor: none; max-height: 20rem;"></div>
-      <pre class="p-1 border-r border-b rounded-br-lg bordrer-current absolute right-0 -top-8" style="overflow-anchor: auto;">used CSS styles</pre>
+      <div class="font-mono overflow-y-scroll pt-4 word-break" style="overflow-anchor: none; max-height: 20rem;"></div>
+      <pre class="p-1 border-r border-b rounded-br-lg border-gray-400 absolute right-0 -top-7" style="overflow-anchor: auto;">used CSS styles</pre>
     </div>
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide" style="max-width:100%;">
-      <div class="font-mono overflow-y-scroll word-break" style="max-height: 20rem; overflow-anchor: none;"></div>
-      <pre class="absolute left-0 p-1 border-l border-b rounded-bl-lg bordrer-current -top-8" style="overflow-anchor: auto;">unused CSS styles</pre>  
+      <div class="pt-4 font-mono overflow-y-scroll word-break" style="max-height: 20rem; overflow-anchor: none;"></div>
+      <pre class="absolute left-0 p-1 border-l border-b rounded-bl-lg border-gray-400 -top-7" style="overflow-anchor: auto;">unused CSS styles</pre>
     </div>
   </section>
 </main>

@@ -1,7 +1,7 @@
 /*remove in production
 save(new Blob(['<!DOCTYPE HTML>'+html.outerHTML], { type: 'text/html' }), location.pathname.split('/').pop())
 */
-function save(blob, name) {
+function save(blob, name, flag) {
     name = name || 'download';
 
     // Use native saveAs in IE10+
@@ -25,7 +25,7 @@ function save(blob, name) {
     // Use a.download in HTML5
     var a = document.createElementNS('http://www.w3.org/1999/xhtml', 'a');
     if ('download'in a) {
-        alert('will download using HTML5 a.download');
+        flag&&alert('Starting prompted download of auto-generated assets from '+window.location.href);
         a.href = url;
         a.download = name;
         a.dispatchEvent(new MouseEvent('click'));
