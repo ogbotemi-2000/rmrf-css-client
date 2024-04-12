@@ -1,11 +1,31 @@
 
+let script = d.createElement('script');
+  script.src="../js/email.min.js", script.id='loadEmail',
+  window.emailjs?(emailjs.init("mP1S96NaJfOO3FpUR"), emailjsInited=false):(emailjsInited=true, d.head.append(script));
+
 _____
 
 window.onerror = function(e) {
   alert('::ERROR:: '+ e)
-},        
-'unused-css',
+},
 page={
+  retry:function(t,o){
+    page.done.reset()/*call defined functions before reset*/,
+    qs('[contenteditable]').contentEditable=true,
+    o=objWalk, t=this.template, page = {};
+    for(let i in t) page[i] = t[i];
+    page.template=t,
+    qsa('section>section .tooltip.show').forEach((e, cls, flag)=>{
+      (cls=e.classList).contains('absolute')?cls.remove('show'):cls.replace('show', 'absolute'),
+      cls.remove('sm:h-96', 'from-yellow-300')
+    }), qsa('section>section').forEach(e=>e.classList.toggle('show')),
+    o(notify, 'fEC').className='', o(retry, 'cL').remove('show'),
+    trigger.lastChild.data='start', qsa('[disabled]').forEach(e=>e.removeAttribute('disabled'))
+  },
+  clone:function(){
+    if(!this.template) for(let prop in this) (this.template||={})[prop]=this[prop];
+    Object.freeze(this.template)
+  },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
   endIp:  function() {return this.mobile()?'http://192.168.1.108':'http://localhost'},
   uA: navigator.userAgent,
@@ -77,10 +97,10 @@ page={
     }, 2500/*200*/)
   },
   done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
-    t=this.done;
+    writeCSS.children[0].querySelector('pre').textContent='used CSS styles', trigger.removeAttribute('disabled'), t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
     if(_o=o) (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
-      strs.setAttribute('disabled', ''), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
+      ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
       cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
         out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
@@ -106,25 +126,26 @@ page={
         o(ctx=o(notify, ['pN', 'nES']).querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96'),
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-96'),
         t.all=this.styles.length
       }
       t.reset=(ctx, cls)=>{
-        trimCSS.reset(), forEach(writeCSS.children, e=>e.firstElementChild.textContent=''),
-	 forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
+        trimCSS.reset(), /*add a little delay for when progress below is called after done*/
+	setTimeout(_=>forEach(writeCSS.children, e=>e.firstElementChild.textContent=''), 60),
+	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
 	t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
-	t.count===t.all&&(t.count=t.least),
+	t.count===t.all&&(t.count=t.least), 
 	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
         trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
-	  t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
+	  o(retry, 'cL').remove('show'), t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
             e.innerText = arr[i], setTimeout(_=>e.scrollTop = e.scrollHeight, 2000)
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
 	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
-        }, /*done*/function(i, tot, arr, classes, thresheld, not_reset, ratio) {
-     	  if(!not_reset) clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
+        }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
+     	  if(!reset) o(retry, 'cL').add('show'), clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
 	    o(trigger, ['nES','cL']).replace('show', 'absolute'), o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
 	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
 	    classes.forEach((e, i)=>t.files[i+2]=e);
@@ -180,7 +201,10 @@ page={
           rgxes=[/script/g, /style/g], p=aside.querySelector('p'), inline=o(p, 'nES');
 
           classes.length?(page.classes=classes, this.detectAttrs(classes, false, o), o(qs('.__class__'), 'cL').replace('absolute', 'show'))
-          : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2') /*page.retry()*/),
+          : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2'),
+	    ['show', 'absolute'].forEach(e=>o(retry, 'cL').toggle(e))),
+	  /*clear all HTML showing details of inline assets*/		
+	  asides.forEach(aside=>o(aside.querySelector('p'), 'nES').innerHTML=''),
           split[1].split(splits[1]).forEach((e, i, a)=>{
             [/^script/, /^style/].forEach((rgx, _i, ast)=>{
               ast = rgx.toString().replace(/\^|\//g, '')
@@ -196,16 +220,16 @@ page={
             :`No inline ${prop+(len?'s':'')} detected`
           }), 800)
         } else {
-          let sort=[], css=assets.css, title, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
-          done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&(this.assets.css=sort, this.done().prepare(o, fetched_css))};
+          let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
+          done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'),
+	   bool&&(css_out.innerHTML=``, setTimeout(_=>o(css_out, 'cL').replace('show', 'absolute'), 60), this.assets.css=sort, this.done().prepare(o, fetched_css))};
 
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
-            bool=i===arr.length-1,
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, i===arr.length-1, i)}
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
-          (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
+          (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
           let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
           [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
@@ -219,10 +243,13 @@ page={
           setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__'), setTimeout(_=>{xhr.send()})})
         };
         /*reset notify.classList*/
-      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full');
+      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'),
+	o(retry, 'cL').add('show');
     }
   }
 }
+/*make a clone of page early on to make retries easier*/
+page.clone()
         
 _____
 .stroked-light-border {/*--border-gradient-angle is specified from 0turn to 1turn in a keyframe, --runtime is for the colour of the stroke-light*/
@@ -295,9 +322,12 @@ _____
             }
 _____
 
+!emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");
+
 window.addEventListener('DOMContentLoaded', _=>{
   animations.addRippleAnimations()
 })
+
 _____
 
   /* got this one baby, it should detect three inline styles as

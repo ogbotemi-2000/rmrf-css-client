@@ -2,17 +2,40 @@
         <title>Open source software for external stylesheet trimming and comparison</title><meta charset="utf-8"><meta name="theme-color" content="#ff056"><meta name="color-scheme" content="light"><meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/tailwind.min.css">
         <link rel="stylesheet" href="css/all.css"><link rel="stylesheet" href="css/page.css">
+	<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
         <script src="both.js"></script>
         <script src="trim-css-client.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
         <link rel="shortcut icon" href="favicon.ico">
-        <script></script><script>
+
+<script>
+let script = d.createElement('script');
+  script.src="../js/email.min.js", script.id='loadEmail',
+  window.emailjs?(emailjs.init("mP1S96NaJfOO3FpUR"), emailjsInited=false):(emailjsInited=true, d.head.append(script));
+</script>
+
+<script>
 window.onerror = function(e) {
   alert('::ERROR:: '+ e)
-},        
-'unused-css',
+},
 page={
+  retry:function(t,o){
+    page.done.reset()/*call defined functions before reset*/,
+    qs('[contenteditable]').contentEditable=true,
+    o=objWalk, t=this.template, page = {};
+    for(let i in t) page[i] = t[i];
+    page.template=t,
+    qsa('section>section .tooltip.show').forEach((e, cls, flag)=>{
+      (cls=e.classList).contains('absolute')?cls.remove('show'):cls.replace('show', 'absolute'),
+      cls.remove('sm:h-96', 'from-yellow-300')
+    }), qsa('section>section').forEach(e=>e.classList.toggle('show')),
+    o(notify, 'fEC').className='', o(retry, 'cL').remove('show'),
+    trigger.lastChild.data='start', qsa('[disabled]').forEach(e=>e.removeAttribute('disabled'))
+  },
+  clone:function(){
+    if(!this.template) for(let prop in this) (this.template||={})[prop]=this[prop];
+    Object.freeze(this.template)
+  },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
   endIp:  function() {return this.mobile()?'http://192.168.1.108':'http://localhost'},
   uA: navigator.userAgent,
@@ -84,10 +107,10 @@ page={
     }, 2500/*200*/)
   },
   done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
-    t=this.done;
+    writeCSS.children[0].querySelector('pre').textContent='used CSS styles', trigger.removeAttribute('disabled'), t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
     if(_o=o) (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
-      strs.setAttribute('disabled', ''), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
+      ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
       cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
         out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
@@ -113,25 +136,26 @@ page={
         o(ctx=o(notify, ['pN', 'nES']).querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('h-96'),
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-96'),
         t.all=this.styles.length
       }
       t.reset=(ctx, cls)=>{
-        trimCSS.reset(), forEach(writeCSS.children, e=>e.firstElementChild.textContent=''),
-	 forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
+        trimCSS.reset(), /*add a little delay for when progress below is called after done*/
+	setTimeout(_=>forEach(writeCSS.children, e=>e.firstElementChild.textContent=''), 60),
+	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
 	t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
-	t.count===t.all&&(t.count=t.least),
+	t.count===t.all&&(t.count=t.least), 
 	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
         trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
-	  t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
+	  o(retry, 'cL').remove('show'), t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
             e.innerText = arr[i], setTimeout(_=>e.scrollTop = e.scrollHeight, 2000)
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
 	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
-        }, /*done*/function(i, tot, arr, classes, thresheld, not_reset, ratio) {
-     	  if(!not_reset) clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
+        }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
+     	  if(!reset) o(retry, 'cL').add('show'), clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
 	    o(trigger, ['nES','cL']).replace('show', 'absolute'), o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
 	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
 	    classes.forEach((e, i)=>t.files[i+2]=e);
@@ -187,7 +211,10 @@ page={
           rgxes=[/script/g, /style/g], p=aside.querySelector('p'), inline=o(p, 'nES');
 
           classes.length?(page.classes=classes, this.detectAttrs(classes, false, o), o(qs('.__class__'), 'cL').replace('absolute', 'show'))
-          : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2') /*page.retry()*/),
+          : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2'),
+	    ['show', 'absolute'].forEach(e=>o(retry, 'cL').toggle(e))),
+	  /*clear all HTML showing details of inline assets*/		
+	  asides.forEach(aside=>o(aside.querySelector('p'), 'nES').innerHTML=''),
           split[1].split(splits[1]).forEach((e, i, a)=>{
             [/^script/, /^style/].forEach((rgx, _i, ast)=>{
               ast = rgx.toString().replace(/\^|\//g, '')
@@ -203,16 +230,16 @@ page={
             :`No inline ${prop+(len?'s':'')} detected`
           }), 800)
         } else {
-          let sort=[], css=assets.css, title, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
-          done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'), bool&&(this.assets.css=sort, this.done().prepare(o, fetched_css))};
+          let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
+          done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'),
+	   bool&&(css_out.innerHTML=``, setTimeout(_=>o(css_out, 'cL').replace('show', 'absolute'), 60), this.assets.css=sort, this.done().prepare(o, fetched_css))};
 
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
-            bool=i===arr.length-1,
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, i===arr.length-1, i)}
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
-          (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title, console.log('FAVICON', this.domain, assets.icon),
+          (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
           let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
           [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
@@ -226,10 +253,13 @@ page={
           setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__'), setTimeout(_=>{xhr.send()})})
         };
         /*reset notify.classList*/
-      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full');
+      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'),
+	o(retry, 'cL').add('show');
     }
   }
 }
+/*make a clone of page early on to make retries easier*/
+page.clone()
         </script>
         <style>.stroked-light-border {/*--border-gradient-angle is specified from 0turn to 1turn in a keyframe, --runtime is for the colour of the stroke-light*/
             --runtime: #e07c17;
@@ -300,10 +330,95 @@ page={
             }</style>
     </head>
     <body>
-        <section class="mb-10 pt-14 relative text-center px-10">
+	<div class="border-b shadow-sm py-3 text-sm no-hover no-focus no-focus-within fixed tooltip -slide-y w-full text-center bg-white" id="retry">
+	  • Success or error? Try another HTML resource [again]
+	  <button class="ripple relative ml-3 rounded rounded-tr-xl p-3 ripple bg-blue-100" onclick="page.retry()">Another?</button>
+	</div>
+	<nav style=='--tw-bg-opacity:0.5;' class='backdrop-blur backdrop-filter z-1 [&>*]:relative lg:right-1/4 lg:left-1/4 sm:right-24 sm:left-24 left-0 right-0 [&>*]:p-2 rounded-t-3xl [&>*]:align-middle flex justify-around [&>*]:inline-block bottom-0 fixed p-3 border border-b-0 border-gray-500'>
+	  <a class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>roadmap</a>
+          <div>
+	    <button class='relative ripple' href='javascript:void(0)'><i class='m-2 inline-block align-middle text-2xl fa fa-signal text-gray-700'></i>want to scale?</button>
+	    <section style='--arrow-size:10px;' class="h-68 absolute tooltip slide-y to-top border border-gray-500 bg-white rounded-xl p-4 text-xs md:text-sm sm:flex sm:justify-around sm:items-center sm:space-x-6">
+		<h5 class="p-2 bg-inherit text-sm left-0 w-full mb-1 text-base absolute bottom-full">𝕊𝕖𝕟𝕕 𝕞𝕖 𝕒 𝕤𝕡𝕒𝕞-𝕗𝕣𝕖𝕖 𝕖𝕞𝕒𝕚𝕝, 𝕡𝕝𝕖𝕒𝕤𝕖</h5>
+	<strong class="text-center">Contact me</strong>
+	<form onsubmit="return false;" style="--focus-within-no-focus-transition: opacity 0.5s ease, transform 0.3s 0.05s ease-out, visibility 0s 0.12s; margin: auto;" class="send-email absolute no-focus-within flex flex-col bottom-2 border-2 bg-white p-1.5 top-10 right-0 sm:right-2 left-0 sm:left-24 sm:top-2 sm:bottom-4 tooltip no-hover no-focus slide rounded-inherit">
+		<div class="w-full space-x-2 items-center justify-between flex sm:flex-col sm:items-start sm:space-x-0">
+			<button class="ripple text-center font-fredoka relative flex justify-center p-1 px-2 bg-gray-100 rounded-full hover:bg-gray-300 focus:border-gray-600 border-4 duration-200" onclick="requestAnimationFrame(_=>this.trigger.focus()), this.trigger.mail.classList.remove('show')" type="button">X</button>
+			<fieldset class="w-full">
+				<label class="flex items-center justify-around space-x-2">
+					<p class="whitespace-pre">From:     </p>
+					<input required="" type="email" class="inputField w-full rounded-br-md border-b border-r border-current p-1 flex-1 text-black bg-white" placeholder="please enter your email address here">
+				</label>
+				<label class="flex items-center space-x-2 justify-start">
+					<p class="whitespace-pre">Name:    </p>
+					<input required="" placeholder="please enter your name here" class="inputField flex-1 w-full rounded-tr-md border-t border-r border-current p-1 text-black bg-white">
+				</label>
+			</fieldset>
+		</div>
+		<textarea required="" class="inputField h-full p-2 resize-none w-full border-b border-r border-current rounded-br-md text-black bg-white" placeholder="enter your message here"></textarea>
+		<button class="rounded-tr-lg flex items-center rounded-tl-lg p-1 ripple border-b-0 border-t-2 border-l-2 border-r-2  -right-0.5 absolute top bottom-full bg-white text-black" type="button" onclick="let cls = this.firstElementChild.classList, method=(this.cLs||=(this.pNode||=objWalk(this, {3:'parentNode'})).classList).contains('h-1/2')?(this.firstChild.data='expand', 'remove'):(this.firstChild.data='collapse', 'add'); cls[method]('fa-chevron-right'), ['h-1/2'].forEach(e=>this.cLs[method](e))">expand<i class="pointer-events-none fa bg-gray-100 p-2 ml-1 rounded-lg hover:bg-white fa-chevron-left"></i></button>
+		<button type="submit" class="sm:pb-2 sm:absolute top-0 sm:right-2 sm:w-1/4 ripple relative ripple mt-1 float-left bg-blue-100 text-blue-700 p-2 pb-6 rounded">
+			<hr class="-translate-x-full top-0 border-0 bg-blue-300 absolute bottom-0 right-2 -mx-2 left-2 h-full w-full transform-gpu" style="--tw-translate-x: -100%;">
+			<p class="pointer-events-none relative">send</p>
+		</button>
+	</form>
+	<main class="relative space-y-2 flex-col flex mt-3">
+		<p style="text-decoration: unset;" class="sm:text-left text-center">click on the link below to send an e-mail through your default app</p>
+		<a href="mailto:ogungbamilaogbotemi@gmail.com" class="ripple rounded-md text-blue-600 p-2 border-blue-100 bg-blue-50 border-2" style="text-decoration: unset;" data-ripple-scale="2">ogungbamilaogbotemi@gmail.com</a>
+	</main>
+	<div class="sm:h-28 sm:w-0.5 my-4 bulge-center h-px flex items-center justify-center">
+		<span class="text-xs bg-white p-2">or</span>
+	</div>
+	<aside class="sm:w-full space-y-2 p-4">
+		<p>write a message and send it as an e-mail to me through this site</p><button id="compose" class="font-sans ripple text-xs rounded-lg border-2 border-gray-500 p-2 text-right relative hover:bg-gray-200 focus:border-gray-600 text-current" onclick="(_=>{
+			/*handles sending to mail*/
+			(this.send||=objWalk(((this.close||=objWalk(this.mail||=
+				objWalk(this.parentNode, {3:'previousElementSibling'}),
+				{2: 'firstElementChild'})).trigger||=this).close, {2:'parentNode'}).lastElementChild).onclick = function() {
+					this.states ||=['failed', 'send', 'send...', 'stopped', 'sent'],
+					(w.cancelAnimationFrame||clearInterval)(this.interval), this.loader ||= this.firstElementChild.style,
+					
+					this.incr ||=0.6, this.p ||=this.querySelector('p'),
+					_ = slice(compose.inputFields).filter(e=>e.value);
+
+				if(_.length === compose.inputFields.length&amp;&amp;navigator.onLine) {
+				this.interval = (w.requestAnimationFrame||setInterval)(this.cb||=_=>{
+					this.setAttribute('disabled', true);
+					if (_=w.requestAnimationFrame) {this.interval = _(this.cb)}
+		
+					this.added = +this.loader.getPropertyValue('--tw-translate-x').replace('%', '')+this.incr,
+					this.loader.setProperty('--tw-translate-x', this.added+'%'),
+		
+					this.p.textContent = this.states[2],
+					(this.added|0)>=100&amp;&amp;(this.loader.setProperty('--tw-translate-x', '-100%'), this.incr = 0.6,
+					(w.cancelAnimationFrame||clearInterval)(this.interval), this.p.textContent=this.states[4], setTimeout(_=>{this.removeAttribute('disabled'), this.p.textContent = this.states[1],slice(compose.inputFields).forEach(e=>e.value='')}, 1250))
+				}, 1000/60),
+					emailjs.send('service_l1828ej', 'template_flkqzgn', {
+						sender_name:compose.inputFields[1].value,
+						message: compose.inputFields[2].value,
+						reply_to: compose.inputFields[0].value,
+						sender_email: compose.inputFields[0].value
+						}).then(response=> {
+						this.incr = 100;
+						}, function(error) {
+						console.log('FAILED...', error);
+						})
+				}
+			},
+			this.inputFields ||= compose.mail.getElementsByClassName('inputField')
+			setTimeout(_=>this.close.focus(), 200),
+			this.mail.classList.add('show')  
+		})(1)">compose</button>
+		
+	</aside>
+</section>
+	  </div>
+	  <a class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-money-check-alt text-gray-700'></i>support</a>
+	</nav>
+        <section class="mb-20 pt-20 relative text-center px-10">
           <!--overflow-hidden class on section below showed only the elements in .__class__ -  had to remove it-->
           <section class="[&>*]:inline-block text-center [&>*]:text-left m-auto md:w-full lg:w-5/6 sm:w-5/6 bg-white text-left tooltip no-hover no-focus-within no-focus slide-y text-sm">
-            <button style='display:none;' class="hidden absolute right-1/4 bottom-3 border-2 rounded rounded-tr-xl p-3 ripple">Another?</button><span class="text-gray-600 mr-4">Received as:</span>
+            <span class="text-gray-600 mr-4">Received as:</span>
             <article class="mb-2 lg:mb-7 [&amp;>*]:inline-block [&amp;>*]:align-middle sm:w-96 inline-block mr-2"><code class="mr-4">[URL]:: http://localhost:8000/dump.html</code>
               <div class="inline-block [&amp;>*]:inline-block"><img src="fallback.ico" width="52" class="mr-2"><code>• [TITLE::]</code></div>
             </article>
@@ -332,12 +447,12 @@ page={
 <!-- MAIN | START -->
 <main class="w-full left-0 absolute mt-4 tooltip no-hover no-focus -slide-y">
     <h3 class="mt-4">Fetching linked stylesheets (<N>)</h3>
-    <section class="left-0 text-base tooltip -slide no-hover no-focus show font-bookweb pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block">
+    <section class="left-0 tooltip -slide no-hover no-focus show font-bookweb pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block">
     <div><hr class="h-full absolute to-fro inset-0 bg-blue-100"><span class="relative">css/tailwind.min.css</span></div>
 </section>
 
 <section class="tooltip absolute no-hover no-focus left-0 slide-y text-base pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block"></section>
-<button onclick="let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='d'&&ctx.count++, ctx.begin(this)" class="mr-3 ripple relative bg-yellow-500 rounded-lg px-3 p-2"><i class="mr-1.5 fa fa-play"></i> start</button>
+<button id=trigger onclick="let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='d'&&ctx.count++, ctx.begin(this)" class="mr-3 ripple relative bg-yellow-500 rounded-lg px-5 p-3"><i class="mr-1.5 fa fa-play"></i> start</button>
 <div class="my-3 [&>*]:inline-block [&>*]:align-middle px-3 [&>*]:relative border-l-2 border-gray-300 inline-block align-middle left-0 tooltip slide-y absolute no-hover no-focus no-focus-within">
   Slow? 
   <div class="[&>*]:inline-block [&>*]:relative [&>*]:rounded-full" onclick="let e=event.target, ctx=page.done; e.tagName==='BUTTON'&&(e=e.parentNode), e.textContent.match('previous')?(ctx.count===ctx.least?ctx.count=ctx.all-1:--ctx.count):++ctx.count, ctx.reset(), ctx.begin(objWalk(this, ['pN', 'pES']))">
@@ -364,8 +479,8 @@ page={
 </div>
 <!-- download -->
 <div onclick="let t=event.target, btns=this.querySelectorAll('button'), which; find(btns, (e, i)=>e===t&&(which=i)+1)&&page.done.download(which)" id='downloadCSS' class="[&>*]:align-bottom mt-4 absolute tooltip no-hover no-focus -slide-y [&>*]:relative"><span class='inline-block -ml-1 pb-2'>Or download</span>
-  <button class="ripple ml-4 rounded-br border-gray-500 p-3 px-4 border-2 border-l-0 border-t-0">used styles</button><button class="ripple mb-1 -mx-px rounded-t border-2 border-gray-500 p-3 px-4 border-b-0">unused styles</button>
-  <button class="mt-1 -ml-1 ripple rounded-b border-gray-500 p-3 px-4 border-2 border-t-0">used CSS classes</button><button class="ripple mb-1 -ml-1 rounded-tl border-2 border-gray-500 p-3 px-4 border-r-0 border-b-0">unused classes</button>
+  <button class="ripple ml-4 rounded-br rounded-tl focus:bg-yellow-200 border-gray-500 p-3 px-4 border-2 border-l-0 border-t-0">used styles</button><button class="ripple mb-1 -mx-px rounded-t border-2 focus:bg-yellow-200 border-gray-500 p-3 px-4 border-b-0">unused styles</button>
+  <button class="mt-1 -ml-1 ripple rounded-b border-gray-500 focus:bg-yellow-200 p-3 px-4 border-2 border-t-0">used CSS classes</button><button class="ripple mb-1 -ml-1 rounded-tl border-2 border-gray-500 p-3 px-4 border-r-0 rounded-br focus:bg-yellow-200 border-b-0">unused classes</button>
 </div>
   <section id=writeCSS class="w-full mt-20 [&>*]:text-left text-center [&>*]:relative absolute left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide mb-10 sm:mb-0" style="max-width:100%;">
@@ -389,9 +504,12 @@ page={
   })" id="file"><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
           </section>
       <script>
+!emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");
+
 window.addEventListener('DOMContentLoaded', _=>{
   animations.addRippleAnimations()
-})</script><style>
+})
+</script><style>
   /* got this one baby, it should detect three inline styles as
   style tag when run again*/</style><style>/*nuther one, actually the last -  just using it to know whether the count of scanned stylesheets is accurate: it should be 4 if unicorns aren't real*/</style>
 </body></html>

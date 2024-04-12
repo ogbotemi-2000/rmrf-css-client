@@ -38,6 +38,7 @@ http.createServer((req, res, str, params={})=>{
   /** the only bit needed when this server acts as the endpoint for the SaaS, simply ends the requests that do not conform */
   params.url ? (require('./get')(params.url, res)) : res.end('<!DOCTYPE HTML><html><head><title>Snooping around</title></head></html>')
 })
-.listen(port=+values['-p'], function() {
+/*added 0.0.0.0 as hostname below for successful deployments on railway*/
+.listen(port=+values['-p'], '0.0.0.0', function() {
   console.log('Service listening on <PORT>', port);
 })
