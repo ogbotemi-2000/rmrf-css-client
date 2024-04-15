@@ -1,5 +1,5 @@
 let http    = require('http'),
-    values  = {'-d':'./', '-a':'../', '-p':80},
+    values  = {'-d':'./', '-a':'../', '-p':process.env.PORT||80},
     cache   = {};
 
 // http.get('http://localhost:8000/js/ripples.js', res=>{
