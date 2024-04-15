@@ -1,0 +1,114 @@
+<!DOCTYPE HTML><head>
+        <title>Open source software for external stylesheet trimming and comparison</title><meta charset="utf-8"><meta name="theme-color" content="#ff056"><meta name="color-scheme" content="light"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="css/tailwind.min.css">
+        <link rel="stylesheet" href="css/all.css"><link rel="stylesheet" href="css/page.css">
+        <link rel="shortcut icon" href="favicon.ico">
+	<script src="js/ripples.js"></script>
+	<script src="js/utils.js"></script>
+	<script src="js/page.js"></script>
+
+
+<style class="preload-styles">
+html {
+scroll-behavior: smooth;
+}
+/*3d transform transition of 'Roadmap'*/ 
+html.loaded .locked-in {
+    opacity: .999;
+    transform: rotateX(0deg);
+}
+.locked-in {
+    opacity: 0.01;
+    --scaffold-delay: 0ms;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transform: rotateX(90deg) translate3d(-50px, 100%, 0px);
+    transform-origin: center bottom;
+    transition: transform 1s cubic-bezier(.215,.61,.355,1), opacity .35s linear;
+    transition-delay: calc(var(--index)* .1s + .15s + var(--scaffold-delay));
+    transform-style: preserve-3d;
+}
+/* scaffold */
+.scaffold > div { transition: transform .6s var(--delay) cubic-bezier(0.645, 0.045, 0.355, 1); }
+html.preloaded .scaffold { pointer-events: none; }
+html.preloaded .scaffold > div { --tw-translate-y: -100%; }
+
+.\[\&\>\*\]\:animate-y-full > * {
+    animation: translate-y-full 1s var(--delay) cubic-bezier(0.37, 0, 0.63, 1) forwards;
+    display: inline-block;
+}
+@keyframes translate-y-full { 0% { transform: translateY(0%); } 50% { transform: translateY(200%);}}
+</style>
+</head>
+
+
+<body>
+
+<aside class="inset-0 scaffold fixed" style="z-index:5;">
+<div class="inset-0 absolute bg-red-400 transform-gpu" style="--delay: 280ms;" ontransitionend="html.classList.add('loaded')"></div><div class="inset-0 absolute bg-yellow-400 transform-gpu" style="--delay: 150ms;"></div><div class="inset-0 absolute bg-blue-100 text-center transform-gpu" style="--delay: 0s;">
+<h2 onanimationend="objWalk(html, 'cL').add('preloaded')" class="top-1/3 whitespace-pre relative text-3xl tracking-wide lg:text-5xl [&>*]:animate-y-full"><span class="font-fredoka font-semibold" style="--delay:0s">R</span><span class="font-fredoka font-semibold" style="--delay:0.02s">e</span><span class="font-fredoka font-semibold" style="--delay:0.04s">m</span><span class="font-fredoka font-semibold" style="--delay:0.06s">C</span><span class="font-fredoka font-semibold" style="--delay:0.08s">S</span><span class="font-fredoka font-semibold" style="--delay:0.1s">S</span><span class="mx-2" style="--delay:0.12s">•</span><span class="__morph" style="--delay:0.14s">q</span><span class="__morph" style="--delay:0.16s">u</span><span class="__morph" style="--delay:0.18s">i</span><span class="__morph" style="--delay:0.2s">r</span><span class="__morph" style="--delay:0.22s">k</span><span class="__morph" style="--delay:0.24s">s</span><span class="__morph" style="--delay:0.26s"> </span><span class="__morph" style="--delay:0.28s">&</span><span class="__morph" style="--delay:0.3s"> </span><span class="__morph" style="--delay:0.32s">s</span><span class="__morph" style="--delay:0.34s">o</span><span class="__morph" style="--delay:0.36s">l</span><span class="__morph" style="--delay:0.38s">u</span><span class="__morph" style="--delay:0.4s">t</span><span class="__morph" style="--delay:0.42s">i</span><span class="__morph" style="--delay:0.44s">o</span><span class="__morph" style="--delay:0.46s">n</span><span class="__morph" style="--delay:0.48s">s</span></h2></div></aside>
+
+<nav style="--tw-bg-opacity:calc(var(--bg-opacity-pad) + 0.7)" class="top-0 sbackdrop-filter backdrop-blur z-3 text-sm fixed text-gray-900 border-b left-0 -right-2 bg-white">
+  <div class="bg-inherit w-full tooltip no-hover no-focus no-focus-within -slide-y [&>*]:align-middle [&>*]:inline-block py-2 show relative" id="topCta">
+   <a class="rounded-r-full bg-red-200 sm:p-4 p-4 font-semibold text-lg" href="index.html">RemCSS</a><span class="text-xl mx-2">•</span><span class="py-3 text-base space-x-5 underline [&>*]:inline-block w-2/3 sm:w-4/5 md:w-auto"><a href="#ideation">ideation</a>→<a href="#development">development</a>→<a href="#quirks-solutions">quirks & solutions</a>→<a href="#workarounds">workarounds</a>→<a href="#goals">goals</a>
+→<a href="#coming-soon">coming soon...</a></span>
+  </div>
+</nav><main class="overflow-scroll vh-full p-12">
+
+<section class="mt-20 h-5/6"><p>The official page for all that concerns RemCSS</p><h1 class="precise-typo-1 relative" style="line-height:1em;"><span class="relative inline-block locked-in" style="--index:0">Road<div class="-m-1 top-0 absolute mix-blend-difference text-blue-100" style="--tw-bg-opacity: 0.5">Road</div></span><span class="inline-block locked-in" style="--index:2">m</span><span class="inline-block locked-in" style="--index:2">a</span><span class="inline-block locked-in" style="--index:2">p</span></h1></section><br>
+<br id="ideation"><section>
+    <h2 class="precise-typo">Ideation <a href="#ideation" class="align-middle ripple relative p-3 text-gray-700 [&>*]:align-middle [&>*]:inline-block inline-block"><span class="border-r-0 p-1 w-5 border-4 rounded-l-full border-current"></span><span class="-mx-1 px-1.5 bg-current p-0.5"></span><span class="border-l-0 p-1 w-5 border-4 rounded-r-full border-current"></span></a></h2><!-- image --><article class="mt-6 [&>*]:inline-block sm:w-5/6 m-auto text-center">
+<section class="m-auto lg:text-left text-right md:mt-14 mt-5 xl:w-4/5"><span class="text-gray-700 leading-6 precise-typo-1">It</span> began with the inadequacy of existitng tools like <code class="z-1 relative m-0.5 inline-block">PurgeCSS<sup class="ml-0.5 font-bookweb p-0.5 border border-current rounded-full">TM</sup>
+<a class="bg-white p-2 text-xs whitespace-pre absolute tooltip to-top border border-current inline-block" href="javascript:void(0)" style="--arrow-size:5px;">as mentioned on CSS Tricks</a></code>, <i>etcetera</i>, in detecting likely used CSS selectors wherever they may be while avoiding the actual content in the markup of a <span class="font-semibold text-sm ml-2 relative inline-block py-1.5"><span class="-mt-1 ml-1">page</span><span class="bottom-4 left-3.5 absolute transform rotate-45"><hr class="border-white -mb-0.5 bottom-1/2 left-1/2 anim-round absolute border-4 border-yellow-600 rounded-full" style="animation:anim-round .8s ease-out infinite; --_reach: calc(-1*var(--reach)); --reach: 1.7rem;"></span><div class="w-3 top-1/2 ml-2 left-full border-l-0 border-2 h-64 absolute border-gray-300 rounded-r-md text-yellow-600"><i class="top-7 left-1 text-2xl absolute fa fa-caret-down"></i><i class="top-2/3 left-1 text-2xl absolute fa fa-caret-down"></i><span class="-mt-1 right-full top-full inline-block 
+p-1 absolute bg-current rounded-full"><pre class="font-normal text-gray-700 tooltip show to-left absolute p-2 pb-3" style="--arrow-size:5px;">for all the pages of the website below</pre></span><pre class="mt-10 right-full text-gray-600 top-1/4 absolute mr-3">Done in</pre>
+
+<pre class="mt-10 right-1/4 precise-typo absolute top-1/3 mr-3">&lt;N&gt; ms</pre></div></span></section>
+<section class="text-left mb-10 relative"><p class="sm:text-lg sm:w-1/2 w-2/3 sm:mt-5 leading-6 p-4 font-bookweb"><span class="mr-3 p-0.5 inline-block rounded-full border-4 border-current"></span>After multiple iterations, much more efficient performance was obtained which made this service viable as an alternative to software for trimming used CSS</p><br>
+<br><br><h3 class="sm:mt-0 md:mt-10 mt-16 mb-4">• Trimming the stylesheets of a site built for a construction company</h3><p class="text-sm">Stylesheets lesser than 1 MB took milliseconds but the <code>TailwindCSS</code> stylesheet made the <code>Node.js</code>  code <i>sweat a little</i> but a performant and non CPU-intensive <a href="#quirks-solutions" class="underline">solution</a> sufficed</p><br><button class="md:hidden p-2 border border-gray-700 relative ripple" onclick="let ctx=objWalk(this,['nES','fEC','cL']), fn=b=>b?'show':'hide', t=this.textContent.charAt(0)==='s'; this.textContent=this.textContent.replace(fn(t), fn(!t)), ctx[cLs(t)]('show')">hide comparison of CSS assets used</button><section class="md:space-x-1 md:-mx-20 [&>*]:align-top [&>*]:inline-block relative show"><aside class="rounded-b-3xl bg-white top-5 absolute md:relative md:show tooltip no-hover slide-y no-focus w-56 show"><h4 class="mt-4 mx-4 font-semibold text-gray-500">Assets as-is</h4>
+<hr class="my-2 mx-4"><pre class="mx-4 italic text-sm">FontAwesome CSS • 57.5 KB<br>TailwindCSS     • 2.79 MB<br>Handwritten CSS • 16.9 KB</pre><h4 class="mx-4 mt-8 font-semibold text-gray-500">Assets trimmed</h4><hr class="my-2 mx-4"><pre class="mx-4 italic text-sm">FontAwesome CSS • 3.75 KB<br>TailwindCSS     • 43.1 KB<br>Handwritten CSS • 14.8 KB</pre>
+
+<p class="mt-4 p-4 text-xs w-full word-break rounded-b-2xl bg-gray-100">trimmed using all CSS selectors used in the entire website at once</p></aside><iframe class="vh-full rounded-lg w-full mt-5 border md:w-2/3" src="https://saltaccl-railwayapp.up"></iframe></section></section></article>
+</section>
+
+
+<br><br id="development"><section>
+    <h2 class="precise-typo">Development<a href="#ideation" class="align-middle ripple relative p-3 text-gray-700 [&>*]:align-middle [&>*]:inline-block inline-block"><span class="border-r-0 p-1 w-5 border-4 rounded-l-full border-current"></span><span class="-mx-1 px-1.5 bg-current p-0.5"></span><span class="border-l-0 p-1 w-5 border-4 rounded-r-full border-current"></span></a></h2><article class="my-4 [&>*]:inline-block sm:w-5/6 m-auto">
+    <p>Hardcoding of CSS functions, selectors, selector wildcards, @-rules etc., into the code was avoided because they may change as the <kbd>W3C</kbd> specification evolves.</p><p class="my-4 text-sm">A summary of the final draft of the algorithm used to get the style block of used CSS selectors
+</p><br><pre class="md:-ml-10 md:mr-5 md:w-2/3 mb-5 whitespace-pre-wrap mt-24 text-xs [&>*]:inline-block"><span class="mb-4">whatever-style-entity [# or .]</span><span class="relative text-sm"><div class="text-xs p-2 absolute tooltip to-top show border-l-2 border-r-2 border-green-200 w-full">if it is an element in <code>[the array of likely CSS selectors]</code><i class="text-green-400 text-2xl -left-2.5 -top-3 absolute fa fa-caret-down"></i><i class="text-green-400 text-2xl -right-2 -top-3 absolute fa fa-caret-down"></i></div><span class=" p-2 bg-green-100 text-red-700">used-CSS-selector</span></span><span class="relative text-xs"><div class="text-xs p-2 absolute tooltip to-bottom show border-l-2 border-r-2 border-yellow-400 w-full"><code>if not a [string, number or whitespace]</code><i class="text-yellow-400 text-2xl -left-2.5 -bottom-3 absolute fa fa-caret-up"></i><i class="text-yellow-400 text-2xl -right-2 -bottom-3 absolute fa fa-caret-up"></i></div><span class="p-2 bg-yellow-200">extra style entity</span></span><span class="text-lg text-yellow-700"> {</span>
+
+  
+
+
+
+
+<span class="text-green-900 text-xs">/*this style block is added to the string of matched styles if the conditions above are true*/</span>
+<span class="text-lg mt-3 text-yellow-700">}</span></pre><section class="align-top md:w-1/3 text-sm border-current rounded-lg border p-4"><h3 class="text-xs mb-2">Edge case</h3>• Selectors that start with a number or contain illegal characters such as:<code class="text-xs inline-block m-1 p-1 bg-yellow-100">[, ], :, &, &gt;, *, /</code> are escaped by adding a <em>reverse solidus</em> to them as follows: <code class="text-sm inline-block m-1 px-1 bg-yellow-100">\[, \], \:, \&, \&gt;, \*, \/</code></section><section class="text-center [&>*]:text-left [&>*]:inline-block text-sm"><h4 class="w-full mb-1 mt-6"><span class="text-base font-semibold">Comments</span> - to be or not to be...</h4><br><br><p>The algorithm originally, while detecting used selectors, stripped comments from the stylesheet including nefarious ones that even broke the parsing of CSS in browsers like this: <code class="inline-block bg-gray-100 p-2">sele/*parse breaking comment*/ctor { ... }</code></p><br><br><div class="w-full">This extra consideration caused faulty performance as the code evolved. If it is ever to be considered, the removal of comments will come first before the actual matching and trimming happens.</div><br><a class="px-14 overflow-hidden relative inline-block m-4 rounded-2xl p-6 bg-yellow-200 sm:w-96" href="#goals"><div class="-m-8 left-0 top-0 absolute p-10 bg-white rounded-full"></div><div class="-m-7 right-0 bottom-0 absolute p-10 bg-white rounded-full"></div><div class="-m-7 right-0 bottom-0 absolute p-10 bg-white rounded-full"></div><span class="relative">the functionality for removing comments will be provided behind a flag in the future releases of this service</span></a></section>
+</article>
+</section><br><br id="development"><section>
+    <h2 class="precise-typo [&>*]:align-middle [&>*]:inline-block"><span>Quirks & Solutions</span><a href="#ideation" class="p-3 ripple relative text-gray-700 [&>*]:align-middle [&>*]:inline-block"><span class="border-r-0 p-1 w-5 border-4 rounded-l-full border-current"></span><span class="-mx-1 px-1.5 bg-current p-0.5"></span><span class="border-l-0 p-1 w-5 border-4 rounded-r-full border-current"></span></a></h2><article class="my-4 [&>*]:inline-block sm:w-5/6 m-auto">
+    <p><kbd class="mr-2 font-semibold text-xl">#1</kbd> A frustrating quirk, not a bug, in Node.js happens when matching used style blocks in files of over <code>1MB</code> in size like the <code>TailwindCSS</code> stylesheet <kbd class="align-middle inline-block text-2xl">↴</kbd></p><pre class="md:w-1/2 mt-4 whitespace-pre-wrap"><span class="text-red-600">for</span><span class="text-yellow-600">(</span><span class="text-gray-600 p-1.5">•••</span><span class="text-yellow-600">)</span> <span class="text-yellow-600">{</span>
+<span class="text-sm text-green-800">/*  this regular for loop begins to increment slowly as though it is a setTimeout callback*/</span>
+<span class="text-yellow-600">}</span></pre><div class="relative m-4 md:w-1/3 p-4">reducing the number of selectors to match did not abate this development <span class="bulge-center font-mono text-gray-700 md:w-1/2 w-1/2 mx-auto sm:inline-flex relative sm:mx-6 sm:my-0 my-5 text-sm sm:h-20 sm:w-px h-px md:h-px flex items-center justify-center"><i class="px-4 p-1 text-black bg-white">hiatus</i></span><div class="left-0 border-current top-0 absolute p-7 rounded-tl-2xl border-t border-l"></div><div class="right-0 bottom-0 md:right-full border-current absolute p-7 rounded-br-2xl border-b border-r"></div></div>
+</article>
+</section></main>
+<script>window.addEventListener('DOMContentLoaded', (main, intro, o=objWalk)=>{
+  if(html.style.backdropFilter === undefined) html.style.setProperty('--bg-opacity-pad', 0.7);
+
+  console.log('::SCROLL EVENT::'),
+  (main=qs('main')).onscroll =_=>{
+    console.log('::SCROLL RATIO::', onScroll(main))
+  },
+  animations.addRippleAnimations(),
+/*after fetching the scripts*/
+(intro=qs('aside h2')).innerHTML=['R','e','m','C','S','S','•','q','u','i','r','k','s',' ','&',' ','s','o','l','u','t','i','o','n','s'].map((e, i)=>`<span ${i<6?"class='font-fredoka font-semibold'":i==6&&"class='mx-2'"||"class='__morph'"} style='--delay:${i*0.02}s'>${e}</span>`).join(''),
+
+setTimeout(_=>intro.classList.add('[&>*]:animate-y-full'), 500)
+/*intro end*/
+})
+
+</script>
+
+
+
+
+</body>

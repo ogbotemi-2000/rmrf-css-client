@@ -10,7 +10,7 @@ window.onerror = function(e) {
 },
 page={
   retry:function(t,o){
-    page.done.reset()/*call defined functions before reset*/,
+    page.done.reset&&page.done.reset()/*call defined functions before reset*/,
     qs('[contenteditable]').contentEditable=true,
     o=objWalk, t=this.template, page = {};
     for(let i in t) page[i] = t[i];
@@ -86,14 +86,14 @@ page={
     },
     !/Firefox/i.test(this.uA)&&cls(true),
     setTimeout(_=>{
-      t.simultaneous=true,
+      /* uncomment to enforce async requests of scripts - t.simultaneous=true, */
       (t.write=(failed, init, i=t.count, bool=t.count<srcs.length-1, diff=srcs.length-t.count, plu=diff?'':'s')=>{out.innerHTML=t.count<srcs.length?(`Fetching data for <code class='font-semibold'>`+(t.simultaneous?`${diff=t.responses.length-t.sentCount}</code> script${diff===1?'':'s'}`:`${diff}</code> external script${diff===1?'':'s'}
         ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
         :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="page.fetch_readScripts.write()">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
         :(t.afterFetch_read(),
         cls(false), `Fetched ${t.failed?'':'all'} ${diff=srcs.length-t.failed} script${diff===1?'':'s'}, ${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
         animations.addRippleAnimations()})()
-      /*passing true to t.go beside makes an asynchronous request*/t.go(true)
+      /*passing true to t.go beside makes an asynchronous request*/t.go(/*uncomment for async- true*/)
     }, 2500/*200*/)
   },
   done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
@@ -126,7 +126,7 @@ page={
         o(ctx=o(notify, ['pN', 'nES']).querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
         (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-96'),
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-48'),
         t.all=this.styles.length
       }
       t.reset=(ctx, cls)=>{
@@ -172,8 +172,9 @@ page={
     (ctx=o(o(notify, {2:'pN'}).querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
   },
   
-  get: function(url, t, xhr=new XMLHttpRequest, endp='http://localhost', prot='', root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
+  get: function(url, t, xhr=new XMLHttpRequest, endp='http://localhost', prot='', onerror, root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
     if(this.gotten) return;
+    onerror=txt=>{out.innerText=txt||assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'), o(retry, 'cL').add('show')},
     this.gotten=!0/*to prevent multiple calls of this function when the url is entered in the input field.
     While it causes no errors if this happens, the side-effect of having linked assets details written to the DOM more than once is not desirable
     */
@@ -187,7 +188,7 @@ page={
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
 
-    if(url) xhr.open('GET', endp+'/?url='+url), xhr.send(), xhr.onload=(ev, res, pI, json, aside)=>{
+    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'/?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
         (res=ev.target.response).charAt(0)==='_'
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
@@ -217,7 +218,7 @@ page={
           setTimeout(_=>rgxes.forEach((e, i, prop, p, inline, len)=>{
             prop=(e+'').replace(/\/|g/g, ''), p=asides[i].querySelector('p'), inline=o(p, 'nES'),
             p.textContent=inline.innerHTML?(o(inline, 'cL').replace('absolute', 'show'), `[ ${len=inline.innerHTML.match(e).length} ] Inline ${prop+(len?'s':'')} present`)
-            :`No inline ${prop+(len?'s':'')} detected`
+            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight)
           }), 800)
         } else {
           let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
@@ -240,11 +241,10 @@ page={
           }),
           /*make a second request*/
           /*a timeout to prevent the browser from dropping the incoming response for the outgoing request above as it makes the delayed request below*/
-          setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__'), setTimeout(_=>{xhr.send()})})
+          setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__&for='+url), setTimeout(_=>{xhr.send()})})
         };
         /*reset notify.classList*/
-      } else out.innerText=assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'),
-	o(retry, 'cL').add('show');
+      } else onerror();
     }
   }
 }
@@ -276,61 +276,9 @@ _____
           }
         
 _____
-.hljs-comment, .hljs-quote {
-                color: #A2A09F;
-                font-style: italic;
-            }
-
-            .hljs-doctag, .hljs-keyword, .hljs-formula {
-                color: #B08CFF;
-            }
-
-            .hljs-section, .hljs-name, .hljs-selector-tag, .hljs-deletion, .hljs-subst {
-                color: #FF7C72;
-            }
-
-            .hljs-literal {
-                color: #1CE2B2;
-            }
-
-            .hljs-string, .hljs-regexp, .hljs-addition, .hljs-attribute, .hljs-attr, .hljs-meta-string {
-                color: #A6FF8F;
-            }
-
-            .hljs-built_in, .hljs-class .hljs-title {
-                color: #FBF38C;
-            }
-
-            .hljs-variable, .hljs-template-variable, .hljs-type, .hljs-selector-class, .hljs-selector-attr, .hljs-selector-pseudo, .hljs-number {
-                color: #FF7C72;
-            }
-
-            .hljs-symbol, .hljs-bullet, .hljs-link, .hljs-meta, .hljs-selector-id, .hljs-title {
-                color: #61C3FF;
-            }
-
-            .hljs-emphasis {
-                font-style: italic;
-            }
-
-            .hljs-strong {
-                font-weight: bold;
-            }
-
-            .hljs-link {
-                text-decoration: underline;
-            }
-_____
 
 !emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");
 
 window.addEventListener('DOMContentLoaded', _=>{
   animations.addRippleAnimations()
 })
-
-_____
-
-  /* got this one baby, it should detect three inline styles as
-  style tag when run again*/
-_____
-/*nuther one, actually the last -  just using it to know whether the count of scanned stylesheets is accurate: it should be 4 if unicorns aren't real*/

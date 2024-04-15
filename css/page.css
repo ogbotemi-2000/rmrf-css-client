@@ -488,7 +488,8 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
 	 z-index: 3;
 
-	 --x: 0% !important;
+	 --x: 0%;
+	--y:0%;
 
 	 
 
