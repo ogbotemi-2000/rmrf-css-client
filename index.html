@@ -22,6 +22,16 @@ page={
   retry:function(t,o){
     page.done.reset&&page.done.reset()/*call defined functions before reset*/,
     qs('[contenteditable]').contentEditable=true,
+
+/*Object.freeze prevent properties from being added to an object but
+it fails to account for functions that are treated as object by defining properties on their name.
+Doing what Object.freeze should have considered - preventing properties from being defined on functions and deleting them if they are
+*/
+['done', 'fetch_readScripts'].forEach(fn_name=>{
+  fn_name = this.template[fn_name];
+  for(let i in fn_name) typeof fn_name[i]!=='function'&&!/name|length/.test(i)&&delete fn_name[i];
+}),
+
     o=objWalk, t=this.template, page = {};
     for(let i in t) page[i] = t[i];
     page.template=t,
@@ -37,7 +47,7 @@ page={
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp: _=>'https://remcss.up.railway.app',
+  endIp: _=>location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app',
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{

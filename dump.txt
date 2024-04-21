@@ -12,6 +12,16 @@ page={
   retry:function(t,o){
     page.done.reset&&page.done.reset()/*call defined functions before reset*/,
     qs('[contenteditable]').contentEditable=true,
+
+/*Object.freeze prevent properties from being added to an object but
+it fails to account for functions that are treated as object by defining properties on their name.
+Doing what Object.freeze should have considered - preventing properties from being defined on functions and deleting them if they are
+*/
+['done', 'fetch_readScripts'].forEach(fn_name=>{
+  fn_name = this.template[fn_name];
+  for(let i in fn_name) typeof fn_name[i]!=='function'&&!/name|length/.test(i)&&delete fn_name[i];
+}),
+
     o=objWalk, t=this.template, page = {};
     for(let i in t) page[i] = t[i];
     page.template=t,
@@ -27,7 +37,7 @@ page={
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp:  function() {return this.mobile()?'http://192.168.1.108':'http://localhost'},
+  endIp: _=>location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app',
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{
@@ -172,7 +182,7 @@ page={
     (ctx=o(o(notify, {2:'pN'}).querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
   },
   
-  get: function(url, t, xhr=new XMLHttpRequest, endp='http://localhost', prot='', onerror, root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
+  get: function(url, t, xhr=new XMLHttpRequest, endp, prot='', onerror, root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
     if(this.gotten) return;
     onerror=txt=>{out.innerText=txt||assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'), o(retry, 'cL').add('show')},
     this.gotten=!0/*to prevent multiple calls of this function when the url is entered in the input field.
