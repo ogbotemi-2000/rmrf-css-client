@@ -68,10 +68,9 @@ function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', lo
             buf[i+ast+1]==='/'&&(j=tEnd(ast+i+1)[1]||0)
           );
         else if(canAdd) checkElse(if_tag);
-        /**testing with "titl" because the shortest tag to match - 'link'.length === 4.
-         * hardcoded 7 because '<title>'.length===7
+        /**testing with "titl" because the shortest tag to match - 'link'.length === 4
         */
-        else /titl/.test(if_tag[0])&&(title=loop(buf, {from:i+=7, cb:(s,f)=>s[f]+s[f+1]==='</'}))[1]>i&&(i=title[1], assets.title=title[0]);
+        else !assets.title&&/titl/.test(if_tag[0])&&(title=loop(buf, {from:tEnd(if_tag[1])[1]+1, cb:(s,f)=>s[f]+s[f+1]==='</'}))[1]>i&&(i=title[1], assets.title=title[0]);
       }
       /** the similar check below is needed to detect empty tags, both check and checkElse were created from the formerly rigid
        * if-else statements logical chain to bring dynamism into the code

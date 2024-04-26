@@ -62,7 +62,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/;|\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/@|;|\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
         ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
       }
     },
@@ -91,7 +91,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
         out.innerHTML = `You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
-        w.scrollTo(0, d.body.scrollHeight), setTimeout(_=>lEC.focus(), 120)
+        w.scrollTo(0, d.body.scrollHeight*0.5), setTimeout(_=>lEC.focus(), 120)
       }, t.failed?3500:500)
     },
     !/Firefox/i.test(this.uA)&&cls(true),
@@ -109,7 +109,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
   done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
     writeCSS.children[0].querySelector('pre').textContent='used CSS styles', trigger.removeAttribute('disabled'), t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
-    if(_o=o) (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
+    if(_o=o) o(notify, ['lEC', 'cL']).add('to-fro', 'border-2'), (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
       ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
       cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
@@ -145,7 +145,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
-	t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
+	w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
 	t.count===t.all&&(t.count=t.least), 
 	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
