@@ -59,7 +59,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
   },
   gen:length=>Array.from({length}),
   fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, lat=2000, cls, xhr, srcs, els, t, write, url=page.url) {
-    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
+    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight*0.5), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
     srcs=this.assets.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
     t.failed||=0, t.count||=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount ||=0,
     
@@ -100,7 +100,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
+        out.innerHTML = `Likely CSS selectors matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
         w.scrollTo(0, d.body.scrollHeight*0.5), setTimeout(_=>lEC.focus(), 120)
       }, t.failed?3500:500)
     },
@@ -123,7 +123,8 @@ Doing what Object.freeze should have considered - preventing properties from bei
       ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
       cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
-        out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
+        out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`,
+	setTimeout(_=>trigger.focus(), 100);
       },
       out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
       !len&&setTimeout(_=>cb(len), 500)
@@ -155,7 +156,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
-	w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
+	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
 	t.count===t.all&&(t.count=t.least), 
 	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
@@ -165,10 +166,11 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
 	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
         }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
-     	  if(!reset) o(retry, 'cL').add('show'), clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
-	    o(trigger, ['nES','cL']).replace('show', 'absolute'), o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
+     	  if(!reset) o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
+	    o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
 	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
 	    classes.forEach((e, i)=>t.files[i+2]=e);
+	  trigger.removeAttribute('disabled'), 
           o(outs[0], 'nES').textContent = `used styles of size ${both.byteFormat(arr[0].length)} out of ${both.byteFormat(tot)}`
         }, n)
       }
@@ -446,8 +448,8 @@ page.clone()
 </div>
 <!-- download -->
 <div onclick="let t=event.target, btns=this.querySelectorAll('button'), which; find(btns, (e, i)=>e===t&&(which=i)+1)&&page.done.download(which)" id='downloadCSS' class="[&>*]:align-bottom mt-4 absolute tooltip no-hover no-focus -slide-y [&>*]:relative"><span class='inline-block -ml-1 pb-2'>Or download</span>
-  <button class="ripple ml-4 rounded-br rounded-tl focus:bg-yellow-200 border-gray-500 p-3 px-4 border-2 border-l-0 border-t-0">used styles</button><button class="ripple mb-1 -mx-px rounded-t border-2 focus:bg-yellow-200 border-gray-500 p-3 px-4 border-b-0">unused styles</button>
-  <button class="mt-1 -ml-1 ripple rounded-b border-gray-500 focus:bg-yellow-200 p-3 px-4 border-2 border-t-0">used CSS classes</button><button class="ripple mb-1 -ml-1 rounded-tl border-2 border-gray-500 p-3 px-4 border-r-0 rounded-br focus:bg-yellow-200 border-b-0">unused classes</button>
+  <button class="ripple ml-4 rounded-br rounded-tl hover:bg-yellow-100 focus:bg-yellow-200 border-gray-500 p-3 px-4 border-2 border-l-0 border-t-0">used styles</button><button class="ripple mb-1 -mx-px rounded-t border-2 hover:bg-yellow-100 focus:bg-yellow-200 border-gray-500 p-3 px-4 border-b-0">unused styles</button>
+  <button class="mt-1 -ml-1 ripple rounded-b border-gray-500 hover:bg-yellow-100 focus:bg-yellow-200 p-3 px-4 border-2 border-t-0">used CSS classes</button><button class="ripple mb-1 -ml-1 rounded-tl border-2 border-gray-500 p-3 px-4 border-r-0 rounded-br hover:bg-yellow-100 focus:bg-yellow-200 border-b-0">unused classes</button>
 </div>
   <section id=writeCSS class="w-full mt-20 [&>*]:text-left text-center [&>*]:relative absolute left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide mb-10 sm:mb-0" style="max-width:100%;">
@@ -465,10 +467,10 @@ page.clone()
 <section class="right-0 left-0 mx-10 tooltip no-hover no-focus no-focus-within absolute -slide-y show top-20">
 <form method="get" action="/" onsubmit="return !!page.get(this.url.value)" class="sm:w-1/2 sm:inline-block relative compact"><div><input autofocus required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here and press enter" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-1 top-0">input the url to a webpage and press enter</label></div></form>
           <span class="bulge-center font-mono text-gray-700 w-1/2 mx-auto sm:inline-flex relative sm:mx-6 sm:my-0 my-5 text-sm sm:h-20 sm:w-px h-px flex items-center justify-center"><span class="px-4 p-1 text-black bg-white">or</span></span>
-          <button class="w-full sm:w-auto ripple relative sm:inline-block p-3 bg-blue-100 rounded-md" onclick="this.firstElementChild.click()"><input class="absolute hidden pointer-events-none" type="file" accept=".html" oninput="let res=this.files[0];
+          <button style='overflow:visible;' class="pointer-events-none w-full sm:w-auto ripple relative sm:inline-block p-3 bg-blue-100 rounded-md" onclick="this.firstElementChild.click()"><input class="absolute hidden pointer-events-none" type="file" accept=".html" oninput="let res=this.files[0];
   res&&res.text().then(str=>{
     page.get()
-  })" id="file"><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
+  })" id="file"><pre style='--arrow-size:5px;' class='tooltip to-bottom show bg-gray-50 p-2 italic rounded absolute'>under consideration...</pre><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
           </section>
       <script>
 !emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");

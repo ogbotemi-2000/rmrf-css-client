@@ -49,7 +49,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
   },
   gen:length=>Array.from({length}),
   fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, lat=2000, cls, xhr, srcs, els, t, write, url=page.url) {
-    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
+    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight*0.5), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
     srcs=this.assets.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
     t.failed||=0, t.count||=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount ||=0,
     
@@ -90,7 +90,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
+        out.innerHTML = `Likely CSS selectors matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
         w.scrollTo(0, d.body.scrollHeight*0.5), setTimeout(_=>lEC.focus(), 120)
       }, t.failed?3500:500)
     },
@@ -113,7 +113,8 @@ Doing what Object.freeze should have considered - preventing properties from bei
       ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
       cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
-        out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`;
+        out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`,
+	setTimeout(_=>trigger.focus(), 100);
       },
       out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
       !len&&setTimeout(_=>cb(len), 500)
@@ -145,7 +146,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format)=>{
-	w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), t.interval=setTimeout(_=>o(trigger, ['nES','cL']).replace('absolute', 'show'), 3000),
+	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
 	t.count===t.all&&(t.count=t.least), 
 	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
@@ -155,10 +156,11 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
 	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
         }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
-     	  if(!reset) o(retry, 'cL').add('show'), clearTimeout(page.done.interval), trigger.removeAttribute('disabled'), o(trigger, 'lC').data='done, continue',
-	    o(trigger, ['nES','cL']).replace('show', 'absolute'), o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
+     	  if(!reset) o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
+	    o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
 	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
 	    classes.forEach((e, i)=>t.files[i+2]=e);
+	  trigger.removeAttribute('disabled'), 
           o(outs[0], 'nES').textContent = `used styles of size ${both.byteFormat(arr[0].length)} out of ${both.byteFormat(tot)}`
         }, n)
       }
@@ -238,7 +240,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=event.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
+            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
