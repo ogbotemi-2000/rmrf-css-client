@@ -42,7 +42,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{
       i>=classes.length&&(o(notify,['lEC', 'cL'])[flag?'add':'remove']('to-fro', 'border-2'), clearInterval(_), setTimeout(_=>qs('.__class__').querySelector('input').focus()),
-      !flag&&(o(notify, 'fEC').textContent='Press enter to continue. Input other attributes that do not end with `class` or `id` and, that equal CSS selectors to add them to the found selectors'),
+      !flag&&(o(notify, 'fEC').innerHTML='Press enter to continue.<br>You may input other attributes that do not end with <span class=font-semibold>class</span> or <code class=font-semibold>id</code> (they are already sorted) and, that equal CSS selectors to add them to the found selectors'),
       done&&done()),
       qs('.__class__').querySelector('code').textContent = i +' selectors found', ++i
     }))
@@ -90,7 +90,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `Likely CSS selectors matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
+        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
         w.scrollTo(0, d.body.scrollHeight*0.5), setTimeout(_=>lEC.focus(), 120)
       }, t.failed?3500:500)
     },
@@ -101,7 +101,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
         :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="page.fetch_readScripts.write()">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
         :(t.afterFetch_read(),
-        cls(false), `Fetched ${t.failed?'':'all'} ${diff=srcs.length-t.failed} script${diff===1?'':'s'}, ${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
+        cls(false), `Fetched ${t.failed?'':'all'} ${diff=srcs.length-t.failed} script${diff===1?'':'s'}, ${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a href="http://localhost:8000/roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
         animations.addRippleAnimations()})()
       /*passing true to t.go beside makes an asynchronous request*/t.go(/*uncomment for async- true*/)
     }, 2500/*200*/)
@@ -145,10 +145,12 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	setTimeout(_=>forEach(writeCSS.children, e=>e.firstElementChild.textContent=''), 60),
 	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
-      t.begin=(trigger, n, ctx, outs, format)=>{
+      t.begin=(trigger, n, ctx, outs, format, cls)=>{
 	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
 	t.count===t.all&&(t.count=t.least), 
-	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), o(ctx=nES.children[n=t.count], 'cL').add('bg-yellow-200'),
+	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)),
+  o(ctx=nES.children[n=t.count], 'cL').add(cls),
+  
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
         trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
 	  o(retry, 'cL').remove('show'), t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
@@ -158,11 +160,12 @@ Doing what Object.freeze should have considered - preventing properties from bei
         }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
      	  if(!reset) o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
 	    o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
-	    o(downloadCSS, 'cL').replace('absolute', 'show'), outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), 
-	    classes.forEach((e, i)=>t.files[i+2]=e);
-	  trigger.removeAttribute('disabled'), 
-          o(outs[0], 'nES').textContent = `used styles of size ${both.byteFormat(arr[0].length)} out of ${both.byteFormat(tot)}`
-        }, n)
+	    o(downloadCSS, 'cL').replace('absolute', 'show'), classes.forEach((e, i)=>t.files[i+2]=e);
+      
+	    outs.forEach((e, i, txt)=>{t.files[i]=txt=arr[i], !thresheld&&(e.innerText = txt)}), trigger.removeAttribute('disabled'),
+      
+      o(outs[0], 'nES').textContent = `used styles of size ${both.byteFormat(arr[0].length)} out of ${both.byteFormat(tot)}`
+        }, n/*t.count*/)
       }
     };
       
@@ -264,7 +267,13 @@ Doing what Object.freeze should have considered - preventing properties from bei
 page.clone()
         
 _____
-.stroked-light-border {/*--border-gradient-angle is specified from 0turn to 1turn in a keyframe, --runtime is for the colour of the stroke-light*/
+
+        html {
+          --border-gradient-angle:0deg;
+          scroll-behavior: smooth;
+          --bg-opacity-pad:0;
+        }
+        .stroked-light-border {/*--border-gradient-angle is specified from 0turn to 1turn in a keyframe, --runtime is for the colour of the stroke-light*/
             --runtime: #e07c17;
             background-image: conic-gradient(from var(--border-gradient-angle) at 50% 50%, transparent, var(--runtime) 14%, transparent 17%);
             animation: 2s linear 0ms infinite light-border;
@@ -278,9 +287,6 @@ _____
               --border-gradient-angle: 360deg;
             }
           }
-          html {
-            --border-gradient-angle:0deg;
-          }
           @property --border-gradient-angle {
             syntax: "<angle>";
             inherits: true;
@@ -292,5 +298,6 @@ _____
 !emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");
 
 window.addEventListener('DOMContentLoaded', _=>{
+  if(html.style.backdropFilter === undefined) html.style.setProperty('--bg-opacity-pad', 0.7);
   animations.addRippleAnimations()
 })

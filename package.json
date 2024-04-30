@@ -11,7 +11,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npm install && echo \"<Installed Dependencies>\"",
-    "start": "node service"
+    "start": "node service",
+    "serve": "node server"
   },
   "keywords": [],
   "author": "Ogbotemi Akin Ogungbamila",
