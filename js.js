@@ -1,41 +1,56 @@
-let fs        = require('fs'),
-/** prefilled with classes that are used in javascript codes */
-    attrs     = new Set(['overflow-y-scroll', 'w-full', 'w-1/2', 'opacity-80', '-right-full', 'hidden', 'v-hfull', 'transit', 'invert', 'bg-white', 'text-gray-900']),
-    arr       = ['index.html', 'home.html', 'projects.html', 'services.html', 'integrated.html', 'equipment.html', 'partners.html', 'integrated.html', 'portfolio.html', 'contact.html'],
-    index     = 0,
-    /**utils below will be provided by the user */
-    utils     = [''],
-    trimCSS  = require('./trim-css'),
-    fxn       = nxt=>fs.readFile(nxt, function(err, buf, buffer) {
-      let scripts =[], [head, body] = (buffer = buf.toString()).split(/<body[^>]*>/), trimmed, all_attrs=[[]], split=300;
-/*
-body = (trimmed = body.replace(/<!---::REMOVE::-->[\S\s]+<!---::REMOVE::-->/g, e=>''))
-.replace(/<script[\S\s]*>[\S\s]+<\/script>/, e=>(scripts.push(e), ''))
-.replace(/(id|src|class|style|on[a-z]+)="[^"]+"/g, e=>(attrs.push(e), '_::_'))
-.replace(/>[^<]+</g, (m, i)=>'>'+((m=m.replace(/>|<+/g, '').trim()).length?(fs.appendFileSync('./out.txt', `${m}\t----\t${i}\n`), `::_::`):'')+'<'),
-*/
-    body.replace(/(id|class)="[^"]+"/g, e=>{
-      (e.replace(/(id|class)=|"/g, '').split(' ')).forEach((m, el)=>{
-        m=m.replace('&amp;', '&').replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e);
-        // if(!~attrs.indexOf(m)) {
-          m.trim()&&attrs.add(m)
-        // }
-      })
-    }),
-    fs.writeFileSync('trimmed/attrs.txt', [...attrs].join('\n'));
-    index<arr.length?fxn(arr[index++]):(
-      console.log('::DONE::', attrs.size),
-      fs.writeFileSync('trimmed/attrs.txt', [...attrs].join('\n')),
-      [...attrs].forEach((e, i)=>{
-        i&&i/split===Math.round(i/split)
-        ? all_attrs.push([e])
-        : all_attrs[all_attrs.length-1].push(e)
-        // !i&&all_attrs[all_attrs.length-1].push(e)
+let fs         = require('fs'),
+    {execFile} = require('child_process'),
+    attrs      = new Set(/**you may leave an array classes or ids used in scripts here - [<class>, <id>]*/),
+    index      = 0,
+    trimCSS    = require('./trim-css'),
+    fxn        = (nxt, files, outDir)=>fs.readFile(files.html[nxt], function(err, buf, buffer) {
+      (buffer = buf.toString())
+      .replace(/(id|class)="[^"]+"/g, e=>{
+        (e.replace(/(id|class)=|"/g, '').split(' ')).forEach((m, el)=>{
+          /** escape unusual strings or starting numbers in css selectors */
+          m=m.replace('&amp;', '&').replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e);
+            m.trim()&&attrs.add(m)
+        })//, trimCSS(attrs, files.css, outDir)
       }),
-      fs.writeFileSync('trimmed/check.txt', all_attrs.map(e=>e.join('\n')).join('\n')),
-      trimCSS(all_attrs, attrs) //, [[...attrs]]
-    );
-// ['./attrs.txt', [...new Set(attrs)].join('\n'), './html.txt', body, './html.html', head+'<\head>'].forEach((e,i,a)=>(e=a[i*=2])&&fs.writeFile(e, a[i+1], console.log))
+      /** using setImmediate to call the function in itself to avoid
+     * the maximum call stack size exceeded error which may occur for directories
+     * containing a lot of the wanted HTML or CSS files
+     */
+      index<files.html.length?setImmediate(_=>fxn(index++, files, outDir)):console.log('::SELECTORS::', attrs.size)
   });
 
-  fxn(arr[index++])
+  
+module.exports = init;
+
+function init(obj, index, bool, props, values, files, rgxes, exists) {
+  props=['html', 'css', 'out'], values=['./', 'css', 'dist'], files={}, rgxes=[], exists=[], 
+  /* for when obj is null */ obj||={}, 
+  /* heads up, typeof null equals 'object' hence why the above logical assignment is there*/
+  typeof obj!=='object'&&(obj={}), index=0,
+  bool = props.map((prop, i)=>(Array.isArray(prop=obj[prop])&&exists.push(prop.filter(e=>fs.existsSync(e)).length), obj[prop]||=values[i], prop&&fs.existsSync(prop.toString())&&prop.length&&(values[i]=prop))).filter(e=>e).length,
+
+  values.slice(0, 2).forEach((value, i)=>{files[value=props[i]] = [], rgxes.push(new RegExp(`\.${value}$`))});
+  if(!bool) console.error(`All or some of the required options are not provided to the \`remcss\` module, using ${JSON.stringify(obj)} as a fallback`);
+
+  /** the promise below is used to have a callback for continuation whether the shell - 'ls <directory> -a' is spawned or not */
+  let getFiles =value=>new Promise(resolve=>Array.isArray(value=values[index])
+    /** the chained logic below is to consider non-existent files in provided arrays */
+    &&exists[index]
+    ? resolve(value)
+    /** the option to read via ls faces ENOENT issues when ran in a Windows terminal */
+    /** exists.length avoids warnings that haven't been asked for */
+    : (exists.length&&!exists[index]&&console.warn('ENOENT:: For', value,' - reading', props[index].toUpperCase(), 'files from directory;', `${value=index?props[index]:'./'}`,  ' as a fallback'), execFile('ls', [value], (error, stdout, stderr) => {
+      if (error) {
+        throw error;
+      }
+       resolve(stdout.split('\n').filter(e=>rgxes[index].test(e)))
+   }))).then(provided=>{
+    files[props[index]] = provided, index++,
+     /** +1 below makes it stop at the element just before the last in the values array of which its last element is the output directory */
+     index+1<values.length?getFiles(index):/*Done, continue*/fxn(0, files, values.pop())
+   });
+
+  getFiles(index);
+}
+
+init({html:'no.html'})

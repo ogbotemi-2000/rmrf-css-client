@@ -9,9 +9,9 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
   fn=()=>{
     used='', css='', styles = styleSheets[at], threshold=trimCSS.threshold = 102468/*100.06 KB*/;
     
-    let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, keepIndex=0, index=0, each, len=styles.length; canAdd=!0, each = styles.charAt(index), _used='', _css='';
+    let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='';
     callback=(canAdd=!0, each)=>{
-      progress(index>threshold?[_used, _css]:[used, css], used, keepIndex>len?len:keepIndex, len, frameId);
+      progress(/*index>threshold?*/[_used, _css]/*:[used, css]*/, used, keepIndex>len?len:keepIndex, len, frameId);
       _used=_css='';
       /** ease and easeL below are used to make the loop run at its default speed until
        * ease===easeL.
@@ -20,9 +20,8 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
        * when the options appear thereby making the user still in control especially for relatively small stylesheets that may seem to
        * be trimmed too fast.
        * Adjusting easeL above to lesser values reduces this extra time a user has to throttle the said speed.
+       * ease<easeL&&ease++;
        */
-      // ease<easeL&&ease++;
-
       for(let jump=0, boost=trimCSS.boost||1; jump<boost/*(boost=ease===easeL&&trimCSS.boost?trimCSS.boost:1)*/; jump++) {
         each = styles.charAt(index)||(jump=boost, '');
 
@@ -81,5 +80,4 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
 }
 
 
-const storeComments=(i, s, arr)=>(loop(s, {from:i, cb:(s,f,t,r)=>s.charAt(f++)+s.charAt(f)==='*/'&&(i=f, arr.push(r[0]+'*/'), !0) }), i),
-atRuleEnd=(styles, index, exit_rule, res='')=>(loop(styles, { from:index, cb:(s,f, t, bool)=>(bool=!(t=s[++index]||s[--index]).match(/\s/), res+=s[f], exit_rule=t==='}', bool)}), [exit_rule, index, res]);
+const atRuleEnd=(styles, index, exit_rule, res='')=>(loop(styles, { from:index, cb:(s,f, t, bool)=>(bool=!(t=s[++index]||s[--index]).match(/\s/), res+=s[f], exit_rule=t==='}', bool)}), [exit_rule, index, res]);

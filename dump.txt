@@ -13,7 +13,7 @@ page={
     page.done.reset&&page.done.reset()/*call defined functions before reset*/,
     qs('[contenteditable]').contentEditable=true,
 
-/*Object.freeze prevent properties from being added to an object but
+/*Object.freeze prevents properties from being added to an object but
 it fails to account for functions that are treated as object by defining properties on their name.
 Doing what Object.freeze should have considered - preventing properties from being defined on functions and deleting them if they are
 */
@@ -40,8 +40,8 @@ Doing what Object.freeze should have considered - preventing properties from bei
   endIp: _=>location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app',
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
-    i||=0, setTimeout(_=>_=setInterval(n=>{
-      i>=classes.length&&(o(notify,['lEC', 'cL'])[flag?'add':'remove']('to-fro', 'border-2'), clearInterval(_), setTimeout(_=>qs('.__class__').querySelector('input').focus()),
+    i||=0, setTimeout(_=>_=requestAnimationFrame(n=>{
+      i>=classes.length&&(o(notify,['lEC', 'cL'])[flag?'add':'remove']('to-fro', 'border-2'), cancelAnimationFrame(_), setTimeout(_=>qs('.__class__').querySelector('input').focus()),
       !flag&&(o(notify, 'fEC').innerHTML='Press enter to continue.<br>You may input other attributes that do not end with <span class=font-semibold>class</span> or <code class=font-semibold>id</code> (they are already sorted) and, that equal CSS selectors to add them to the found selectors'),
       done&&done()),
       qs('.__class__').querySelector('code').textContent = i +' selectors found', ++i
@@ -56,7 +56,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
     t.getStrings=(arr, res, loop)=>{
       if(!res) return;
-      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/`|'|"/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
+      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/'|"|`/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
         if(e==='/'&&/\/|\*/.test(nxt=res.charAt(i+1))) cmt=loop(res, {from:i, cb:(s,f,e)=>{
           return nxt==='/' ? s[f-1]==='\n': (s[f-2]+s[f-1]==='*/')
         }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;

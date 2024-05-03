@@ -23,7 +23,7 @@ page={
     page.done.reset&&page.done.reset()/*call defined functions before reset*/,
     qs('[contenteditable]').contentEditable=true,
 
-/*Object.freeze prevent properties from being added to an object but
+/*Object.freeze prevents properties from being added to an object but
 it fails to account for functions that are treated as object by defining properties on their name.
 Doing what Object.freeze should have considered - preventing properties from being defined on functions and deleting them if they are
 */
@@ -66,7 +66,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
     t.getStrings=(arr, res, loop)=>{
       if(!res) return;
-      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/`|'|"/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
+      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/'|"|`/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
         if(e==='/'&&/\/|\*/.test(nxt=res.charAt(i+1))) cmt=loop(res, {from:i, cb:(s,f,e)=>{
           return nxt==='/' ? s[f-1]==='\n': (s[f-2]+s[f-1]==='*/')
         }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
@@ -308,12 +308,12 @@ page.clone()
 	  • Success or error? Try another HTML resource [again]
 	  <button class="ripple relative ml-3 rounded rounded-tr-xl p-3 ripple bg-blue-100" onclick="page.retry()">Another?</button>
 	</div>
-	<nav style='--tw-bg-opacity:calc(var(--bg-opacity-pad) + 0.3)' class='bg-gray-50 ext-sm backdrop-blur backdrop-filter z-1 [&>*]:relative lg:right-1/4 lg:left-1/4 sm:right-24 sm:left-24 left-0 right-0 [&>*]:p-2 rounded-t-3xl [&>*]:align-middle flex justify-around [&>*]:inline-block bottom-0 fixed p-1 px-3 border border-b-0 border-gray-500'>
+	<nav style='--tw-bg-opacity:calc(var(--bg-opacity-pad) + 0.3)' class='bg-gray-50 text-sm backdrop-blur backdrop-filter z-1 [&>*]:relative lg:right-1/4 lg:left-1/4 sm:right-24 sm:left-24 left-0 right-0 [&>*]:p-2 rounded-t-3xl [&>*]:align-middle flex justify-around [&>*]:inline-block bottom-0 fixed p-1 px-3 border border-b-0 border-gray-500'>
 	  <a class='ripple' href='roadmap.html'><i class='p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>roadmap<i class='text-xs inline-block ml-1 text-gray-700 fa fa-external-link-alt'></i></a>
           <div>
 	    <a class='relative ripple' href='javascript:void(0)'><i class='m-2 inline-block align-middle text-2xl fa fa-signal text-gray-700'></i>scale</a>
 	    <section style='--arrow-size:10px;' class="sm:w-auto w-96 h-68 absolute tooltip slide-y to-top border border-gray-500 bg-white rounded-xl p-4 text-xs md:text-sm sm:flex sm:justify-around sm:items-center sm:space-x-6">
-		<h5 class="p-2 bg-inherit left-0 w-full text-gray-600 absolute bottom-full">Scale by trimming the CSS used by multiple pages in your website</h5>
+		<h5 class="p-2 bg-inherit left-0 w-full text-gray-600 absolute bottom-full">Scale by trimming the CSS used by multiple pages in your website at once</h5>
 	<strong class="text-center">Contact</strong>
 	<form onsubmit="return false;" style="--focus-within-no-focus-transition: opacity 0.5s ease, transform 0.3s 0.05s ease-out, visibility 0s 0.12s; margin: auto;" class="send-email absolute no-focus-within flex flex-col bottom-2 border-2 bg-white p-1.5 top-10 right-0 sm:right-2 left-0 sm:left-24 sm:top-2 sm:bottom-4 tooltip no-hover no-focus slide rounded-inherit">
 		<div class="w-full space-x-2 items-center justify-between flex sm:flex-col sm:items-start sm:space-x-0">

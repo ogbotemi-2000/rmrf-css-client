@@ -16,10 +16,10 @@ http.createServer((req, res, str, params={})=>{
 
     // req.url.match(/tail|page|all/)&&(req.url=req.url.replace('css', 'trimmed')),
     console.log('::URL::', req.url),
-    /*res.writeHead(200, {
+    res.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     })
-    */
+    
     new Promise((resolve, rej, cached)=>{
     /*(cached=cache[req.url])?resolve(cached):*/fs.readFile(req.url, (err, buf)=>{
         if(err) rej(err);
@@ -34,8 +34,8 @@ http.createServer((req, res, str, params={})=>{
     }),
     res.end(cached)
     }).catch((err, str)=>{
-    console.log(str='::ERROR:: '+err)
-    res.end(str)
+        console.log(str='::ERROR:: '+err),
+        res.end(str)
     })
 }).listen(port=process.env.PORT||+values['-p'], '0.0.0.0', function() {
     console.log('Server listening on <PORT>', port, 'under <DIRECTORY>', values['-d'], 'and serving assets from <DIRECTORY>', values['-a']);

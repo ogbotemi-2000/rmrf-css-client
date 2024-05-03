@@ -15,7 +15,7 @@ http.createServer((req, res, str, params={})=>{
   console.log('::URL::', req.method, req.url, params),
   res.writeHead(200, {
     'Access-Control-Allow-Origin': '*'
-    /** Remember to set the above header to the url of the static github page for hosting this idea.
+    /** Remember to set the above header to the url of the static website for hosting this idea.
      * [An experiment]:: Doing the above will even block requests of this server to itself, perhaps
      * the pattern noticed below will not hold by then...
       */
@@ -36,7 +36,7 @@ http.createServer((req, res, str, params={})=>{
    * A solution is to just prevent this behaviour if the file is not actively being modified
    */
   /** the only bit needed when this server acts as the endpoint for the SaaS, simply ends the requests that do not conform */
-  params.url ? (require('./get')(params.url, params.for, res)) : res.end('<!DOCTYPE HTML><html><head><title>Improper communication- 0_0</title></head></html>')
+  params.url ? (require('./get')(params.url, params.for, res)) : res.end('<!DOCTYPE HTML><html><head><title>Unsupported communication schema - 0_0</title></head></html>')
 })
 /*added 0.0.0.0 as hostname below for successful deployments on railway*/
 .listen(port=+values['-p'], '0.0.0.0', function() {
