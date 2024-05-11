@@ -127,7 +127,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	setTimeout(_=>trigger.focus(), 100);
       },
       out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
-      !len&&setTimeout(_=>cb(len), 500)
+      !len&&setTimeout(_=>cb(len), 500),
 
     t.least=t.count=0, t.files=[],
     t.download=(index, blob, name, names, ext)=>{
@@ -135,7 +135,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         name = (name=page.assets.css[t.count])?name.split('/').pop().replace('.css', ''):'file',
 	name+='--'+names[index]+'.'+ext, blob = new Blob([t.files[index]], {type:`text/${ext}`}),
 	save(blob, name, !index)
-    },
+    };
     t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
       fetched_css=t.fetched_css||=fetched_css||[];
       if(_o) {
@@ -158,8 +158,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       t.begin=(trigger, n, ctx, outs, format, cls)=>{
 	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
 	t.count===t.all&&(t.count=t.least), 
-	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)),
-  o(ctx=nES.children[n=t.count], 'cL').add(cls),
+	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)), o(ctx=nES.children[n=t.count], 'cL').add(cls),
   
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
         trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
@@ -243,7 +242,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           setTimeout(_=>rgxes.forEach((e, i, prop, p, inline, len)=>{
             prop=(e+'').replace(/\/|g/g, ''), p=asides[i].querySelector('p'), inline=o(p, 'nES'),
             p.textContent=inline.innerHTML?(o(inline, 'cL').replace('absolute', 'show'), `[ ${len=inline.innerHTML.match(e).length} ] Inline ${prop+(len?'s':'')} present`)
-            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight)
+            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight*0.5)
           }), 800)
         } else {
           let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
@@ -276,6 +275,10 @@ Doing what Object.freeze should have considered - preventing properties from bei
 /*make a clone of page early on to make retries easier*/
 page.clone()
         </script>
+<style>
+/*empty*/
+</style>
+
         <style>
         html {
           --border-gradient-angle:0deg;
@@ -309,10 +312,15 @@ page.clone()
 	  <button class="ripple relative ml-3 rounded rounded-tr-xl p-3 ripple bg-blue-100" onclick="page.retry()">Another?</button>
 	</div>
 	<nav style='--tw-bg-opacity:calc(var(--bg-opacity-pad) + 0.3)' class='bg-gray-50 text-sm backdrop-blur backdrop-filter z-1 [&>*]:relative lg:right-1/4 lg:left-1/4 sm:right-24 sm:left-24 left-0 right-0 [&>*]:p-2 rounded-t-3xl [&>*]:align-middle flex justify-around [&>*]:inline-block bottom-0 fixed p-1 px-3 border border-b-0 border-gray-500'>
-	  <a class='ripple' href='roadmap.html'><i class='p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>roadmap<i class='text-xs inline-block ml-1 text-gray-700 fa fa-external-link-alt'></i></a>
-          <div>
-	    <a class='relative ripple' href='javascript:void(0)'><i class='m-2 inline-block align-middle text-2xl fa fa-signal text-gray-700'></i>scale</a>
-	    <section style='--arrow-size:10px;' class="sm:w-auto w-96 h-68 absolute tooltip slide-y to-top border border-gray-500 bg-white rounded-xl p-4 text-xs md:text-sm sm:flex sm:justify-around sm:items-center sm:space-x-6">
+	  <a style='overflow:visible' class='ripple' href='roadmap.html'><i class='z-2 p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>
+      <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 bottom-full base:bottom-0 left-0">roadmap</pre>
+      <i class='text-xs inline-block ml-1 text-gray-700 fa fa-external-link-alt'></i>
+      </a>
+      <div>
+	    <a style='overflow:visible' class='relative ripple' href='javascript:void(0)'><i class='m-2 inline-block align-middle text-2xl fa fa-signal text-gray-700'></i>
+        <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 bottom-full left-0 base:bottom-0">scale</pre>
+      </a>
+	    <section style="z-index:1; --arrow-size:10px;" class="sm:w-auto w-96 h-68 absolute tooltip slide-y to-top border border-gray-500 bg-white rounded-xl p-4 text-xs md:text-sm sm:flex sm:justify-around sm:items-center sm:space-x-6">
 		<h5 class="p-2 bg-inherit left-0 w-full text-gray-600 absolute bottom-full">Scale by trimming the CSS used by multiple pages in your website at once</h5>
 	<strong class="text-center">Contact</strong>
 	<form onsubmit="return false;" style="--focus-within-no-focus-transition: opacity 0.5s ease, transform 0.3s 0.05s ease-out, visibility 0s 0.12s; margin: auto;" class="send-email absolute no-focus-within flex flex-col bottom-2 border-2 bg-white p-1.5 top-10 right-0 sm:right-2 left-0 sm:left-24 sm:top-2 sm:bottom-4 tooltip no-hover no-focus slide rounded-inherit">
@@ -388,7 +396,10 @@ page.clone()
 	</aside>
 </section>
 	  </div>
-	  <a class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-money-check-alt text-gray-700'></i>support</a>
+
+	  <a style='overflow:visible' class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-money-check-alt text-gray-700'></i>
+      <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 text-left bottom-full base:bottom-0 left-0">support</pre>  
+    </a>
 	</nav>
         <section class="mb-32 pt-20 relative text-center px-10">
           <!--overflow-hidden class on section below showed only the elements in .__class__ -  had to remove it-->

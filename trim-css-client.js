@@ -1,3 +1,5 @@
+(function() {
+
 let loop =  both.loop;
 function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, recon, end, callback, atRules=['import', 'keyframes', 'charset', 'font-face', 'property'], i=0, matched=[], unmatched=[], css='', ruleEnd, used='', keys, rkeys, vw_breaks, styles, fn, endDump={}, dump={}) {
   /** vw_breaks will be provided by the user when normal media query matching code fails */
@@ -11,25 +13,23 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
     
     let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='';
     callback=(canAdd=!0, each)=>{
-      progress(/*index>threshold?*/[_used, _css]/*:[used, css]*/, used, keepIndex>len?len:keepIndex, len, frameId);
-      _used=_css='';
+      progress(index>threshold?[_used, _css]:[used, css], used, keepIndex>len?len:keepIndex, len, frameId);
+      /* clear the displayed styles when their size exceed a calculated limit at which the UI begins to hang from too much text on the DOM*/
+      _used.length>=threshold&&(_used=''), _css.length>threshold&&(_css='');
       /** ease and easeL below are used to make the loop run at its default speed until
        * ease===easeL.
        * 
-       * This is desired as a brilliant UX feature whereby there is a few seconds extra for a user to throttle the trimming speed 
+       * This is useful as a brilliant UX feature whereby there is a few seconds extra for a user to throttle the trimming speed 
        * when the options appear thereby making the user still in control especially for relatively small stylesheets that may seem to
        * be trimmed too fast.
        * Adjusting easeL above to lesser values reduces this extra time a user has to throttle the said speed.
        * ease<easeL&&ease++;
        */
       for(let jump=0, boost=trimCSS.boost||1; jump<boost/*(boost=ease===easeL&&trimCSS.boost?trimCSS.boost:1)*/; jump++) {
-        each = styles.charAt(index)||(jump=boost, '');
+        each = styles.charAt(index)||(jump=boost, ''),
 
         /** overlook comments for now even ones that have CSS rules being matched in the code */
-        switch(loop(styles, {from:index, to:2})[0]) {
-          case '/*': _canAdd=0; break;
-          case '*/': _canAdd=!0; break;
-        }
+        _canAdd = notComment(styles, index);
 
         if(_canAdd&&each==='@') {
           let temp='', res='', add=0, kFrame, added='';
@@ -44,10 +44,11 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
           if(res.charAt(0)) kFrame=loop(styles, {from:index-1, back:!0, cb:(s,f,t,r)=>!s[f-1]||!s[f].match(/\s/)})[0], res='\n'.repeat(!kFrame.match('\n'))+kFrame+res, !res.match('@media')
             ? (used+=_used=res+added+added+(res.match(/@(import|charset)/)?(canAdd=0, ';'):''), index=add) : (dump[at_rule]||=res+'{', index=add, css+=_css=res);
         }
-        
+	      each = styles.charAt(index);
+	      if(_canAdd) '';
         //update 'each' for changes made to 'index' above
         canAdd&&(css+=each=styles.charAt(index), _css+=each), canAdd=true;
-        
+
         if(/\.|#/g.test(each)&&!/[0-9]/.test(styles.charAt(index+1))) attrs.forEach((attr, to='')=>{
           to=loop(styles, {from:index+1, to:attr.length});
 
@@ -68,6 +69,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
           } else !~unmatched.indexOf(attr)&&unmatched.push(attr);
         });
 
+	/* clear the throttled output strings at the end of a blocks of styles */
         if(styles.charAt(index)==='}') at_rule&&(ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], at_rule=0);
         keepIndex = index++, trimCSS.reset=_=>{is_reset=true, index=len, jump=boost};
       }
@@ -79,5 +81,15 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
   fn()
 }
 
+const notComment=(styles, index)=>{
+  notComment._canAdd===void 0 &&(notComment._canAdd=true);
+  switch(loop(styles, {from:index, to:2})[0]) {
+    case '/*': notComment._canAdd=0; break;
+    case '*/': notComment._canAdd=!0; break;
+  }
+  return notComment._canAdd
+},
+atRuleEnd=(styles, index, exit_rule, res='')=>(loop(styles, { from:index, cb:(s,f, t, bool)=>(bool=!(t=s[++index]||s[--index]).match(/\s/), res+=s[f], exit_rule=t==='}', bool)}), [exit_rule, index, res]);
 
-const atRuleEnd=(styles, index, exit_rule, res='')=>(loop(styles, { from:index, cb:(s,f, t, bool)=>(bool=!(t=s[++index]||s[--index]).match(/\s/), res+=s[f], exit_rule=t==='}', bool)}), [exit_rule, index, res]);
+window.trimCSS = trimCSS
+})()

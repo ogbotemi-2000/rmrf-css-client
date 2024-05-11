@@ -439,8 +439,17 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 }
 
 @media (min-width: 500px)  {
+	 .base\:bottom-0 {
+		bottom: 0px;
+	 }
+	 .base\:p-0 {
+		padding: 0px;
+	 }
+	 .base\:bg-transparent {
+		background:transparent
+	 }
 
-	 .tooltip.base\:show  {
+	.tooltip.base\:show  {
 
 	 visibility: visible;
 

@@ -117,7 +117,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 	setTimeout(_=>trigger.focus(), 100);
       },
       out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
-      !len&&setTimeout(_=>cb(len), 500)
+      !len&&setTimeout(_=>cb(len), 500),
 
     t.least=t.count=0, t.files=[],
     t.download=(index, blob, name, names, ext)=>{
@@ -125,7 +125,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         name = (name=page.assets.css[t.count])?name.split('/').pop().replace('.css', ''):'file',
 	name+='--'+names[index]+'.'+ext, blob = new Blob([t.files[index]], {type:`text/${ext}`}),
 	save(blob, name, !index)
-    },
+    };
     t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
       fetched_css=t.fetched_css||=fetched_css||[];
       if(_o) {
@@ -148,8 +148,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       t.begin=(trigger, n, ctx, outs, format, cls)=>{
 	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
 	t.count===t.all&&(t.count=t.least), 
-	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)),
-  o(ctx=nES.children[n=t.count], 'cL').add(cls),
+	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)), o(ctx=nES.children[n=t.count], 'cL').add(cls),
   
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
         trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
@@ -233,7 +232,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           setTimeout(_=>rgxes.forEach((e, i, prop, p, inline, len)=>{
             prop=(e+'').replace(/\/|g/g, ''), p=asides[i].querySelector('p'), inline=o(p, 'nES'),
             p.textContent=inline.innerHTML?(o(inline, 'cL').replace('absolute', 'show'), `[ ${len=inline.innerHTML.match(e).length} ] Inline ${prop+(len?'s':'')} present`)
-            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight)
+            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight*0.5)
           }), 800)
         } else {
           let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
@@ -266,6 +265,10 @@ Doing what Object.freeze should have considered - preventing properties from bei
 /*make a clone of page early on to make retries easier*/
 page.clone()
         
+_____
+
+/*empty*/
+
 _____
 
         html {
