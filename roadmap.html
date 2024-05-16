@@ -124,7 +124,7 @@ p-1 absolute bg-current rounded-full"><pre class="font-normal text-gray-700 tool
 txts = ['ideation', 'development', 'quirks & solutions', 'goals', 'workarounds', 'coming soon...'],
 (intro=qs('aside h2')).innerHTML=['R','e','m','C','S','S','•'].concat(txts[Math.random()*txts.length|0].split('')).map((e, i)=>`<span ${i<6?"class='font-fredoka font-semibold'":i==6&&"class='mx-2'"||"class='__morph'"} style='--delay:${i*0.02}s'>${e}</span>`).join(''),
 
-setTimeout(_=>intro.classList.add('[&>*]:animate-y-full'), 500)
+requestAnimationFrame(_=>intro.classList.add('[&>*]:animate-y-full'), 500)
 /*intro end*/
 })
 

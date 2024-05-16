@@ -13,7 +13,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
     
     let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='';
     callback=(canAdd=!0, each)=>{
-      progress(index>threshold?[_used, _css]:[used, css], used, keepIndex>len?len:keepIndex, len, frameId);
+      progress(index>threshold?[_used, _css]:[used, css], used, keepIndex>len?len:keepIndex, len, index>threshold);
       /* clear the displayed styles when their size exceed a calculated limit at which the UI begins to hang from too much text on the DOM*/
       _used.length>=threshold&&(_used=''), _css.length>threshold&&(_css='');
       /** ease and easeL below are used to make the loop run at its default speed until

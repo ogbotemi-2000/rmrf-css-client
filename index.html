@@ -1,18 +1,30 @@
-<!DOCTYPE HTML><html data-classname="unused-css"><head>
+<!DOCTYPE HTML><html debug-ids='header__loading' debug-classes="header header__logo header__logoLink"><head>
         <title>Open source software for external stylesheet trimming and comparison</title><meta charset="utf-8"><meta name="theme-color" content="#ff056"><meta name="color-scheme" content="light"><meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" href="css/tailwind.min.css">
-        <link rel="stylesheet" href="css/all.css"><link rel="stylesheet" href="css/page.css">
-	<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+        <link rel="stylesheet" href="css/all.css">
+        <link rel="stylesheet" href="css/page.css">
+	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
-        <script src="both.js"></script>
-        <script src="trim-css-client.js"></script>
-        <link rel="shortcut icon" href="favicon.ico">
+        <script src="js/both.js"></script>
+        <script src="js/trim-css-client.js"></script>
+        <link rel="shortcut icon" href="favicon.png">
 
 <script>
 let script = d.createElement('script');
   script.src="../js/email.min.js", script.id='loadEmail',
   window.emailjs?(emailjs.init("mP1S96NaJfOO3FpUR"), emailjsInited=false):(emailjsInited=true, d.head.append(script));
 </script>
+<style debug-1>
+.header{width:100%;background:var(--background-surface-color);height:46px}.sc-classic .header{background:#333}.header__logo{background:var(--background-surface-color)}.sc-classic .header__logo{background:#333}body:not(.sc-classic) .header__logoLink{display:flex;flex-direction:column;justify-content:center;align-content:center}.header__logoLink{height:46px;width:48px}.header__logoLink svg{color:var(--primary-color)}.sc-classic .header__logoLink{background:transparent url(https://a-v2.sndcdn.com/assets/images/header/brand-1b72dd8210.svg) no-repeat 0 11px;background-size:49px 22px;display:block;height:46px;width:49px;margin-right:23px}.sc-classic .header__logoLink{background-image:url(https://a-v2.sndcdn.com/assets/images/header/cloud-e365a472bf.png);background-position-x:12px;background-size:48px 22px;width:69px;margin-right:unset}.sc-classic .header__logoLink svg{display:none}.header__logoLink:focus{background-color:rgba(255,72,0,.8);outline:0}#header__loading{margin:13px auto 0;width:16px;background:url(https://a-v2.sndcdn.com/assets/images/loader-dark-45940ae3d4.gif) center no-repeat;background-size:16px 16px}@media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi),(min-resolution:2dppx){.sc-classic .header__logoLink{background-image:url(https://a-v2.sndcdn.com/assets/images/header/cloud@2x-e5fba4606d.png)}}
+</style>
+
+<style debug-2>
+.errorPage__inner{width:580px;margin:0 auto;position:relative;padding-top:460px;background:url(https://a-v2.sndcdn.com/assets/images/errors/500-e5a180b7a8.png) no-repeat 50% 80px;text-align:center;transition:all 1s linear}.errorTitle{margin-bottom:10px;font-size:30px}.errorText{line-height:28px;color:#666;font-size:20px}.errorButtons{margin-top:30px}@media (max-width:1280px){.errorPage__inner{background-size:80%}}
+</style>
+
+<style debug-3>
+"#updateBrowserMessage{width:600px;margin:0 auto;position:relative;padding-top:410px;background:url(https://a-v2.sndcdn.com/assets/images/errors/browser-9cdd4e6df7.png) no-repeat 50% 130px;text-align:center;display:none}#updateBrowserMessage .messageText{line-height:26px;font-size:20px;margin-bottom:5px}#updateBrowserMessage .downloadLinks{margin-top:0}
+</style>
 
 <script>
 window.onerror = function(e) {
@@ -25,7 +37,7 @@ page={
 
 /*Object.freeze prevents properties from being added to an object but
 it fails to account for functions that are treated as object by defining properties on their name.
-Doing what Object.freeze should have considered - preventing properties from being defined on functions and deleting them if they are
+Doing what Object.freeze should have considered - preventing properties from being defined on functions of frozen objects and deleting them if they are
 */
 ['done', 'fetch_readScripts'].forEach(fn_name=>{
   fn_name = this.template[fn_name];
@@ -39,6 +51,8 @@ Doing what Object.freeze should have considered - preventing properties from bei
       (cls=e.classList).contains('absolute')?cls.remove('show'):cls.replace('show', 'absolute'),
       cls.remove('sm:h-96', 'from-yellow-300')
     }), qsa('section>section').forEach(e=>e.classList.toggle('show')),
+
+    /*empty the contents of  elements that have dynamic children*/qsa('[data-dynamic]').forEach(e=>e.textContent=''),
     o(notify, 'fEC').className='', o(retry, 'cL').remove('show'),
     trigger.lastChild.data='start', qsa('[disabled]').forEach(e=>e.removeAttribute('disabled'))
   },
@@ -58,10 +72,14 @@ Doing what Object.freeze should have considered - preventing properties from bei
     }))
   },
   gen:length=>Array.from({length}),
-  fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, lat=2000, cls, xhr, srcs, els, t, write, url=page.url) {
-    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, d.body.scrollHeight*0.5), els = filter(o(qs('.__class__'), 'nES').querySelector('h4+div').children, (_,i)=>!(i%2)),
+  fetch_readScripts: function(ctx, out, hr, o, onload, onerror, request, latency=1000, cls, xhr, srcs, els, t, write, url=page.url, odd, chld, timeout) {
+    t=this.fetch_readScripts, t.gen=_=>this.gen(srcs.length), w.scrollTo(0, notify.offsetTop*0.7), odd = (_,i)=>!(i%2),
+    els = filter(slice(chld = o(qs('.__class__'), 'nES').querySelector('h4+div').children, 0, /*ignore the last two*/-2), odd)
+    .concat(filter(chld[chld.length-2/*penultimate*/].children, odd)),
+
     srcs=this.assets.js, xhr=t.sync||=new XMLHttpRequest, t.async ||=t.gen().map(_=>new XMLHttpRequest),
-    t.failed||=0, t.count||=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount ||=0,
+    t.failed=0, t.count=0, t.strings||=t.gen(), t.responses||=t.gen(), t.sentCount=0,
+    t.aborted = 0
     
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
     t.getStrings=(arr, res, loop)=>{
@@ -76,18 +94,19 @@ Doing what Object.freeze should have considered - preventing properties from bei
         ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
       }
     },
-
+    t.scriptElems = els,
     onload = function(e, i, fromCDN, tgt, st, res, bool, arr) {
       ++t.count, res=(tgt=e.target).response, st=tgt.status+'', bool=(/^(1|2)/.test(st.charAt(0))||304==st),
       t.failed+=!bool, bool&&(t.responses[i]=res, !fromCDN&&t.getStrings(t.strings[i]||=[], res, both.loop)),
-
-      els[i].classList.add('bg-'+(bool?'green':'red')+'-200'), t.write()
-    }, onerror=function(e, i, bool) {
-      ++t.failed, t.write(t.count+=true), els[i]&&els[i].classList.add('bg-red-200')
+      els[i]&&!o(els[i], 'cL').contains('bg-gray-200')&&o(els[i], 'cL').add('bg-'+(bool?'green':'red')+'-200'), t.write()
     },
-    /*lat represents the time delay required to make the user have a time to act on the page choices for concurrent requests */
+    onerror=function(e, i, bool) {
+      t.failed++, t.write(t.count+=true), els[i]&&!o(els[i], 'cL').contains('bg-gray-200')&&o(els[i], 'cL').add('bg-red-200')
+    },
+    /*latency represents the time delay required to make the user have a time to act on the page choices for concurrent requests */
     /*the setTimeout delay in "request" is needed to prevent the browser from dropping the incoming response for the first request in favour of making the current one*/
-    request=_=>setTimeout(_=>{xhr.open('GET', srcs[t.count].match(/^(http|www)/)?srcs[t.count]:this.domain+srcs[t.count]), setTimeout(_=>xhr.send(), lat)}),
+    
+    t.request = request=_=>setTimeout(_=>{clearTimeout(timeout), srcs[t.count]&&(xhr.open('GET', srcs[t.count].match(/^(http|www)/)?srcs[t.count]:this.domain+srcs[t.count]), timeout = setTimeout(_=>xhr.send(), latency))}),
     t.go=flag=>{/*nf stands for not fetched, it points to the numnber of empty elements in resources*/
       if(t.simultaneous=flag) !t.responses[t.sentCount]&&t.abort(xhr), t.async.slice(t.sentCount).forEach((e, i, src, fromCDN)=>{ (src=srcs[i+=t.sentCount])&&(e.open('GET', /^(http|www)/.test(src)?(fromCDN=!0, src):this.domain+src), e.onload=ev=>onload(ev, i, fromCDN), e.onerror=ev=>onerror(ev, i), e.send()) });
       else xhr.onerror=ev=>{ ++t.sentCount, t.count<(srcs.length-1)&&request(), onerror(ev, t.count) }, xhr.onload=ev=>{ ++t.sentCount, !t.simultaneous&&t.count<(srcs.length-1)&&request(), onload(ev, t.count) }, request();
@@ -100,18 +119,18 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`,
-        w.scrollTo(0, d.body.scrollHeight*0.5), setTimeout(_=>lEC.focus(), 120)
-      }, t.failed?3500:500)
+        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br><br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
+        /*provide more time to read about workarounds and details for failed fetched scripts*/
+      }, t.failed?4000:500)
     },
     !/Firefox/i.test(this.uA)&&cls(true),
     setTimeout(_=>{
-      /* uncomment to enforce async requests of scripts - t.simultaneous=true, */
+      /* uncomment to enforce async requests of scripts - t.simultaneous=true, moving ctx.aborted into the inline condition causes a lull*/
       (t.write=(failed, init, i=t.count, bool=t.count<srcs.length-1, diff=srcs.length-t.count, plu=diff?'':'s')=>{out.innerHTML=t.count<srcs.length?(`Fetching data for <code class='font-semibold'>`+(t.simultaneous?`${diff=t.responses.length-t.sentCount}</code> script${diff===1?'':'s'}`:`${diff}</code> external script${diff===1?'':'s'}
         ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
-        :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="page.fetch_readScripts.write()">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
+        :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="let ctx=page.fetch_readScripts, el=ctx.scriptElems[ctx.count]; el&&el.classList.add('bg-gray-200'), ++ctx.aborted, ctx.count++, page.assets.js[ctx.count]&&(ctx.sync.abort(), ctx.request(), setTimeout(_=>ctx.write()))">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
         :(t.afterFetch_read(),
-        cls(false), `Fetched ${t.failed?'':'all'} ${diff=srcs.length-t.failed} script${diff===1?'':'s'}, ${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a href="http://localhost:8000/roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
+        cls(false), `Fetched ${t.failed?'':'all'} ${diff = (diff=srcs.length-t.failed-t.aborted)<0?0:diff} script${diff===1?'':'s'}, ${t.aborted?'aborted '+ t.aborted+', ':''}${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a target="_blank" href="http://localhost:8000/roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
         animations.addRippleAnimations()})()
       /*passing true to t.go beside makes an asynchronous request*/t.go(/*uncomment for async- true*/)
     }, 2500/*200*/)
@@ -119,22 +138,21 @@ Doing what Object.freeze should have considered - preventing properties from bei
   done: function(txt, o, btn, strs, t, _o, from, out, len, cb) {
     writeCSS.children[0].querySelector('pre').textContent='used CSS styles', trigger.removeAttribute('disabled'), t=this.done;
     /*the checks involving _o below are to ensure that the codes they are for are executed when done is called the designated in the flow of the app*/
-    if(_o=o) o(notify, ['lEC', 'cL']).add('to-fro', 'border-2'), (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  o(btn, ['pES','cL']).add('hidden'), btn.disabled=true,
+    if(_o=o) o(notify, ['lEC', 'cL']).add('to-fro', 'border-2'), (strs=o(btn, ['pN', 'nES'])).innerHTML=`<i class='text-sm'>• added the strings to the found CSS selectors. •</i>`, txt=txt.replace(/•/g, '').replace(/\s+/g, ' ').split(' ').filter(e=>e), btn.textContent='done',  btn.disabled=true,
       ['disabled', 'contenteditable'].forEach(attr=>strs.setAttribute(attr, false)), strs.blur(),  from=page.classes.length, qs('section>aside').classList.add('from-yellow-300'),
       txts=['ing', 'ed'].map(e=>`Add${e} the ${txt.length} extra string${txt.length==1?'':'s'} in the input field above to the number of found selectors`),
-      cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), w.scrollTo(0, d.body.scrollHeight),
+      cb=_=>{o(notify, ['lEC', 'cL']).remove('to-fro', 'border-2'), o(notify, ['pN', 'nES', 'cL']).replace('absolute', 'show'), t.prepare(o), setTimeout(_=>w.scrollTo(0, d.body.scrollHeight), 350),
         out.innerText = `${len?txts[1]:'No strings matched or provided in the input box above'}.\nBeginning what you are here for - extracting used styles from all the CSS files using the ${page.classes.length} found selectors`,
-	setTimeout(_=>trigger.focus(), 100);
+	      setTimeout(_=>trigger.focus(), 100);
       },
       out=o(notify, 'fEC'), (len=txt.length)&&(out.textContent = txts[0]+'...', this.detectAttrs(page.classes=page.classes.concat(txt), true, o, from, _=>setTimeout(cb, 1500))),
       !len&&setTimeout(_=>cb(len), 500),
 
     t.least=t.count=0, t.files=[],
+    
     t.download=(index, blob, name, names, ext)=>{
-	names=['matched', 'unmatched', 'used', 'unused'], ext=index>1?'txt':'css',
-        name = (name=page.assets.css[t.count])?name.split('/').pop().replace('.css', ''):'file',
-	name+='--'+names[index]+'.'+ext, blob = new Blob([t.files[index]], {type:`text/${ext}`}),
-	save(blob, name, !index)
+	    names=['matched', 'unmatched', 'used', 'unused'], ext=index>1?'txt':'css', name ||= (name=page.assets.css[t.count])?name.split('/').pop().replace('.css', ''):'file',
+      !name&&(name+='--'+names[index]+'.'+ext), blob = new Blob([blob||t.files[index]], {type:`text/${ext}`}),save(blob, name, !index)
     };
     t.prepare=(o, fetched_css, html='', fetched, all, nES, arr=['show', 'absolute'], css)=>{
       fetched_css=t.fetched_css||=fetched_css||[];
@@ -142,32 +160,37 @@ Doing what Object.freeze should have considered - preventing properties from bei
         all=this.inlineStyles.concat(t.fetched_css.filter(e=>e)), css=this.assets.css,
         /*increment count to jump over the absent css assets when matching used classnames*/
         fetched_css.forEach((e,i)=>{html+=`<div class='font-bookweb ${e?'border border-gray-400 ':(t.least=++t.count, 'bg-red-200 ')}truncate mr-4' style='max-width:18rem;'>${e?'<hr style="--tw-bg-opacity:0.7; --tw-translate-x:-100%" class="border-0 transform bg-green-200 h-full absolute inset-0 -left-2 -right-2">':''}<span class="relative">${css[i]}</span></div>`}),
-        (this.inlineStyles||[]).forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-bg-opacity:0.7; --tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200 -left-2 -right-2"><span class="relative">${e}</span></div>`),
+        this.inlineStyles.forEach((e, i)=>html+=`<div class='font-bookweb truncate mr-4 border border-gray-400' style='max-width:18rem;'><hr style='--tw-bg-opacity:0.7; --tw-translate-x:-100%' class="transform border-0 h-full absolute inset-0 bg-green-200 -left-2 -right-2"><span class="relative">${e}</span></div>`),
 
         o(ctx=o(notify, ['pN', 'nES']).querySelector('section'), 'pES').textContent = `Scanning stylesheets (${all.length})`,
         /*populate the div bearing the stylesheets for the next section here while indicating unfetched external stylesheets by using red colour*/
-        (nES=o(ctx, 'nES')).innerHTML = html, [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
-        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-48'),
-        t.all=this.styles.length
+
+        (nES=o(ctx, 'nES')).innerHTML = html, nES.setAttribute('data-dynamic', ''), [ctx, nES].forEach((e, i)=>arr.forEach(cls=>o(e, 'cL').toggle(cls))),
+        this.styles = t.fetched_css.concat(this.styles), o(writeCSS, 'cL').replace('absolute', 'show'), o(writeCSS, 'cL').add('sm:h-48'), t.all=this.styles.length,
+        !(page.styles=page.styles.filter(e=>e)).length
+        &&(o(trigger, 'lC').data = `no styles to trim, download the ${page.classes.length} detected selectors instead`, o(retry, 'cL').add('show'))
       }
       t.reset=(ctx, cls)=>{
-        trimCSS.reset(), /*add a little delay for when progress below is called after done*/
-	setTimeout(_=>forEach(writeCSS.children, e=>e.firstElementChild.textContent=''), 60),
-	forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
+        trimCSS.reset&&trimCSS.reset(), /*add a little delay for when progress below is called after done*/
+	      setTimeout(_=>forEach(writeCSS.children, e=>e.firstElementChild.textContent=''), 60), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls))
       },
       t.begin=(trigger, n, ctx, outs, format, cls)=>{
-	t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 280), o(trigger, ['nES','cL']).replace('absolute', 'show')}, 3000),
-	t.count===t.all&&(t.count=t.least), 
-	outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)), o(ctx=nES.children[n=t.count], 'cL').add(cls),
+
+	      t.interval=setTimeout(_=>{setTimeout(_=>w.scrollTo(0, d.body.scrollHeight*w.innerWidth/640), 350), o(trigger, ['nES','cL']).replace('absolute', 'show'), o(qs('a[href$=coming-soon]'), 'cL').add('show')}, /*delay for speeding and nexting controls*/3e3),
+	      t.count===t.all&&(t.count=t.least), 
+	      outs=[0, 1].map(i=>o(writeCSS.children[i], 'fEC')), forEach(nES.querySelectorAll('.'+(cls='bg-yellow-200')), e=>o(e,'cL').remove(cls)), o(ctx=nES.children[n=t.count], 'cL').add(cls),
   
         format=str=>str.replace(/\{/g, e=>'\t'+e+'\n').replace(/,/g, e=>e+`\t`).replace(/\}/g, e=>'\n'+e).replace(/\;/g, e=>e+'\n'),
-        trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, frameId, ratio, frmt){
+        trimCSS(page.styles, page.classes, /*progress*/function(arr, used, i, tot, thresheld, ratio, frmt){
+          /* add or remove the blip to notify when throttling the CSS ouputs */
+          o(qs('pre .tooltip'), 'cL')[cLs(thresheld)]('show'),
 	  o(retry, 'cL').remove('show'), t.files=[], o(downloadCSS, 'cL').replace('show', 'absolute'), trigger.disabled=true, outs.forEach((e, i)=>{
             e.innerText = arr[i], setTimeout(_=>e.scrollTop = e.scrollHeight, 2000)
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
 	  ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
         }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
-     	  if(!reset) o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
+        console.log('::DONE::', reset);
+     	  if(!reset) o(qs('a[href$=coming-soon]'), 'cL').remove('show'), o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
 	    o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'),
 	    o(downloadCSS, 'cL').replace('absolute', 'show'), classes.forEach((e, i)=>t.files[i+2]=e);
       
@@ -207,11 +230,10 @@ Doing what Object.freeze should have considered - preventing properties from bei
     // (prot=url.match(/^http[a-z]*:\/\//g))?root=url.replace(prot=prot[0], '').split('/').shift():(prot='http://', root=url.split('/').shift(), url=prot+url),
     setTimeout(_=>{o(_=qs('section>section'), 'cL').add('show'), o(_, ['nES', 'cL']).remove('show')}, 200), page.url = url=url=url.length===1?prot+url:url.join('//')
     qs('section>article>code').textContent=url?'[URL]:: '+url:'[File Upload]:: '+(arr=slice(file.files).map(e=>e.name)).join(', '),
-    console.log('::URL::', url, this.domain),
+    this.inlineStyles = [],
 
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
-
     if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'/?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
         (res=ev.target.response).charAt(0)==='_'
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
@@ -219,6 +241,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 
         aside=o(notify, {2:'pN'}).querySelector('aside'),
         (json=res.charAt(0)==='{')&&(this.assets = assets = JSON.parse(split?split[0]:res), split&&(page.html=split[1]));
+
         if(!assets.error) {
           /*the if below handles response for the second request*/
         if(!json) {
@@ -228,38 +251,48 @@ Doing what Object.freeze should have considered - preventing properties from bei
           classes.length?(page.classes=classes, this.detectAttrs(classes, false, o), o(qs('.__class__'), 'cL').replace('absolute', 'show'))
           : (out.textContent='No attribute that equals CSS classes is present in this resource', hr.remove('to-fro', 'border-2'),
 	    ['show', 'absolute'].forEach(e=>o(retry, 'cL').toggle(e))),
-	  /*clear all HTML showing details of inline assets*/		
+	  /*clear all HTML showing details of inline assets*/	
+
 	  asides.forEach(aside=>o(aside.querySelector('p'), 'nES').innerHTML=''),
-          split[1].split(splits[1]).forEach((e, i, a)=>{
+          split[1].split(splits[1]).forEach((e, i, a, tag)=>{
+            tag = sliced =>'',
             [/^script/, /^style/].forEach((rgx, _i, ast)=>{
               ast = rgx.toString().replace(/\^|\//g, '')
               _i===0&&(page.hasScript||=_i),
               e.match(rgx)&&((page[ast+'s']||=[]).push(a[i+1]), p=asides[_i].querySelector('p'), (inline=o(p, 'nES')).innerHTML||='',
-              inline.innerHTML+=`<span class="p-0.5 px-2.5 border-transparent border-2 hover:border-current font-bookweb text-base mr-3 my-2">${(_i&&(this.inlineStyles||=[]).push(e), e)}<code class='text-black inline-block text-xs'>&nbsp;•&nbsp;${both.byteFormat(a[i+1].length)}</code></span>|`)
+              inline.setAttribute('data-dynamic', ''), inline.innerHTML+=`|<span class="p-0.5 px-2 border-transparent border-2 hover:border-current font-bookweb text-base mr-3">${(_i&&this.inlineStyles.push(e), e)}<code class='text-black inline-block text-xs'>&nbsp;•&nbsp;${both.byteFormat(a[i+1].length)}</code></span>`)
             })
           }),
-          asides.forEach((el, il)=>(il=el.querySelector('p+div')).innerHTML=il.innerHTML.replace(/\|$/,'')),
+          asides.forEach((el, il)=>(il=el.querySelector('p+div')).innerHTML=il.innerHTML.replace(/^\|/,'')),
           setTimeout(_=>rgxes.forEach((e, i, prop, p, inline, len)=>{
             prop=(e+'').replace(/\/|g/g, ''), p=asides[i].querySelector('p'), inline=o(p, 'nES'),
             p.textContent=inline.innerHTML?(o(inline, 'cL').replace('absolute', 'show'), `[ ${len=inline.innerHTML.match(e).length} ] Inline ${prop+(len?'s':'')} present`)
-            :`No inline ${prop+(len?'s':'')} detected`, w.scrollTo(0, d.body.scrollHeight*0.5)
+            :`No inline ${prop+'s'} detected`, setTimeout(_=>w.scrollTo(0, notify.offsetTop*.6), 500)
           }), 800)
         } else {
           let sort=[], css=assets.css, title, count=0, css_out=o(notify, ['pN', 'nES']).querySelector('section'), fetched_css=[],
           done=(res, bool, i)=>{sort.push(css[i]), fetched_css.push(res), o(css_out.children[i], ['fEC', 'cL']).remove('to-fro', 'bg-blue-200'),
-	   bool&&(css_out.innerHTML=``, setTimeout(_=>o(css_out, 'cL').replace('show', 'absolute'), 60), this.assets.css=sort, this.done().prepare(o, fetched_css))};
+          bool&&(css_out.innerHTML=``, setTimeout(_=>o(css_out, 'cL').replace('show', 'absolute'), 60), this.assets.css=sort, this.done().prepare(o, fetched_css))};
 
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
-            css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`,
+            css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`, css_out.setAttribute('data-dynamic', ''),
             xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
           let props = ['css', 'js'], txt=['linked stylesheets', 'external scripts']; setTimeout(_=>o(aside, 'cL').replace('absolute', 'show'), 60), page.hasScript=assets.js.length,
-          [aside, o(aside, {2:'nES'})].forEach((el, i, v)=>{
-            /*min text length for the given font size and font is 40 on IPhone SE*/
-            el.querySelector('h4+div').innerHTML = assets[v=props[i]].map(e=>`<span class="${e.length>40?'sm:w-full w-72 truncate ':''}p-1 px-3 text-black text-base font-bookweb">${e}</span>`).join('<hr class="inline-block mx-2 p-0.5 border border-current">'),
+          [aside, o(aside, {2:'nES'})].forEach((el, i, v, rest, limit, arr)=>{
+            /* give a full width to texts longer than 60 in length */
+            arr = assets[v=props[i]], limit = 3, tag=(sliced, flag)=>sliced.map((e, index, els)=>`<span style='max-width:24rem' class="${e.length>36?'w-full ':''}${flag&&i?'bg-white ':''} truncate p-1 px-3 text-black text-base font-bookweb${els.length-1===index?' mr-2':''}">${e}</span>`).join('<hr class="mx-2 p-0.5 border border-current">'),
+            el.querySelector('h4+div').innerHTML =  tag(arr.slice(0, limit), true) +
+            /* add the rest behind a "show more" button' */
+            ((arr = arr.slice(limit)).length?`<div style='margin-top:.75rem; border-radius:.5rem;' class='bottom-full w-full sm:w-auto mr-3 left-0 right-0 [&>*]:align-middle [&>*]:inline-block [&>*]:rounded-full space-y-1.5 p-3.5 bg-gray-100 shadow no-hover no-focus tooltip absolute slide-y'>${tag(arr)}</div>
+            <button onclick="let o=objWalk, txt=o(this, 'fC'), cls=o(this, ['pES', 'cL']), pN=o(this, [{2:'pN'}, 'cL']); ['sm:w-5/6', 'md:w-2/3', 'lg:w-1/3'].forEach(e=>pN.toggle(e)), ['show', 'absolute'].forEach(e=>cls.toggle(e)), o(this, ['lEC', 'cL']).toggle('fa-chevron-up'), txt.data = txt.data.replace(/^./, num=>num==='+'?'-':'+')" class='mt-3 rounded-lg p-1.5 px-2.5 text-blue-800 text-sm hover:bg-blue-100 focus:bg-blue-200 border-2 relative'>+ ${arr.length} more <i class='ml-1 inline-block align-middle fa fa-chevron-down'></i></button>`
+            /*the empty elements below are to avoid "undefined" errors when looking them up later on*/
+            :'<div></div><div></div>'),
+            
+            el.querySelector('h4+div').setAttribute('data-dynamic', ''),
             out.innerHTML = `Detecting selectors present in <code class='font-semibold'>class</code>, <code class='font-semibold'>id</code> attributes in the fetched document`,
             el.querySelector('h4').textContent=(assets[v].length?'Found ':'No ')+txt[i]
           }),
@@ -309,10 +342,10 @@ page.clone()
     <body>
 	<div class="border-b shadow-sm py-3 text-sm no-hover no-focus no-focus-within fixed tooltip -slide-y w-full text-center bg-white" id="retry">
 	  • Success or error? Try another HTML resource [again]
-	  <button class="ripple relative ml-3 rounded rounded-tr-xl p-3 ripple bg-blue-100" onclick="page.retry()">Another?</button>
+	  <button class="ripple relative mt-3 ml-3 rounded rounded-tr-xl p-3 ripple bg-blue-100" onclick="page.retry()">Another?</button>
 	</div>
 	<nav style='--tw-bg-opacity:calc(var(--bg-opacity-pad) + 0.3)' class='bg-gray-50 text-sm backdrop-blur backdrop-filter z-1 [&>*]:relative lg:right-1/4 lg:left-1/4 sm:right-24 sm:left-24 left-0 right-0 [&>*]:p-2 rounded-t-3xl [&>*]:align-middle flex justify-around [&>*]:inline-block bottom-0 fixed p-1 px-3 border border-b-0 border-gray-500'>
-	  <a style='overflow:visible' class='ripple' href='roadmap.html'><i class='z-2 p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>
+	  <a style='overflow:visible' class='ripple' target='_blank' href='roadmap.html'><i class='z-2 p-2 align-middle inline-block text-2xl fa fa-map-signs text-gray-700'></i>
       <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 bottom-full base:bottom-0 left-0">roadmap</pre>
       <i class='text-xs inline-block ml-1 text-gray-700 fa fa-external-link-alt'></i>
       </a>
@@ -397,25 +430,26 @@ page.clone()
 </section>
 	  </div>
 
-	  <a style='overflow:visible' class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-money-check-alt text-gray-700'></i>
-      <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 text-left bottom-full base:bottom-0 left-0">support</pre>  
-    </a>
+	  <span tabindex="0" style='overflow:visible' class='ripple' href='javascript:void(0)'><i class='p-2 align-middle inline-block text-2xl fa fa-money-check-alt text-gray-700'></i>
+      <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 text-left bottom-full base:bottom-0 left-0">support</pre>
+      <div class='w-60 tooltip to-left absolute' style='--arrow-size:5px; --delay:0.5s'><a href="https://www.buymeacoffee.com/oogbotemiT"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee, thanks&emoji=☕&slug=oogbotemiT&button_colour=FFDD00&font_colour=000000&font_family=Cookie&outline_colour=000000&coffee_colour=ffffff" /></a></div>
+    </span>
 	</nav>
         <section class="mb-32 pt-20 relative text-center px-10">
-          <!--overflow-hidden class on section below showed only the elements in .__class__ -  had to remove it-->
+          <!--overflow-hidden class on section below showed only the elements in .__class__ -  had to remove it- It is dangerous for elements with a auto height and shifting scroll depth due to editable children -->
           <section class="[&>*]:inline-block text-center [&>*]:text-left m-auto md:w-full lg:w-5/6 sm:w-5/6 bg-white text-left tooltip no-hover no-focus-within no-focus slide-y text-sm">
             <span class="text-gray-600 mr-4">Received as:</span>
-            <article class="mb-2 lg:mb-7 [&amp;>*]:inline-block [&amp;>*]:align-middle sm:w-96 inline-block mr-2"><code class="mr-4">[URL]:: http://localhost:8000/dump.html</code>
-              <div class="inline-block [&amp;>*]:inline-block"><img src="fallback.ico" width="52" class="mr-2"><code>• [TITLE::] N/A</code></div>
+            <article class="mb-2 lg:mb-7 [&amp;>*]:inline-block [&amp;>*]:align-middle sm:w-96 inline-block mr-2"><code class="mr-4">[URL]:: &lt;website url&gt;</code>
+              <div class="inline-block [&amp;>*]:inline-block"><img src="favicon.png" width="52" class="mr-2"><code>• [TITLE::] •••</code></div>
             </article>
 
             <aside class="mb-5 w-full sm:w-5/6 md:w-2/3 lg:w-1/3 mt-2 absolute align-middle inline-block rounded-md bg-gradient-to-br from-gray-200 via-transparent tooltip no-hover no-focus slide-y p-4 mt-3 xl:mr-10 left-0 text-gray-700">
-              •<h4 class="inline-block ml-1 mb-1 text-gray-700">Found linked stylesheets</h4><div class="[&>*]:align-middle [&>*]:rounded-full"></div>•<p class="mb-1.5 ml-1 mt-3 inline-block">checking for inline styles...</p><div class="absolute tooltip no-hover no-focus -slide-y [&>*]:align-middle"></div></aside>
-            <aside class="sm:w-auto w-full sm:mr-4 bg-inherit __class__ left-0 tooltip no-hover no-focus inline-block slide-y no-focus-within absolute"><span class="inline-block mt-2"><code>115 classes found</code><br><button class="w-full focus:bg-yellow-300 hover:bg-yellow-100 rounded-t-xl border-l border-r  border-t border-current pt-2 ripple relative mt-1 leading-8"
+              •<h4 class="inline-block ml-1 mb-1">Found linked stylesheets</h4><div class="[&>*]:inline-block [&>*]:align-middle [&>*]:rounded-full"></div>•<p class="mb-1.5 ml-1 mt-3 inline-block">checking for inline styles...</p><div class="leading-8 absolute tooltip no-hover no-focus -slide-y [&>*]:align-middle"></div></aside>
+            <aside class="overflow-hidden sm:w-auto w-full sm:mr-4 bg-inherit __class__ left-0 tooltip no-hover no-focus-within no-focus inline-block slide-y no-focus-within absolute"><span class="inline-block mt-2"><code>115 classes found</code><br><button class="w-full focus:bg-yellow-300 hover:bg-yellow-100 rounded-t-xl border-l border-r  border-t border-current pt-2 ripple relative mt-1 leading-8"
               onclick="let t, o, ctx=(o=objWalk)(t=this, [{2:'pN'},'lEC']), bool=t.textContent.charAt(0)=='s'; o(t, [{2:'pN'}, 'cL']).toggle('w-full'), ctx.textContent=bool?page.classes.join('&nbsp; • &nbsp;'):'', ctx.classList[cLs(bool)]('show'), t.textContent=(bool?'hide':(o(t,['pN','nES']).focus(), 'show'))+' selectors'">show selectors</button></span><input onkeyup="this.textContent||(event.key==='Enter'||event.keyCode===13)&&(page.continue(this.textContent=this.value.trim()), this.setAttribute('disabled', ''))" class="placeholder-gray-700 sm:w-80 focus:bg-blue-100 text-xs w-full mr-2 sm:mr-0 sm:inline-block sm:px-4 rounded-tr-md rounded-bl-md p-2 border-l border-b border-current text-gray-800 align-bottom sm:-mb-1 bg-transparent outline-none" spellcheck="false" placeholder="add HTML attributes in document here with spaces">
 <div class="mb-3 -mt-1 p-2 pt-3 tooltip no-hover no-focus -slide-y no-focus-within border-r-0 border-t-0 border border-current rounded-bl-xl"></div>
 </aside>
-<aside class="mt-5 bg-inherit w-full sm:w-5/6 md:w-2/3 lg:w-1/3 m-2 absolute align-bottom inline-block rounded-lg tooltip no-hover no-focus slide-y p-4 mt-3 sm:mr-5 left-0 text-gray-800"><div class="rounded-inherit inset-0.5 bg-white absolute"></div><div class="border-gray-500 rounded-tl-xl p-10 border-l border-t absolute top-0 left-0 -m-1"></div><div class="border-gray-500 rounded-br-xl p-10 border-r border-b absolute bottom-0 right-0 -m-1"></div><span class="relative">•</span><h4 class="relative inline-block ml-1 mb-1 text-gray-700 space-y-1.5">Found external scripts</h4><div class="relative [&>*]:inline-block [&>*]:rounded-full space-y-1.5"></div><span class="relative">•</span><p class="mb-1.5 ml-1 mt-3 inline-block relative">[ 2 ] Inline scripts present</p><div class="absolute tooltip no-hover no-focus relative -slide-y"></div></aside>
+<aside class="mt-5 bg-inherit w-full sm:w-5/6 md:w-2/3 lg:w-1/3 ml-0 sm:ml-2 m-2 absolute align-bottom inline-block rounded-lg tooltip no-hover no-focus-within no-focus slide-y p-4 mt-3 sm:mr-5 left-0 text-gray-800"><div class="rounded-inherit inset-0.5 bg-white absolute"></div><div class="border-gray-500 rounded-tl-xl p-10 border-l border-t absolute top-0 left-0 -m-1"></div><div class="border-gray-500 rounded-br-xl p-10 border-r border-b absolute bottom-0 right-0 -m-1"></div><span class="relative">•</span><h4 class="relative inline-block ml-1 mb-1 text-gray-700 space-y-1.5">Found external scripts</h4><div class="overflow-hidden relative [&>*]:align-middle [&>*]:inline-block [&>*]:rounded-full space-y-1.5"></div><span class="relative">•</span><p class="mb-1.5 ml-1 mt-3 inline-block relative">[ &lt;N&gt; ] Inline scripts present</p><div class="leading-8 tooltip no-hover no-focus absolute -slide-y"></div></aside>
 <aside class="w-full bg-inherit left-0 ml-0.5 absolute tooltip no-hover no-focus-within no-focus slide-y inline-block my-3">
     <h4 class="text-gray-700 inline-block mr-3">Likely CSS selectors matched in scripts (filtered)</h4>
     <!--fancy button -->
@@ -427,18 +461,18 @@ page.clone()
 </aside>
 <br>
 <div class='w-full mr-8'>
-<div class="inline-block word-break text-left bg-inherit relative" id="notify"><i>Press enter to continue. Add spaces between the custom attributes you provide above</i>
+<div style="max-width:80vw" class="inline-block word-break sm:w-auto w-full text-left bg-inherit relative" id="notify"><i>Press enter to continue. Add spaces between the custom attributes you provide above</i>
 <hr class="border-2 mt-1 to-fro border-0 border-blue-300 w-full relative"></div>
 </div>
 <!-- MAIN | START -->
-<main class="w-full left-0 absolute mt-4 tooltip no-hover no-focus -slide-y">
+<main class="w-full left-0 absolute mt-4 tooltip no-hover no-focus no-focus-within -slide-y">
     <h3 class="mt-4">Fetching linked stylesheets (<N>)</h3>
-    <section class="left-0 tooltip -slide no-hover no-focus show font-bookweb pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block">
+    <section class="left-0 tooltip -slide no-hover no-focus no-focus-within show font-bookweb pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block">
     <div><hr class="h-full absolute to-fro inset-0 bg-blue-100"><span class="relative">css/tailwind.min.css</span></div>
 </section>
 
-<section class="tooltip absolute no-hover no-focus left-0 slide-y text-base pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block"></section>
-<button id=trigger onclick="let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='d'&&ctx.count++, ctx.begin(this)" class="mr-3 ripple relative bg-yellow-500 rounded-lg px-5 p-3"><i class="mr-1.5 fa fa-play"></i> start</button>
+<section class="tooltip absolute no-hover no-focus-within no-focus left-0 slide-y text-base pt-3 [&>*]:overflow-hidden [&>*]:relative [&>*]:rounded-full [&>*]:p-2 [&>*]:inline-block"></section>
+<button id=trigger onclick="if(!page.styles.length) {page.done.download(2, page.classes.join('\n'), 'selectors.txt'); return} let o=objWalk, ctx=page.done; o(this, 'tC').charAt(0)==='d'&&ctx.count++, ctx.begin(this)" class="mr-3 ripple relative bg-yellow-500 rounded-lg px-5 p-3"><i class="mr-1.5 fa fa-play"></i> start</button>
 <div class="my-3 [&>*]:inline-block [&>*]:align-middle px-3 [&>*]:relative border-l-2 border-gray-300 inline-block align-middle left-0 tooltip slide-y absolute no-hover no-focus no-focus-within">
   Slow? 
   <div class="[&>*]:inline-block [&>*]:relative [&>*]:rounded-full" onclick="let e=event.target, ctx=page.done; e.tagName==='BUTTON'&&(e=e.parentNode), e.textContent.match('previous')?(ctx.count===ctx.least?ctx.count=ctx.all-1:--ctx.count):++ctx.count, ctx.reset(), ctx.begin(objWalk(this, ['pN', 'pES']))">
@@ -459,7 +493,7 @@ page.clone()
     <input  min="0" class="placeholder-gray-600 border-l-2 rounded-bl-lg w-24 border-gray-400 border-b-2 p-4 bg-transparent text-center mr-3.5" type="number" placeholder="<N>x" oninput="trimCSS.boost=+this.value|0">
     <div>
       <button class="ripple relative sm:mt-1 border-l-2 border-r-2 border-gray-400 p-2.5 hover:bg-gray-100 focus:bg-gray-300"><i class="pointer-events-none mr-2 fa fa-fast-forward"></i>Ultra fast</button>
-      <div class="bg-white shadow text-xs p-1.5 whitespace-pre absolute tooltip to-bottom show" style="--arrow-size:6px;">in passive development</div>
+      <a href="roadmap.html#coming-soon" target="_blank" class="bg-white shadow text-xs p-1.5 whitespace-pre absolute tooltip to-bottom" style="--arrow-size:6px;">coming soon, learn more <i class="fa fa-external-link-alt"></i></a>
     </div>
   </div>
 </div>
@@ -471,18 +505,21 @@ page.clone()
   <section id=writeCSS class="w-full mt-20 [&>*]:text-left text-center [&>*]:relative absolute left-0 tooltip no-hover no-focus slide-y text-xs [&>*]:inline-block [&>*]:p-2 [&>*]:align-top">
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide mb-10 sm:mb-0" style="max-width:100%;">
       <div class="font-mono overflow-y-scroll pt-4 word-break" style="overflow-anchor: none; max-height: 12rem;"></div>
-      <pre class="p-1 border-r border-b rounded-br-lg border-gray-400 absolute right-0 -top-7" style="overflow-anchor: auto;">used CSS styles</pre>
+      <pre class="p-1 px-2 border-r border-b rounded-br-lg border-gray-400 absolute right-0 -top-7" style="overflow-anchor: auto;">used CSS styles</pre>
     </div>
     <div class="sm:w-9_20 m-auto leading-6 tracking-wide" style="max-width:100%;">
       <div class="pt-4 font-mono overflow-y-scroll word-break" style="max-height: 12rem; overflow-anchor: none;"></div>
-      <pre class="absolute left-0 p-1 border-l border-b rounded-bl-lg border-gray-400 -top-7" style="overflow-anchor: auto;">unused CSS styles</pre>
+      <pre class="absolute left-0 p-1 px-2 border-l border-b rounded-bl-lg border-gray-400 -top-7" style="overflow-anchor: auto;"><span class="relative">unused CSS styles</span><div class="inset-0 absolute tooltip no-hover no-focus no-focus-within"><div class="absolute bg-red-600 rounded-full p-1 top-0 left-full"></div><div style="--arrow-size:5px;" class="whitespace-normal w-full bg-gray-100 absolute tooltip to-top p-3 bg-red-100 rounded-md">throttled output for performance reasons - it is only a guess and does not represent the used or unused CSS styles</div></div></pre>
     </div>
   </section>
 </main>
 
 </section>
 <section class="right-0 left-0 mx-10 tooltip no-hover no-focus no-focus-within absolute -slide-y show top-20">
-<form method="get" action="/" onsubmit="return !!page.get(this.url.value)" class="sm:w-1/2 sm:inline-block relative compact"><div><input autofocus required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here and press enter" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-1 top-0">input the url to a webpage and press enter</label></div></form>
+
+<form method="get" action="/" onsubmit="return !!page.get(this.url.value)" class="sm:w-3/5 sm:inline-block relative compact"><div class="w-11/12"><input autofocus="" required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-2 top-0">input the url to a webpage here</label></div>
+<button class="focus:bg-blue-200 hover:bg-blue-100 inline-block bottom-0 border-gray-400 ripple rounded-br-lg p-4 border-r-2 border-b absolute -right-1">submit</button></form>
+
           <span class="bulge-center font-mono text-gray-700 w-1/2 mx-auto sm:inline-flex relative sm:mx-6 sm:my-0 my-5 text-sm sm:h-20 sm:w-px h-px flex items-center justify-center"><span class="px-4 p-1 text-black bg-white">or</span></span>
           <button style='overflow:visible;' class="pointer-events-none w-full sm:w-auto ripple relative sm:inline-block p-3 bg-blue-100 rounded-md" onclick="this.firstElementChild.click()"><input class="absolute hidden pointer-events-none" type="file" accept=".html" oninput="let res=this.files[0];
   res&&res.text().then(str=>{
