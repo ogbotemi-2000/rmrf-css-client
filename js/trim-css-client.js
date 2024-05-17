@@ -7,10 +7,12 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
     for(let i in dump) { let value; if((value=dump[i]).replace(/@[^{]+\{/, '')) /*console.log('::VALUE::', i),*/ value+=(endDump[i]||''), used+=value, _used+=value }
   },
   rkeys = new RegExp('('+(keys=Object.keys(vw_breaks = {base:500,sm:640,md:768,lg:1024,xl:1280, '32xl':1536})).join('|')+')\\\\:'),
-  
+  /* set trimCSS.ease to true if undefined, it is used to ease the boosts for fresh matches*/
+  trimCSS.ease === void 0&&(trimCSS.ease = true)
   fn=()=>{
-    used='', css='', styles = styleSheets[at], threshold=trimCSS.threshold = 102468/*100.06 KB*/;
-    
+    /** added a newline to the end of the stylesheet to accommodate adding closing braces for @-rules whose closing braces ends the string */
+    used='', css='', styles = styleSheets[at]+'\n', threshold=trimCSS.threshold = 102468/*100.06 KB*/;
+    /** 200 below allow up to about 500 milliseconds before applying boost, this is enough time for the speed controls to show  */
     let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='';
     callback=(canAdd=!0, each)=>{
       progress(index>threshold?[_used, _css]:[used, css], used, keepIndex>len?len:keepIndex, len, index>threshold);
@@ -23,9 +25,9 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
        * when the options appear thereby making the user still in control especially for relatively small stylesheets that may seem to
        * be trimmed too fast.
        * Adjusting easeL above to lesser values reduces this extra time a user has to throttle the said speed.
-       * ease<easeL&&ease++;
-       */
-      for(let jump=0, boost=trimCSS.boost||1; jump<boost/*(boost=ease===easeL&&trimCSS.boost?trimCSS.boost:1)*/; jump++) {
+      */
+      ease<easeL&&ease++;
+      for(let jump=0, boost=trimCSS.boost||1; jump<(trimCSS.ease?(boost=ease===easeL&&trimCSS.boost?trimCSS.boost:1):boost); jump++) {
         each = styles.charAt(index)||(jump=boost, ''),
 
         /** overlook comments for now even ones that have CSS rules being matched in the code */
@@ -69,8 +71,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
           } else !~unmatched.indexOf(attr)&&unmatched.push(attr);
         });
 
-	/* clear the throttled output strings at the end of a blocks of styles */
-        if(styles.charAt(index)==='}') at_rule&&(ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], at_rule=0);
+        if(styles.charAt(index)==='}'&&at_rule) (ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], at_rule=0);
         keepIndex = index++, trimCSS.reset=_=>{is_reset=true, index=len, jump=boost};
       }
       if(index>=len-1) cancelAnimationFrame(frameId), recon(), done(keepIndex, len, [used, css], [matched, unmatched], index>threshold, is_reset), is_reset=false;
