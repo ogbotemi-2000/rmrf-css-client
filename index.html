@@ -28,7 +28,7 @@ let script = d.createElement('script');
 
 <script>
 window.onerror = function(e) {
-  alert('::ERROR:: '+ e), o(retry, 'cL').remove('show')
+  alert('::ERROR:: '+ e), objWalk(retry, 'cL').add('show')
 },
 page={
   retry:function(t,o){
@@ -385,6 +385,7 @@ page.clone()
 	<div class="sm:h-28 sm:w-0.5 my-4 bulge-center h-px flex items-center justify-center">
 		<span class="text-xs bg-white p-2">or</span>
 	</div>
+
 	<aside class="sm:w-48 lg:w-60 space-y-2 p-4">
 		<p>compose a message and send it as an e-mail through this site</p><button id="compose" class="font-sans ripple text-xs rounded-lg border-2 border-gray-500 p-2 text-right relative hover:bg-gray-200 focus:border-gray-600 text-current" onclick="(_=>{
 			/*handles sending to mail*/

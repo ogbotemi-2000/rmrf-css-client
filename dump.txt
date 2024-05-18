@@ -18,7 +18,7 @@ _____
 _____
 
 window.onerror = function(e) {
-  alert('::ERROR:: '+ e), o(retry, 'cL').remove('show')
+  alert('::ERROR:: '+ e), objWalk(retry, 'cL').add('show')
 },
 page={
   retry:function(t,o){

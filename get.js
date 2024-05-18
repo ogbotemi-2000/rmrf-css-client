@@ -15,7 +15,7 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
     /* remove stored data*/
     delete __retrieve__[source]; 
   }
-  else conn[+!!url.match(/https/)].get(source||url, res=>{
+  else new Promise(resolve=>resolve(new URL(url))).then(_=>conn[+!!url.match(/https/)].get(source||url, res=>{
     let data=[], st=''+res.statusCode;
     res.on('data', chunk=>{
       data.push(chunk)
@@ -35,6 +35,11 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
   }).on('error', err => {
     console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
     response.end(JSON.stringify(assets))
+  }))
+  .catch((err, message='')=>{
+    response.end(JSON.stringify({
+      error:"The provided URL is invalid, that's all we know\n"+formatJSON(JSON.stringify(err))
+    }))
   })
 }
 
