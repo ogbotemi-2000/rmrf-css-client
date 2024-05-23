@@ -1,7 +1,0 @@
-fa
-fa-chevron-left
-fa-chevron-right
-fa-external-link-alt
-fa-fast-forward
-fa-play
-fa-upload

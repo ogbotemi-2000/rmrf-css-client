@@ -1,3 +1,4 @@
+
 @import url(https://fonts.googleapis.com/css?family=Cabin);
 @font-face {
     font-family: 'Fredoka';
@@ -56,6 +57,9 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
 .\[\&\>\*\]\:align-top > * {
     vertical-align: top;
 }
+.\[\&\>\*\]\:align-bottom > * {
+    vertical-align: bottom;
+}
 @keyframes world-rotate {
 100% {
     background-position-x: 320%;
@@ -73,20 +77,6 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
 .\[\&\>\*\]\:inline-block > * { display: inline-block; }
  .\[\&\>\*\]\:align-middle > * { vertical-align: middle; }
 .\[\&\>\*\]\:text-left > * { text-align: left; }
-#growShrink .fluid { opacity: 0; visibility: hidden; position: absolute; left:0px}
- #growShrink a+div a { margin: 0; display: block; padding: 1em; white-space: pre; }
- #growShrink a { transition: opacity 0.2s ease, visibility 0s; padding: 0.8em; margin: 0.2em; display: inline-block; color: inherit; text-decoration: inherit; }
- #growShrink a+div { display: inline-block; }
- #growShrink a+div > div a:first-child { border-top-left-radius: 0.75rem; border-top-right-radius: 0.75rem; }
- #growShrink a+div > div a:last-child { border-bottom-left-radius: 0.75rem; border-bottom-right-radius: 0.75rem; }
- #growShrink a+div > div { right: 0px; position: absolute; margin-top: -0.4em; opacity: 0; color: inherit; pointer-events: none; transition: margin-top 0.4s ease, opacity 0.2s 0.1s; border-radius: 12px; overflow: hidden; padding: 0.2em 0; }
- #growShrink a+div:hover > div,#growShrink a+div:focus-within > div { margin-top: 0em; opacity: 1; pointer-events: auto; }
- /*#growShrink { text-align: center; margin: 0.5em 1em; }
- */ #growShrink button { padding: 0.6em 1.2em; margin: 0.4em; color: inherit; border-radius: 50px; }
- #growShrink button /*, #growShrink a+div > div */ { border: 2px solid #ccc; }
- #growShrink a:hover,#growShrink button:hover { color: black; }
- #growShrink hr { border-bottom: 2px solid currentColor; position:absolute; left:26%; right:26%; top: 100%; }
- #growShrink svg { height: 1.5em; vertical-align:middle; fill:currentColor; }
 @keyframes anim-round { 0%,100% { transform: translate3d(var(--_reach), 0px, 0px); } 25% { transform: translate3d(0px, var(--_reach), 0px); } 50% { transform: translate3d(var(--reach), 0px, 0px); } 75% { transform: translate3d(0px, var(--reach), 0px); } } 
  @keyframes colorSlide { 0% { background-position: 0% 100%; } 20% { background-position: 0% 0%; } 21% { background-color: #4e5559; } 29.99% { background-color: #ffffff; background-position: 0% 0%; } 30% { background-color: #4e5559; background-position: 0% 100%; } 50% { background-position: 0% 0%; } 51% { background-color: #4e5559; } 59% { background-color: #ffffff; background-position: 0% 0%; } 60% { background-color: #4e5559; background-position: 0% 100%; } 80% { background-position: 0% 0%; } 81% { background-color: #4e5559; } 90%, 100% { background-color: #ffffff; } } 
 @keyframes trackBallSlide { 0% { opacity: 1; transform: scale(1) translateY(-20px); } 6% { opacity: 1; transform: scale(0.9) translateY(5px); } 14% { opacity: 0; transform: scale(0.4) translateY(40px); } 15%, 19% { opacity: 0; transform: scale(0.4) translateY(-20px); } 28%, 29.99% { opacity: 1; transform: scale(1) translateY(-20px); } 30% { opacity: 1; transform: scale(1) translateY(-20px); } 36% { opacity: 1; transform: scale(0.9) translateY(5px); } 44% { opacity: 0; transform: scale(0.4) translateY(40px); } 45%, 49% { opacity: 0; transform: scale(0.4) translateY(-20px); } 58%, 59.99% { opacity: 1; transform: scale(1) translateY(-20px); } 60% { opacity: 1; transform: scale(1) translateY(-20px); } 66% { opacity: 1; transform: scale(0.9) translateY(5px); } 74% { opacity: 0; transform: scale(0.4) translateY(40px); } 75%, 79% { opacity: 0; transform: scale(0.4) translateY(-20px); } 88%, 100% { opacity: 1; transform: scale(1) translateY(-20px); } } 
@@ -382,10 +372,20 @@ animation: to-fro 1.4s ease-in-out infinite alternate;
                     transform-origin: left
                 }
             }
+            
  @media (min-width: 500px) {
  #growShrink .fluid.base\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
+	 .base\:bottom-0 {
+		bottom: 0px;
+	 }
+	 .base\:p-0 {
+		padding: 0px;
+	 }
+	 .base\:bg-transparent {
+		background:transparent
+	 }
 
-	 .tooltip.base\:show  {
+	.tooltip.base\:show  {
 
 	 visibility: visible;
 
@@ -395,10 +395,12 @@ animation: to-fro 1.4s ease-in-out infinite alternate;
 
 	 --x: 0%;
 
-}}
+}
+ .base\:relative  {
+    position: relative 
+  }}
 
 @media (min-width: 640px) {
- #growShrink .fluid.sm\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
 	.sm\:w-9_20 {
 		width: 45%;
 	}
@@ -415,7 +417,6 @@ animation: to-fro 1.4s ease-in-out infinite alternate;
   }}
 
 @media (min-width: 768px) {
- #growShrink .fluid.md\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
 /*
 
 IMPORTANT
@@ -456,7 +457,6 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
  
 @media (min-width: 1024px) {
- #growShrink .fluid.lg\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
  .tooltip.lg\:show  {
 
 	 visibility: visible;
@@ -477,8 +477,6 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
  
 @media (min-width: 1280px) {
- #growShrink .fluid.xl\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
- #growShrink a+div { visibility: hidden; pointer-events: none; }
 
 	 .tooltip.xl\:show  {
 
