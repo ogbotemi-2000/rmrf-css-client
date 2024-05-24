@@ -6,7 +6,7 @@
 	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
         <script src="js/both.js"></script>
-        <script src="js/trim-css-client.js"></script>
+        <script src="js/shield.js"></script>
         <link rel="shortcut icon" href="favicon.png">
 
 <script>
@@ -190,7 +190,6 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }), o(outs[0], 'nES').textContent = `used ${both.byteFormat(used.length)} out of ${both.byteFormat(tot)}`,
           ratio=100*i/tot, o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%')
         }, /*done*/function(i, tot, arr, classes, thresheld, reset, ratio) {
-        console.log('::DONE::', reset);
      	  if(!reset) o(qs('a[href$=coming-soon]'), 'cL').remove('show'), o(trigger, ['nES','cL']).replace('show', 'absolute'), o(retry, 'cL').add('show'), clearTimeout(t.interval), o(trigger, 'lC').data='done, continue',
 	        o(ctx, 'fEC').style.setProperty('--tw-translate-x', -100+Math.round(ratio)+'%'), o(downloadCSS, 'cL').replace('absolute', 'show'), classes.forEach((e, i)=>t.files[i+2]=e);
       

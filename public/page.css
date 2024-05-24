@@ -234,6 +234,19 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
  opacity: 1;
  z-index: 3;
 }
+/*
+
+IMPORTANT
+
+For a tooltip that is not shown, an explicit styling of its child
+with visibility: visible; triggers a hover event that then makes tooltip visible
+
+*/
+/*--------------recent-------------------*/
+
+.tooltip:not(.show).no-hover.no-focus .tooltip, .tooltip:not(.show).no-hover.no-focus .tooltip.md\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.sm\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.lg\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.xl\:show {
+	pointer-events: none;
+}
 *:not(:hover) > .tooltip:not(.no-focus) {
   z-index: 2;
  transition: opacity 0.1s var(--delay), transform 0.15s var(--delay) ease, visibility 0s calc(var(--delay) + 0.15s);
@@ -374,7 +387,28 @@ animation: to-fro 1.4s ease-in-out infinite alternate;
             }
             
  @media (min-width: 500px) {
- #growShrink .fluid.base\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
+ #growShrink .fluid.base\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }} 
+@media (min-width: 640px) {
+	.sm\:w-9_20 {
+		width: 45%;
+	}
+ .tooltip.sm\:show,
+ .tooltip.slide.sm\:show {
+	 visibility: visible;
+	 opacity: 1;
+	 z-index: 3;
+	 --x: 0%;
+
+}
+  .tooltip.sm\:show.no-hover, .tooltip.sm\:show.no-focus  {
+	 pointer-events: auto;
+  }}
+
+@media (min-width: 768px) {} 
+@media (min-width: 1024px) {} 
+@media (min-width: 1280px) {} 
+
+@media (min-width: 500px)  {
 	 .base\:bottom-0 {
 		bottom: 0px;
 	 }
@@ -400,36 +434,7 @@ animation: to-fro 1.4s ease-in-out infinite alternate;
     position: relative 
   }}
 
-@media (min-width: 640px) {
-	.sm\:w-9_20 {
-		width: 45%;
-	}
- .tooltip.sm\:show,
- .tooltip.slide.sm\:show {
-	 visibility: visible;
-	 opacity: 1;
-	 z-index: 3;
-	 --x: 0%;
-
-}
-  .tooltip.sm\:show.no-hover, .tooltip.sm\:show.no-focus  {
-	 pointer-events: auto;
-  }}
-
-@media (min-width: 768px) {
-/*
-
-IMPORTANT
-
-For a tooltip that is not shown, an explicit styling of its child
-with visibility: visible; triggers a hover event that then makes tooltip visible
-
-*/
-/*--------------recent-------------------*/
-
-.tooltip:not(.show).no-hover.no-focus .tooltip, .tooltip:not(.show).no-hover.no-focus .tooltip.md\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.sm\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.lg\:show, .tooltip:not(.show).no-hover.no-focus .tooltip.xl\:show {
-	pointer-events: none;
-}
+@media (min-width: 768px)  {
 
  .tooltip.md\:show  {
 
@@ -456,7 +461,7 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 }}
 
  
-@media (min-width: 1024px) {
+ @media (min-width: 1024px)  {
  .tooltip.lg\:show  {
 
 	 visibility: visible;
@@ -476,7 +481,7 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 }}
 
  
-@media (min-width: 1280px) {
+ @media (min-width: 1280px)  {
 
 	 .tooltip.xl\:show  {
 
@@ -497,3 +502,41 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 }}
 
  
+
+/*:::::::::::::::::::: GENERIC STYLES IN TRIMMED STYLESHEET ::::::::::::::::::::*/
+
+[disabled] {
+  cursor: not-allowed;
+  pointer-events: none;
+  filter: contrast(0.5);
+}
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-corner {
+    background: none;
+}
+::-webkit-scrollbar-thumb {
+    border-radius: 4px;
+    background: #8D8D8D;
+}
+::-webkit-scrollbar-track {
+    opacity: 0;
+}
+[contenteditable=true]:empty:before {
+  content: attr(data-placeholder);
+  pointer-events: none;
+  color: lightslategray;
+  font-size: 14px;							
+  display: block; /* For Firefox */
+}
+
+ html {--bg-opacity-pad:0.2} button:disabled { opacity: 50%;cursor: not-allowed; color: initial; } button > i, a > i { pointer-events: none; }
+
+:root {
+	--base-fractional-unit: 0.125rem;/*for -0\.5*/
+	--base-whole-number-unit: 0.25rem; /* for -1*/
+}
+
+/*:::::::::::::::::::: END OF GENERIC STYLES ::::::::::::::::::::*/
