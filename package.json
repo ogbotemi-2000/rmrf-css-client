@@ -1,16 +1,12 @@
 {
-  "name": "RemCSS",
+  "name": "RemCSS-Client",
   "version": "1.0.0",
-  "description": "",
-  "main": "service.js",
-  "devDependencies": {
-    "purgecss": "^6.0.0"
-  },
+  "description": "Private repo for client-side version of the code",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && echo \"<Installed Dependencies>\"",
-    "start": "node service",
-    "serve": "node server"
+    "build": "npm install && node build",
+    "start": "node server",
+    "serve": "node service"
   },
   "keywords": [],
   "author": "Ogbotemi Akin Ogungbamila",

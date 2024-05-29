@@ -1,12 +1,15 @@
 <!DOCTYPE HTML><html debug-ids='header__loading' debug-classes="header header__logo header__logoLink"><head>
         <title>Open source software for external stylesheet trimming and comparison</title><meta charset="utf-8"><meta name="theme-color" content="#ff056"><meta name="color-scheme" content="light"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" href="css/tailwind.min.css">
-        <link rel="stylesheet" href="css/all.min.css">
-        <link rel="stylesheet" href="css/page.css">
+        <link rel="stylesheet" href="public/tailwind.min.css">
+        <link rel="stylesheet" href="public/all.min.css">
+        <link rel="stylesheet" href="public/page.css">
 	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
         <script src="js/both.js"></script>
+	<script src='js/trim-css-client.js'></script>
+<!--
         <script src="js/shield.js"></script>
+-->
         <link rel="shortcut icon" href="favicon.png">
 
 <script>
@@ -61,7 +64,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp: _=>location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app',
+  endIp: _=>location.hostname==='localhost'?'http://localhost':''/*'https://remcss.up.railway.app'*/,
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{

@@ -1,2 +1,2 @@
 200
-"{\n`\"server\":\"SimpleHTTP/0.6 Python/3.12.0\",\n\"date\":\"Sat,\n 25 May 2024 00:06:40 GMT\",\n\"content-type\":\"text/html\",\n\"content-length\":\"61788\",\n\"last-modified\":\"Fri,\n 24 May 2024 23:58:29 GMT\"\n}"
+"{\n`\"content-type\":\"text/html\",\n\"date\":\"Wed,\n 29 May 2024 09:59:30 GMT\",\n\"connection\":\"close\",\n\"transfer-encoding\":\"chunked\"\n}"

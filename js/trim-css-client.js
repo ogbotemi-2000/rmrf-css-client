@@ -1,19 +1,19 @@
 (function() {
 
 let loop =  both.loop;
-function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, recon, end, callback, atRules=['import', 'keyframes', 'charset', 'font-face', 'property'], i=0, matched=[], unmatched=[], css='', ruleEnd, used='', generic, keys, rkeys, vw_breaks, styles, fn, endDump={}, dump={}) {
+function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, recon, end, callback, atRules=['import', 'keyframes', 'charset', 'font-face', 'property'], i=0, matched=[], unmatched=[], css='', ruleEnd, used='', generic='', keys, rkeys, vw_breaks, styles, fn, endDump={}, dump={}) {
   /** vw_breaks will be provided by the user when normal media query matching code fails */
   recon=_=>{
     for(let i in dump) { let value; if((value=dump[i]).replace(/@[^{]+\{/, '')) /*console.log('::VALUE::', i),*/ value+=(endDump[i]||''), used+=value, _used+=value }
     used +=`\n\n/*${':'.repeat(20)} GENERIC STYLES IN TRIMMED STYLESHEET ${':'.repeat(20)}*/\n${generic}\n
-    /*${':'.repeat(20)} END OF GENERIC STYLES ${':'.repeat(20)}*/`
+    /*${':'.repeat(20)} END OF GENERIC STYLES ${':'.repeat(20)}*/`.repeat(!!generic)
   },
   rkeys = new RegExp('('+(keys=Object.keys(vw_breaks = {base:500,sm:640,md:768,lg:1024,xl:1280, '32xl':1536})).join('|')+')\\\\:'),
   /* set trimCSS.ease to true if undefined, it is used to ease the boosts for fresh matches*/
   trimCSS.ease === void 0&&(trimCSS.ease = true)
   fn=()=>{
     /** added a newline to the end of the stylesheet to accommodate adding closing braces for @-rules whose closing braces ends the string */
-    used='', css='', styles = styleSheets[at]+'\n', threshold=trimCSS.threshold = 102468/*100.06 KB*/;
+    used='', css='', styles = styleSheets[at]+'\n\n', threshold=trimCSS.threshold = 102468/*100.06 KB*/;
     /** 200 below allow up to about 500 milliseconds before applying boost, this is enough time for the speed controls to show  */
     let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, media_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='',
         _cb=(s,f,bool)=>(!s.charAt(f)||(bool?/\}/:/\}|\{/).test(s.charAt(bool?f-1:f))),

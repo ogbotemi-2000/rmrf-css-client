@@ -51,7 +51,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp: _=>location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app',
+  endIp: _=>location.hostname==='localhost'?'http://localhost':''/*'https://remcss.up.railway.app'*/,
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{
