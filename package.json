@@ -4,7 +4,7 @@
   "description": "Private repo for client-side version of the code",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "npm install && node build",
+    "build": "node build",
     "start": "node server",
     "serve": "node service"
   },
