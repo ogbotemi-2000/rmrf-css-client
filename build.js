@@ -2,7 +2,7 @@ let {exec}   = require('child_process'),
     path     = require('path'),
     fs       = require('fs'),
     trimCSS  = require('./trim-css'),
-    dirs     = ['css', 'public'],
+    dirs     = ['css', 'dist'],
     getFiles = (ext, dir)=>new Promise((resolve, reject)=>exec(`ls ${dir||'./'}`, (error, stdout, stderr, dir) => {
         if (error) reject(error), console.warn(/*throw */error) /* a warning instead of 'throw'ing this error */;
 
@@ -13,9 +13,8 @@ let {exec}   = require('child_process'),
 	  resolve([...str.split(/\s+/).filter(e=>e&&new RegExp(`\\.${ext}`).test(e))])
 	})
     })),
-    attrs=[];
-
-getFiles('txt', dirs[1]).then(txts=>{
+    attrs =[],
+    begin =_=>getFiles('txt', dirs[1]).then(txts=>{
   txts.forEach(txt=>{
     txt = fs.readFileSync(path.join(dirs[1], txt)).toString().split(',').filter(e=>e.trim()),
     attrs = attrs.concat(txt)
@@ -30,4 +29,12 @@ getFiles('txt', dirs[1]).then(txts=>{
       files.forEach(file=>fs.writeFileSync(file, fs.readFileSync(file).toString().replace(new RegExp(`("|')\\.*\\/*${dirs[0]}\\/`, 'g'), dir=>dir.replace(dirs[0],  dirs[1]))))
     })
   })
+});
+
+
+
+dirs = ['public', 'dist'],
+
+getFiles('html').then(files=>{
+  files.forEach(file=>fs.writeFileSync(file, fs.readFileSync(file).toString().replace(new RegExp(`("|')\\.*\\/*${dirs[0]}\\/`, 'g'), dir=>dir.replace(dirs[0],  dirs[1]))))
 })
