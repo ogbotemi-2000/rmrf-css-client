@@ -1,1 +1,0 @@
-fa,fa-chevron-down,fa-chevron-left,fa-chevron-right,fa-chevron-up,fa-external-link-alt,fa-fast-forward,fa-github,fa-map-signs,fa-play,fa-signal,fa-upload,fab

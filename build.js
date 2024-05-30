@@ -15,9 +15,9 @@ let {exec}   = require('child_process'),
     })),
     attrs=[];
 
-getFiles('txt', 'dist').then(txts=>{
+getFiles('txt', dirs[1]).then(txts=>{
   txts.forEach(txt=>{
-    txt = fs.readFileSync(path.join('dist', txt)).toString().split(',').filter(e=>e.trim()),
+    txt = fs.readFileSync(path.join(dirs[1], txt)).toString().split(',').filter(e=>e.trim()),
     attrs = attrs.concat(txt)
   }),
   attrs = new Set(attrs),
