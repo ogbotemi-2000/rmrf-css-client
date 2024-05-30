@@ -15,7 +15,11 @@ http.createServer((req, res, str, params={})=>{
     req.url.match(/\.html$/)&&(str=[req, res].map(e=>format(e.headers||''))),
     req.url=path.join(values['-d'], req.url);
     
-    console.log('::URL::', req.url),
+    console.log('::URL::', req.url, params),
+    res.writeHead(200, {
+      'Access-Control-Allow-Origin': '*'
+    }),
+
     params.url ? get(params.url, params.for, res)
     : new Promise((resolve, rej, cached)=>{
     /*(cached=cache[req.url])?resolve(cached):*/fs.readFile(req.url, (err, buf)=>{
@@ -34,6 +38,7 @@ http.createServer((req, res, str, params={})=>{
         console.log(str='::ERROR:: '+err),
         res.end(str)
       })
+//hostname - 0.0.0.0 commented out for it causes ECONNREFUSED errors
 }).listen(port=process.env.PORT||+values['-p'], /*'0.0.0.0',*/ function() {
     console.log('Server listening on <PORT>', port, 'under <DIRECTORY>', values['-d'], 'and serving assets from <DIRECTORY>', values['-a']);
 })

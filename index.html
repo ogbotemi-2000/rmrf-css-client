@@ -30,7 +30,7 @@ let script = d.createElement('script');
 
 <script>
 window.onerror = function(e) {
-  alert('::ERROR:: '+ e), o(retry, 'cL').remove('show')
+  alert('::ERROR:: '+ e), objWalk(retry, 'cL').remove('show')
 },
 page={
   retry:function(t,o){
@@ -63,7 +63,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp: _=>location.hostname==='localhost'?'http://localhost':''/*'https://remcss.up.railway.app'*/,
+  endIp: _=>'./'/*location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app'*/,
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{
@@ -220,7 +220,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     (ctx=o(o(notify, {2:'pN'}).querySelector('.__class__'), ['nES'])).classList.replace('absolute', 'show'), setTimeout(_=>this.fetch_readScripts(ctx, out, hr, o), 300)
   },
   
-  get: function(url, t, xhr=new XMLHttpRequest, endp, prot='', onerror, root, index, out, hr, assets, arr, o=objWalk, pN, splits, split) {
+  get: function(url, t, xhr=new XMLHttpRequest, endp, prot='', onerror, root, index, out, hr, assets={}, arr, o=objWalk, pN, splits, split) {
     if(this.gotten) return;
     onerror=txt=>{out.innerText=txt||assets.error, out.classList.add('text-red-600'), hr.remove('to-fro', 'border-2'), o(notify, 'cL').add('w-full'), o(retry, 'cL').add('show')},
     this.gotten=!0/*to prevent multiple calls of this function when the url is entered in the input field.
@@ -235,7 +235,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
-    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'/?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
+    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
         (res=ev.target.response).charAt(0)==='_'
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
@@ -299,7 +299,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }),
           /*make a second request*/
           /*a timeout to prevent the browser from dropping the incoming response for the outgoing request above as it makes the delayed request below*/
-          setTimeout(_=>{xhr.open('GET', endp+'/?url=__retrieve__&for='+url), setTimeout(_=>{xhr.send()})})
+          setTimeout(_=>{xhr.open('GET', endp+'?url=__retrieve__&for='+url), setTimeout(_=>{xhr.send()})})
         };
         /*reset notify.classList*/
       } else onerror();
