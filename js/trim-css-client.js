@@ -4,7 +4,7 @@ let loop =  both.loop;
 function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, recon, end, callback, atRules=['import', 'keyframes', 'charset', 'font-face', 'property'], i=0, matched=[], unmatched=[], css='', ruleEnd, used='', generic='', keys, rkeys, vw_breaks, styles, fn, endDump={}, dump={}) {
   /** vw_breaks will be provided by the user when normal media query matching code fails */
   recon=_=>{
-    for(let i in dump) { let value; if((value=dump[i]).replace(/@[^{]+\{/, '')) /*console.log('::VALUE::', i),*/ value+=(endDump[i]||''), used+=value, _used+=value }
+    for(let i in dump) { let value; if((value=dump[i].trim()).replace(/@[^{]+\{/, '')) /*console.log('::VALUE::', i, [value]),*/ value+=(endDump[i]||''), used+=value, _used+=value }
     used +=`\n\n/*${':'.repeat(20)} GENERIC STYLES IN TRIMMED STYLESHEET ${':'.repeat(20)}*/\n${generic}\n
     /*${':'.repeat(20)} END OF GENERIC STYLES ${':'.repeat(20)}*/`.repeat(!!generic)
   },
@@ -15,7 +15,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
     /** added a newline to the end of the stylesheet to accommodate adding closing braces for @-rules whose closing braces ends the string */
     used='', css='', styles = styleSheets[at]+'\n\n', threshold=trimCSS.threshold = 102468/*100.06 KB*/;
     /** 200 below allow up to about 500 milliseconds before applying boost, this is enough time for the speed controls to show  */
-    let ease=0, easeL=200, _canAdd=!0, is_reset, canAdd, at_rule, media_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='',
+    let ease=0, easeL=0/*200*/, _canAdd=!0, is_reset, canAdd, at_rule, media_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='',
         _cb=(s,f,bool)=>(!s.charAt(f)||(bool?/\}/:/\}|\{/).test(s.charAt(bool?f-1:f))),
 
         _back=num=>loop(styles, {from:num||index, back:true, cb:(s,f)=>_cb(s,f)})[0],
@@ -41,7 +41,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
         _canAdd = notComment(styles, index);
         keepIndex = index;
 
-        if(_canAdd&&each==='@') {
+        if(_canAdd&&each==='@'&&!at_rule) {
           let temp='', res='', add=0, kFrame, added='';
           temp=loop(styles, {from:index, cb:(s,f,t,r)=>{
             if(/@media[^{]+\{/.test(res+=s[add=f])) {media_rule=res.replace(/\{/, ''), (res=res.match(/[0-9]+/g))&&(at_rule=res.join('_')); return true;}
