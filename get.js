@@ -33,7 +33,7 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
       response.end(splits+'|'+JSON.stringify(assets)+splits[0]+html)
     })
   }).on('error', err => {
-    console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
+    //console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
     response.end(JSON.stringify(assets))
   }))
   .catch((err, message='')=>{
@@ -48,8 +48,8 @@ let fs=require('fs');
 function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', loop) {
   /* a clean slate to avoid adding existing matches to new ones */
   html='', loop=both.loop, buf=buf.trim();
-  for(let i=0; i<15; hasTextMime+=buf.charAt(i++));
-  fs.writeFile('./dump.html', buf, _=>console.log('::DUMPED::'));
+  for(let i=0; i<20; hasTextMime+=buf.charAt(i++));
+  //fs.writeFile('./dump.html', buf, _=>console.log('::DUMPED::'));
 
   if(hasTextMime.match(/<\!DOCTYPE\s*HTML/ig)) {
     for(let title, attrs, strip=str=>str.replace(/^\.*\//, ''), tags=['style', 'script', 'link'], cTags=['lin', 'sty', 'scr'], if_tag, canAdd, check, checkElse, i=0, j, ast, ext, tEnd=i=>loop(buf, {from:i, cb:(s,f)=>s[f-1]==='>'}), len=buf.length, tag, sort=['js', 'css'], each;

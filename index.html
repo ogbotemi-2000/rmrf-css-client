@@ -94,7 +94,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         }}), cmt[1]&&(i=cmt[1]); /* jump over comments */
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str)&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e))&&!page.classes.find(e=>~e.search(str.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e)))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
         ), i+=1/*+1 to make i point to the character after the closing apostrophe*/), i++
       }
     },
@@ -237,7 +237,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
-    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
+    if(url) hr.add('to-fro', 'border-2'), /*making a POST but treating it as GET*/xhr.open('POST', endp+'?url='+url, true), xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'), xhr.send(endp+'?url='+url), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
         (res=ev.target.response).charAt(0)==='_'
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
@@ -280,7 +280,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`, css_out.setAttribute('data-dynamic', ''),
-            xhr.open('GET', this.domain+(url=css[i])), xhr.send(), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
+            xhr.open('POST', this.domain+(url=css[i]), true), xhr.send(this.domain+url), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);

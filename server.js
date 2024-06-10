@@ -7,15 +7,21 @@ let http    = require('http'),
     get     = require('./get'),
     cache   = {};
 
-http.createServer((req, res, str, params={})=>{
-    req.url = decodeURI(req.url),
-    req.url = req.url.replace(/\?[^]*/, e=>(query=e.replace('?', '').split('&').forEach(e=>params[(e=e.split('='))[0]]=e[1]), '')),
+http.createServer((req, res, str, params={}, getParams)=>{
+    req.url = decodeURIComponent(req.url),
+    getParams=url=>url.replace(/\?[^]*/, e=>(query=e.replace('?', '').split('&').forEach(e=>params[(e=e.split('='))[0]]=e[1]), '')),
+    
+    req.url = getParams(req.url),
     req.url=='/'&&(req.url='index.html'),
 
     req.url.match(/\.html$/)&&(str=[req, res].map(e=>format(e.headers||''))),
-    req.url=path.join(values['-d'], req.url);
-    
-    console.log('::URL::', req.url, params),
+    req.url=path.join(values['-d'], req.url),
+
+    req.on('data', function(data) {
+      //console.log('::POST::', [data.toString()])
+    }),
+   
+    //console.log('::URL::', req.url, params),
     res.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     }),
@@ -35,7 +41,7 @@ http.createServer((req, res, str, params={})=>{
       }),
       res.end(cached)
       }).catch((err, str)=>{
-        console.log(str='::ERROR:: '+err),
+        //console.log(str='::ERROR:: '+err),
         res.end(str)
       })
 //hostname - 0.0.0.0 commented out for it causes ECONNREFUSED errors when trying this file in the service
