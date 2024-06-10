@@ -3,7 +3,7 @@
         <link rel="stylesheet" href="dist/tailwind.min.css">
         <link rel="stylesheet" href="dist/all.min.css">
         <link rel="stylesheet" href="dist/page.css">
-	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
         <script src="js/both.js"></script>
 <!--
@@ -15,7 +15,7 @@
 <script>
 let script = d.createElement('script');
   script.src="../js/email.min.js", script.id='loadEmail',
-  window.emailjs?(emailjs.init("mP1S96NaJfOO3FpUR"), emailjsInited=false):(emailjsInited=true, d.head.append(script));
+  window.emailjs?(emailjs.init({publicKey:"qydN_Wpez4U_igzD2"}), emailjsInited=false):(emailjsInited=true, d.head.append(script));
 </script>
 <style debug-1>
 .header{width:100%;background:var(--background-surface-color);height:46px}.sc-classic .header{background:#333}.header__logo{background:var(--background-surface-color)}.sc-classic .header__logo{background:#333}body:not(.sc-classic) .header__logoLink{display:flex;flex-direction:column;justify-content:center;align-content:center}.header__logoLink{height:46px;width:48px}.header__logoLink svg{color:var(--primary-color)}.sc-classic .header__logoLink{background:transparent url(https://a-v2.sndcdn.com/assets/images/header/brand-1b72dd8210.svg) no-repeat 0 11px;background-size:49px 22px;display:block;height:46px;width:49px;margin-right:23px}.sc-classic .header__logoLink{background-image:url(https://a-v2.sndcdn.com/assets/images/header/cloud-e365a472bf.png);background-position-x:12px;background-size:48px 22px;width:69px;margin-right:unset}.sc-classic .header__logoLink svg{display:none}.header__logoLink:focus{background-color:rgba(255,72,0,.8);outline:0}#header__loading{margin:13px auto 0;width:16px;background:url(https://a-v2.sndcdn.com/assets/images/loader-dark-45940ae3d4.gif) center no-repeat;background-size:16px 16px}@media (-webkit-min-device-pixel-ratio:2),(min-resolution:192dpi),(min-resolution:2dppx){.sc-classic .header__logoLink{background-image:url(https://a-v2.sndcdn.com/assets/images/header/cloud@2x-e5fba4606d.png)}}
@@ -414,9 +414,9 @@ page.clone()
 					(this.added|0)>=100&amp;&amp;(this.loader.setProperty('--tw-translate-x', '-100%'), this.incr = 0.6,
 					(w.cancelAnimationFrame||clearInterval)(this.interval), this.p.textContent=this.states[4], setTimeout(_=>{this.removeAttribute('disabled'), this.p.textContent = this.states[1],slice(compose.inputFields).forEach(e=>e.value='')}, 1250))
 				}, 1000/60),
-					emailjs.send('service_l1828ej', 'template_flkqzgn', {
+					emailjs.send('connect_client', 'template_9uoshjc', {
 						sender_name:compose.inputFields[1].value,
-						message: '::[FROM WEBSITE]::\n'+compose.inputFields[2].value,
+						message: '::[FROM WEBSITE]::\n\n'+compose.inputFields[2].value,
 						reply_to: compose.inputFields[0].value,
 						sender_email: compose.inputFields[0].value
 						}).then(response=> {
@@ -560,7 +560,7 @@ page.clone()
   })" id="file"><pre class='left-0 top-full mt-1 bg-gray-100 p-2 italic rounded absolute'>under consideration...</pre><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
           </section>
       <script>
-!emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");
+!emailjsInited&&emailjs.init({publicKey:"qydN_Wpez4U_igzD2"});
 
 window.addEventListener('DOMContentLoaded', _=>{
   if(html.style.backdropFilter === undefined) html.style.setProperty('--bg-opacity-pad', 0.7);
