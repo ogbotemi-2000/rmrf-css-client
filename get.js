@@ -3,6 +3,7 @@ let conn = ['', 's'].map(e=>require('http'+e)),
   splits=['_::split::_', '_08c-2a3_'],
   __retrieve__ = {};
 
+/*refactored response.end to response.send to support vercel functiions*/
 module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
 
   /*fs.writeFileSync('logs.txt', assets?JSON.stringify(assets):assets+''),
@@ -11,7 +12,7 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
   if((kept=__retrieve__[source])&&url==='__retrieve__') {
     let {inlined, matches_arr} = kept;
     /* split responses on the client using hopefully unique strings below */
-    response.end(matches_arr.toString()+splits[0]+inlined.join(splits[1])),
+    response.send(matches_arr.toString()+splits[0]+inlined.join(splits[1])),
     /* remove stored data*/
     delete __retrieve__[source]; 
   }
@@ -30,14 +31,14 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
       (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers),
       
       /*send unique strings for splitting responses and get them by splitting by the pipe character*/
-      response.end(splits+'|'+JSON.stringify(assets)+splits[0]+html)
+      response.send(splits+'|'+JSON.stringify(assets)+splits[0]+html)
     })
   }).on('error', err => {
     //console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
-    response.end(JSON.stringify(assets))
+    response.send(JSON.stringify(assets))
   }))
   .catch((err, message='')=>{
-    response.end(JSON.stringify({
+    response.send(JSON.stringify({
       error:"The provided URL is invalid, that's all we know\n"+formatJSON(JSON.stringify(err))
     }))
   })

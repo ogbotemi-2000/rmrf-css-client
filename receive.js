@@ -1,4 +1,6 @@
+let get  = require('../get');
+
 export default function handler(request, response) {
   const { name = 'World' } = request.query;
-  return response.send(`Hello ${name}!`);
+  response.send(`Hello ${name}!`);  
 }
