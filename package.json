@@ -4,8 +4,7 @@
   "description": "Private repo for client-side version of the code",
   "scripts": {
     "build": "node build",
-    "start": "node server",
-    "serve": "node service"
+    "start": "node service"
   },
   "keywords": [],
   "author": "Ogbotemi Akin Ogungbamila",
