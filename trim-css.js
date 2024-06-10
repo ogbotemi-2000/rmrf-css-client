@@ -21,7 +21,7 @@ function asScript() {
 
 module.exports = trimCSS, require.main===module&&asScript();
 
-function trimCSS(attrs, files, outDir, i, end, rerun, matches=new Set, comments=[], css='', ruleEnd, used='', generic='', rkeys, file, vw_breaks, styles, fn, endDump={}, dump={}) {
+function trimCSS(attrs, files, outDir, i, end, rerun, matches=new Set, comments=[], css='', ruleEnd, used='', generic='', warned, rkeys, file, vw_breaks, styles, fn, endDump={}, dump={}) {
 
 /*the operation just below is particularly revolutionary in its consequence on the performance of this code and thus deserves this long comment.
 This code had formerly provided an alternative of invoking asScript() where required, to what seemed like a performance slowdown of over 5 seconds for large CSS files of over 1-2MB.
@@ -69,7 +69,7 @@ at https://github.com/ogbotemi-2000/rmrf-css/discussions/, it is not an issue.
     },
 
     fn=()=>{
-
+	warned = false;
       /** added a newline to the end of the stylesheet to accommodate adding closing braces for @-rules whose closing braces ends the string of styles */
       generic='', used='', css='', 
       
@@ -89,10 +89,11 @@ at https://github.com/ogbotemi-2000/rmrf-css/discussions/, it is not an issue.
       /** the for loop below is used to boost the speed of the trimming algorithm.
        * It is in bytes per run and defaults to 1. It may be left as is below as a default or exposed as `--boost <N>`
        */
-        for(let t, jump=0, boost=500000; jump<boost&&(each = styles.charAt(index)); jump++) {
+        for(let t, jump=0, boost=5000000; jump<boost&&(each = styles.charAt(index)); jump++) {
 	  // Psst: the condition below is not normally expected to be true... 
           /* After over 5s slowdown of runtime when boosting, end the loop and advise the user to manually run the algorithm to implement a workaround*/
-          if((t=new Date-slowT)>5765) {
+          if(!warned&&(t=new Date-slowT)>5765) {
+	    warned = !0;
             let metadata = `${[...attrs].join(',')}${uid}${files}${uid}${outDir}${uid}${i-1}`;
 
             fs.writeFile(meta, metadata, err=>{
@@ -100,7 +101,8 @@ at https://github.com/ogbotemi-2000/rmrf-css/discussions/, it is not an issue.
 
               console.warn('-'.repeat(30)+`\n::[SLOWDOWN]:: Algorithm taking over <5 seconds> between boosts.\nPlease run "node ${path.join(__dirname, 'trim-css')}" directly as a workaround to a detected performance slowdown that has been observed to occur when 'require'd scripts - modules, run timely code in Node.js.
 Not to worry the arguments you provided before are temporary persisted on the disk and will be used.\n`+'-'.repeat(30))
-	    }), jump=boost, index=len, i = files.length;
+	    })
+	     //, jump=boost, index=len, i = files.length;
             // return;
           
           }
@@ -113,7 +115,7 @@ Not to worry the arguments you provided before are temporary persisted on the di
 
           keepIndex = index;
 
-          if(_canAdd&&each==='@') {
+          if(_canAdd&&each==='@'&&!at_rule) {
             let temp='', res='', add=0, kFrame, added='';
 
             temp=loop(styles, {from:index, cb:(s,f,t,r)=>{
@@ -197,8 +199,9 @@ Not to worry the arguments you provided before are temporary persisted on the di
           });
           /** for every closing curly brace, check if it is the end of a nested @-rule and dump the strings that end it in endDump only to
            * build them by adding the contents of dump and endDump together by calling end() at the end of the loop
+	   * consider empty media queries by testing for an opening curly brace if a closing one fails
            */
-          if(at_rule&&styles.charAt(index)==='}') (ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], media_rule, at_rule=0);
+          if(at_rule&&/\}|\{/.test(styles.charAt(index))) (ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], media_rule=at_rule=0);
 
           /** increment index at the end of it all, this is particularly important because the algorithm above requires that
            * styles.indexOf(styles.charAt(index)) equals index. Moving it to the start of the loop may cause bugs

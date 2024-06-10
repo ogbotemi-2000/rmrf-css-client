@@ -6,9 +6,10 @@
 	      <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
         <script src="js/ripples.js"></script><script src="js/utils.js"></script>
         <script src="js/both.js"></script>
-
+<!--
         <script src="js/shield.js"></script>
-
+-->
+	<script src="js/trim-css-client.js"></script>
         <link rel="shortcut icon" href="favicon.png">
 
 <script>
@@ -30,7 +31,7 @@ let script = d.createElement('script');
 
 <script>
 window.onerror = function(e) {
-  alert('::ERROR:: '+ e), objWalk(retry, 'cL').remove('show')
+  alert('::ERROR:: '+ e), objWalk(retry, 'cL').add('show')
 },
 page={
   retry:function(t,o){
@@ -86,14 +87,15 @@ Doing what Object.freeze should have considered - preventing properties from bei
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
     t.getStrings=(arr, res, loop)=>{
       if(!res) return;
-      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/'|"|`/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
+      /* backticks -> double quotes -> single quotes */
+      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/`|"|'/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
         if(e==='/'&&/\/|\*/.test(nxt=res.charAt(i+1))) cmt=loop(res, {from:i, cb:(s,f,e)=>{
           return nxt==='/' ? s[f-1]==='\n': (s[f-2]+s[f-1]==='*/')
-        }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
+        }}), cmt[1]&&(i=cmt[1]); /* jump over comments */
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/@|;|\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
-        ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str)&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
+        ), i+=1/*+1 to make i point to the character after the closing apostrophe*/), i++
       }
     },
     t.scriptElems = els,
@@ -122,7 +124,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
+        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom p-1 relative pb-0 inline-block'>impossible selector strings<code class="shadow border-2 w-full tooltip slide-y absolute bg-gray-100 rounded-lg text-black to-top" style="--arrow-size:8px;"><p class="not-italic p-3 bg-gray-200">Strings that meet either of these criteria</p><hr><ul class="[&amp;>*]:p-2 px-3 list-disc list-inside"><li>only numbers or partial decimals - 0.5.0</li><li>Matches either <strong>/[a-z],  [A-Z]</strong></li><li>Starts or ends with with: <strong class="ml-1">$, &gt;, _, =, |, --:, , &amp;, *, #, ., /</strong></li><li>Ends with with: <strong class="ml-1">[, ]</strong></li><li>Contains: <strong>, //, {, }, ?, %, ), (, +, &lt;, @, !, ;</strong></li></ul></code></a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
         /*provide more time to read about workarounds and details for failed fetched scripts*/
       }, t.failed?4000:500)
     },
@@ -133,7 +135,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
         :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="let ctx=page.fetch_readScripts, el=ctx.scriptElems[ctx.count]; el&&el.classList.add('bg-gray-200'), ++ctx.aborted, ctx.count++, page.assets.js[ctx.count]&&(ctx.sync.abort(), ctx.request(), setTimeout(_=>ctx.write()))">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
         :(t.afterFetch_read(),
-        cls(false), `Fetched ${t.failed?'':'all'} ${diff = (diff=srcs.length-t.failed-t.aborted)<0?0:diff} script${diff===1?'':'s'}, ${t.aborted?'aborted '+ t.aborted+', ':''}${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a target="_blank" href="http://localhost:8000/roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
+        cls(false), `Fetched ${t.failed?'':'all'} ${diff = (diff=srcs.length-t.failed-t.aborted)<0?0:diff} script${diff===1?'':'s'}, ${t.aborted?'aborted '+ t.aborted+', ':''}${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a target="_blank" href="./roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
         animations.addRippleAnimations()})()
       /*passing true to t.go beside makes an asynchronous request*/t.go(/*uncomment for async- true*/)
     }, 2500/*200*/)
@@ -356,7 +358,7 @@ page.clone()
         <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 bottom-full left-0 base:bottom-0">scale</pre>
       </a>
 	    <section style="z-index:1; --arrow-size:10px;" class="ml-10 xl:ml-14 sm:w-auto w-96 h-68 absolute tooltip slide-y to-top border border-gray-500 bg-white rounded-xl p-4 text-xs md:text-sm sm:flex sm:justify-around sm:items-center sm:space-x-6">
-		<h5 class="p-2 bg-inherit left-0 w-full text-gray-900 absolute bottom-full">Scale by trimming the CSS used by multiple pages in your website at once</h5>
+		<h5 class="border-b -mb-2 rounded-t-xl p-4 bg-inherit left-0 w-full text-gray-900 absolute bottom-full">Scale by trimming the CSS used by multiple pages in your website at once</h5>
 	<strong class="text-center">Contact</strong>
 	<form onsubmit="return false;" style="--focus-within-no-focus-transition: opacity 0.5s ease, transform 0.3s 0.05s ease-out, visibility 0s 0.12s; margin: auto;" class="send-email absolute no-focus-within flex flex-col bottom-2 border-2 bg-white p-1.5 top-10 right-0 sm:right-2 left-0 sm:left-24 sm:top-2 sm:bottom-4 tooltip no-hover no-focus slide rounded-inherit">
 		<div class="w-full space-x-2 items-center justify-between flex sm:flex-col sm:items-start sm:space-x-0">
@@ -433,7 +435,7 @@ page.clone()
 </section>
 	  </div>
 
-<a style='overflow:visible' class='ripple' target='_blank' href='https://github.com/ogbotemi-2000/RemCSS'><i class='z-2 p-2 align-middle inline-block text-3xl fab fa-github text-gray-700'></i>
+<a style='overflow:visible' class='ripple' target='_blank' href='https://github.com/ogbotemi-2000/rmrf-css'><i class='z-2 p-2 align-middle inline-block text-3xl fab fa-github text-gray-700'></i>
       <pre class="font-normal font-sans base:relative absolute inline-block tooltip base:show bg-white rounded base:bg-transparent p-3 base:p-0 bottom-full base:bottom-0 left-0">github</pre>
       </a>
 
@@ -548,14 +550,14 @@ page.clone()
 </section>
 <section class="right-0 left-0 mx-10 tooltip no-hover no-focus no-focus-within absolute -slide-y show top-20">
 
-<form method="get" action="/" onsubmit="return !!page.get(this.url.value)" class="sm:w-3/5 sm:inline-block relative compact"><div class="w-11/12"><input autofocus="" required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-2 top-0">input the url to a webpage here</label></div>
+<form method="get" action="/" onsubmit="return !!page.get(this.url.value.trim())" class="sm:w-3/5 sm:inline-block relative compact"><div class="w-11/12"><input autofocus="" required="" type="text" spellcheck="false" class="relative focus:outline-none block bg-transparent text-sm p-1.5 w-full border-0 border-gray-500" title="input the url to a webpage here" name="url" style="border-bottom-width: 1px;"><span class="absolute opacity-50 h-1/2 w-5 top-0 pointer-events-none"></span><div class="w-30 relative pointer-events-none"></div><label class="pointer-events-none text-gray-500 text-sm absolute left-2 top-0">input the url to a webpage here</label></div>
 <button class="focus:bg-blue-200 hover:bg-blue-100 inline-block bottom-0 border-gray-400 ripple rounded-br-lg p-4 border-r-2 border-b absolute -right-1">submit</button></form>
 
           <span class="bulge-center font-mono text-gray-700 w-1/2 mx-auto sm:inline-flex relative sm:mx-6 sm:my-0 my-5 text-sm sm:h-20 sm:w-px h-px flex items-center justify-center"><span class="px-4 p-1 text-black bg-white">or</span></span>
           <button style='overflow:visible;' class="pointer-events-none w-full sm:w-auto ripple relative sm:inline-block p-3 bg-blue-100 rounded-md" onclick="this.firstElementChild.click()"><input class="absolute hidden pointer-events-none" type="file" accept=".html" oninput="let res=this.files[0];
   res&&res.text().then(str=>{
     page.get()
-  })" id="file"><pre class='top-full mt-1 bg-gray-100 p-2 italic rounded absolute'>under consideration...</pre><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
+  })" id="file"><pre class='left-0 top-full mt-1 bg-gray-100 p-2 italic rounded absolute'>under consideration...</pre><i class="fa fa-upload text-sm mr-2"></i>upload an HTML file from device</button></section>
           </section>
       <script>
 !emailjsInited&&emailjs.init("mP1S96NaJfOO3FpUR");

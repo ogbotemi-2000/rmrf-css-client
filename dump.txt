@@ -18,7 +18,7 @@ _____
 _____
 
 window.onerror = function(e) {
-  alert('::ERROR:: '+ e), objWalk(retry, 'cL').remove('show')
+  alert('::ERROR:: '+ e), objWalk(retry, 'cL').add('show')
 },
 page={
   retry:function(t,o){
@@ -74,14 +74,15 @@ Doing what Object.freeze should have considered - preventing properties from bei
     t.abort=arg=>(arg.abort(), ['load', 'error'].forEach(e=>arg['on'+e]=null)), t.scriptStrings||=[],
     t.getStrings=(arr, res, loop)=>{
       if(!res) return;
-      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/'|"|`/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
+      /* backticks -> double quotes -> single quotes */
+      for(let i=0, str, jump, nxt, cmt, len=res.length, tst=n=>/`|"|'/.test(res.charAt(n)), e; e=res.charAt(i), i<len;) {
         if(e==='/'&&/\/|\*/.test(nxt=res.charAt(i+1))) cmt=loop(res, {from:i, cb:(s,f,e)=>{
           return nxt==='/' ? s[f-1]==='\n': (s[f-2]+s[f-1]==='*/')
-        }}), cmt[1]&&(i=cmt[1]+1) /*jump over comments*/;
+        }}), cmt[1]&&(i=cmt[1]); /* jump over comments */
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!/@|;|\||\\|^(\[|\]|;|\/|-|_)|\?|\{|\}|\%|\/\/|=|\!|\&|\+|>|<|(\/|-|_|:|\[|\])$|\*|\(|\)|\.|\$|\s/g.test(str)&&!page.classes.find(e=>e===str)&&!t.scriptStrings.find(e=>e===str)&&[arr, t.scriptStrings].forEach(e=>e.push(str))
-        ), i+=2/*+2 to make i point to the character after the closing apostrophe*/), i++
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str)&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
+        ), i+=1/*+1 to make i point to the character after the closing apostrophe*/), i++
       }
     },
     t.scriptElems = els,
@@ -110,7 +111,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom ripple p-1 relative pb-0 inline-block'>impossible selector strings</a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
+        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom p-1 relative pb-0 inline-block'>impossible selector strings<code class="shadow border-2 w-full tooltip slide-y absolute bg-gray-100 rounded-lg text-black to-top" style="--arrow-size:8px;"><p class="not-italic p-3 bg-gray-200">Strings that meet either of these criteria</p><hr><ul class="[&amp;>*]:p-2 px-3 list-disc list-inside"><li>only numbers or partial decimals - 0.5.0</li><li>Matches either <strong>/[a-z],  [A-Z]</strong></li><li>Starts or ends with with: <strong class="ml-1">$, &gt;, _, =, |, --:, , &amp;, *, #, ., /</strong></li><li>Ends with with: <strong class="ml-1">[, ]</strong></li><li>Contains: <strong>, //, {, }, ?, %, ), (, +, &lt;, @, !, ;</strong></li></ul></code></a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
         /*provide more time to read about workarounds and details for failed fetched scripts*/
       }, t.failed?4000:500)
     },
@@ -121,7 +122,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         ${bool?'<div class="mb-2 inline-block [&>*]:p-2" onclick=\'let t=event.target; forEach(this.children, e=>e.classList[t===e?"add":"remove"]("border-2"))\'><button class="ripple relative rounded-l-lg border-2 border-r-2 border-gray-400 hover:bg-gray-200">concurrently</button><button onclick=\'let t=page.fetch_readScripts; t.go(!0) \' class="hover:bg-gray-200 ripple relative rounded-r-lg border-l-2 border-gray-400">simultaneously</button></div>'
         :''}<br>Click <button class='mx-1 border-2 relative border-gray-600 rounded-lg p-2 ripple px-4' onclick="let ctx=page.fetch_readScripts, el=ctx.scriptElems[ctx.count]; el&&el.classList.add('bg-gray-200'), ++ctx.aborted, ctx.count++, page.assets.js[ctx.count]&&(ctx.sync.abort(), ctx.request(), setTimeout(_=>ctx.write()))">abort</button> to ${bool?'move to the next script if you\'re certain that':'cancel fetching'} <code class='font-semibold'>${srcs[i]}</code>${bool?' doesn\'t access the DOM or mutate it':''}`))
         :(t.afterFetch_read(),
-        cls(false), `Fetched ${t.failed?'':'all'} ${diff = (diff=srcs.length-t.failed-t.aborted)<0?0:diff} script${diff===1?'':'s'}, ${t.aborted?'aborted '+ t.aborted+', ':''}${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a target="_blank" href="http://localhost:8000/roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
+        cls(false), `Fetched ${t.failed?'':'all'} ${diff = (diff=srcs.length-t.failed-t.aborted)<0?0:diff} script${diff===1?'':'s'}, ${t.aborted?'aborted '+ t.aborted+', ':''}${t.failed?'the server either denied access to or doesn\'t have '+ (t.failed<srcs.length?t.failed:'all the') +' requested script'+(t.failed===1?'':'s')+'.<p class="mb-4 text-gray-900">A <a target="_blank" href="./roadmap.html#workarounds" class="inline-block ripple bg-blue-100 align-middle mx-1 rounded ripple relative px-3 p-1">workaround<i class="ml-2 fa fa-external-link-alt"></i></a> for the fetching the failed scripts will be added as this service gains support from its users, grows and evolves....</p>P':'p'}roceeding to show the strings matched in both the inline script(s) and/or ${t.failed?'what\'s left of':''} the fetched scripts(s)...`),
         animations.addRippleAnimations()})()
       /*passing true to t.go beside makes an asynchronous request*/t.go(/*uncomment for async- true*/)
     }, 2500/*200*/)

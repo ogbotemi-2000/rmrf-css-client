@@ -32,9 +32,13 @@ let {exec}   = require('child_process'),
 });
 
 
+//begin()
 
-dirs = ['public', 'dist'],
+
+// change the path to the external styles from a previous folder to a new one in all the html files
+
+_dirs = ['public', 'dist'],
 
 getFiles('html').then(files=>{
-  files.forEach(file=>fs.writeFileSync(file, fs.readFileSync(file).toString().replace(new RegExp(`("|')\\.*\\/*${dirs[0]}\\/`, 'g'), dir=>dir.replace(dirs[0],  dirs[1]))))
+  files.forEach(file=>fs.writeFileSync(file, fs.readFileSync(file).toString().replace(new RegExp(`("|')\\.*\\/*${_dirs[0]}\\/`, 'g'), dir=>dir.replace(_dirs[0],  _dirs[1]))))
 })

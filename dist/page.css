@@ -67,6 +67,13 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
 .\[\&\>\*\]\:align-bottom > * {
     vertical-align: bottom;
 }
+
+.\[\&\>\*\]\:animate-y-full > * {
+    animation: translate-y-full 1s var(--delay) cubic-bezier(0.37, 0, 0.63, 1) forwards;
+    display: inline-block;
+}
+@keyframes translate-y-full { 0% { transform: translateY(0%); } 50% { transform: translateY(200%);}}
+
 @keyframes world-rotate {
 100% {
     background-position-x: 320%;
@@ -87,7 +94,6 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
 .\[\&\>\*\]\:text-left > * { text-align: left; }
 .z-3 { z-index: 3; }
  .z-1 { z-index: 1; }
-#growShrink .fluid { opacity: 0; visibility: hidden; position: absolute; left:0px}
 @keyframes anim-round { 0%,100% { transform: translate3d(var(--_reach), 0px, 0px); } 25% { transform: translate3d(0px, var(--_reach), 0px); } 50% { transform: translate3d(var(--reach), 0px, 0px); } 75% { transform: translate3d(0px, var(--reach), 0px); } } 
  @keyframes colorSlide { 0% { background-position: 0% 100%; } 20% { background-position: 0% 0%; } 21% { background-color: #4e5559; } 29.99% { background-color: #ffffff; background-position: 0% 0%; } 30% { background-color: #4e5559; background-position: 0% 100%; } 50% { background-position: 0% 0%; } 51% { background-color: #4e5559; } 59% { background-color: #ffffff; background-position: 0% 0%; } 60% { background-color: #4e5559; background-position: 0% 100%; } 80% { background-position: 0% 0%; } 81% { background-color: #4e5559; } 90%, 100% { background-color: #ffffff; } } 
 @keyframes trackBallSlide { 0% { opacity: 1; transform: scale(1) translateY(-20px); } 6% { opacity: 1; transform: scale(0.9) translateY(5px); } 14% { opacity: 0; transform: scale(0.4) translateY(40px); } 15%, 19% { opacity: 0; transform: scale(0.4) translateY(-20px); } 28%, 29.99% { opacity: 1; transform: scale(1) translateY(-20px); } 30% { opacity: 1; transform: scale(1) translateY(-20px); } 36% { opacity: 1; transform: scale(0.9) translateY(5px); } 44% { opacity: 0; transform: scale(0.4) translateY(40px); } 45%, 49% { opacity: 0; transform: scale(0.4) translateY(-20px); } 58%, 59.99% { opacity: 1; transform: scale(1) translateY(-20px); } 60% { opacity: 1; transform: scale(1) translateY(-20px); } 66% { opacity: 1; transform: scale(0.9) translateY(5px); } 74% { opacity: 0; transform: scale(0.4) translateY(40px); } 75%, 79% { opacity: 0; transform: scale(0.4) translateY(-20px); } 88%, 100% { opacity: 1; transform: scale(1) translateY(-20px); } } 
@@ -472,7 +478,6 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
  
 @media (min-width: 1024px) {
- #growShrink .fluid.lg\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
  .tooltip.lg\:show  {
 
 	 visibility: visible;
@@ -493,7 +498,6 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
 
  
 @media (min-width: 1280px) {
- #growShrink .fluid.xl\:show { opacity: 1; visibility: visible; pointer-events: auto; position: relative; }
 
 	 .tooltip.xl\:show  {
 
@@ -544,11 +548,11 @@ with visibility: visible; triggers a hover event that then makes tooltip visible
   display: block; /* For Firefox */
 }
 
- html {--bg-opacity-pad:0.2} button:disabled { opacity: 50%;cursor: not-allowed; color: initial; } button > i, a > i { pointer-events: none; }@media (min-width: 1280px) {
+ html {--bg-opacity-pad:0.2} button:disabled { opacity: 50%;cursor: not-allowed; color: initial; } button > i, a > i { pointer-events: none; }
 
 :root {
 	--base-fractional-unit: 0.125rem;/*for -0\.5*/
 	--base-whole-number-unit: 0.25rem; /* for -1*/
-}}
+}
 
 /*:::::::::::::::::::: END OF GENERIC STYLES ::::::::::::::::::::*/

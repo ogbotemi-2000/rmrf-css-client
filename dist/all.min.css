@@ -7,10 +7,14 @@
 .fa.fa-pull-right,.fab.fa-pull-right,.fal.fa-pull-right,.far.fa-pull-right,.fas.fa-pull-right{margin-left:.3em}
 @-webkit-keyframes fa-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}
 @keyframes fa-spin{0%{-webkit-transform:rotate(0deg);transform:rotate(0deg)}to{-webkit-transform:rotate(1turn);transform:rotate(1turn)}}
+.fa-caret-down:before{content:"\f0d7"}
+.fa-caret-up:before{content:"\f0d8"}
 .fa-chevron-down:before{content:"\f078"}
 .fa-chevron-left:before{content:"\f053"}
 .fa-chevron-right:before{content:"\f054"}
 .fa-chevron-up:before{content:"\f077";}
+.fa-compress-alt:before{content:"\f422"}
+.fa-crop-alt:before{content:"\f565"}
 .fa-external-link-alt:before{content:"\f35d"}
 .fa-fast-forward:before{content:"\f050"}
 .fa-github:before{content:"\f09b"}

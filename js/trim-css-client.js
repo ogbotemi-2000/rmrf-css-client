@@ -5,7 +5,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
   /** vw_breaks will be provided by the user when normal media query matching code fails */
   recon=_=>{
     for(let i in dump) { let value; if((value=dump[i].trim()).replace(/@[^{]+\{/, '')) /*console.log('::VALUE::', i, [value]),*/ value+=(endDump[i]||''), used+=value, _used+=value }
-    used +=`\n\n/*${':'.repeat(20)} GENERIC STYLES IN TRIMMED STYLESHEET ${':'.repeat(20)}*/\n${generic}\n
+    used +=`\n\n/*${':'.repeat(20)} GENERIC STYLES IN TRIMMED STYLESHEET ${':'.repeat(20)}*/\n${generic.trim()}\n
     /*${':'.repeat(20)} END OF GENERIC STYLES ${':'.repeat(20)}*/`.repeat(!!generic)
   },
   rkeys = new RegExp('('+(keys=Object.keys(vw_breaks = {base:500,sm:640,md:768,lg:1024,xl:1280, '32xl':1536})).join('|')+')\\\\:'),
@@ -40,7 +40,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
         /** overlook comments for now even ones that have CSS rules being matched in the code */
         _canAdd = notComment(styles, index);
         keepIndex = index;
-
+        /** avoid wrongly parsing stylesheet by avoiding '@' in at_rules that may have them like media queries  */
         if(_canAdd&&each==='@'&&!at_rule) {
           let temp='', res='', add=0, kFrame, added='';
           temp=loop(styles, {from:index, cb:(s,f,t,r)=>{
@@ -86,8 +86,8 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
             css=css.replace(/(\s+|)(#|\.)$/g, ''), _css=_css.replace(/(\s+|)(#|\.)$/g, '')
           } else !~unmatched.indexOf(attr)&&unmatched.push(attr);
         });
-
-        if(styles.charAt(index)==='}'&&at_rule) (ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], at_rule=0);
+        /** added condition to consider empty media queries by testing for an opening curly brace if a closing one fails  */
+        if(/\}|\{/.test(styles.charAt(index))&&at_rule) (ruleEnd=atRuleEnd(styles, index))[0]&&(endDump[at_rule]=ruleEnd[2], media_rule=at_rule=0);
         index++, trimCSS.reset=_=>{is_reset=true, index=len, jump=boost};
       }
       if(index>=len-1) cancelAnimationFrame(frameId), recon(), done(keepIndex, len, [used, css], [matched, unmatched], index>threshold, is_reset), is_reset=false;

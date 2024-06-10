@@ -104,6 +104,13 @@ html *:focus-within > .decorate > div, html .decorate-parent:focus-within > .dec
 .\[\&\>\*\]\:align-bottom > * {
     vertical-align: bottom;
 }
+
+.\[\&\>\*\]\:animate-y-full > * {
+    animation: translate-y-full 1s var(--delay) cubic-bezier(0.37, 0, 0.63, 1) forwards;
+    display: inline-block;
+}
+@keyframes translate-y-full { 0% { transform: translateY(0%); } 50% { transform: translateY(200%);}}
+
 @keyframes world-rotate {
 100% {
     background-position-x: 320%;
