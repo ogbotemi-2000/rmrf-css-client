@@ -6,12 +6,15 @@ let http    = require('http'),
     mime    = require('mime-types'),
     get     = require('./get'),
     cache   = {},
-    store   = process.store ||={};
+    store   = {};
 
 http.createServer((req, res, str, params={}, getParams)=>{
     req.url = decodeURIComponent(req.url),
     getParams=url=>url.replace(/\?[^]*/, e=>(query=e.replace('?', '').split('&').forEach(e=>params[(e=e.split('='))[0]]=e[1]), '')),
     
+/*test to see whether server is hit*/
+fs.writeFileSync('dump.html', fs.readFileSync('roadmap.html')),
+
     req.url = getParams(req.url),
     req.url=='/'&&(req.url='index.html'),
 
@@ -21,10 +24,8 @@ http.createServer((req, res, str, params={}, getParams)=>{
     req.on('data', function(data) {
       //console.log('::POST::', [data.toString()])
     }),
-   
-    console.log('::URL::', req.url, params),
     res.writeHead(200, {
-      'Access-Control-Allow-Origin': '*'
+      'Access-Control-Allow-Origin': '*'//'https://rmrf-css.vercel.app'
     }),
 
     params.url ? get(params.url, params.source, store, res)

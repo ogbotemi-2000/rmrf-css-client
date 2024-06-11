@@ -7,8 +7,6 @@ module.exports = function(url, source, __retrieve__, response, kept, assets={css
   /*fs.writeFileSync('logs.txt', assets?JSON.stringify(assets):assets+''),
  for observing the bug in pm2 when passed the --watch flag on throttled connections
    */
-  console.log('::GET::', url, source, Object.keys(__retrieve__));
-
   if((kept=__retrieve__[source])&&url==='__retrieve__') {
     let {inlined, matches_arr} = kept;
     /* split responses on the client using hopefully unique strings below */
@@ -35,7 +33,7 @@ module.exports = function(url, source, __retrieve__, response, kept, assets={css
       response.end(splits+'|'+JSON.stringify(assets)+splits[0]+html)
     })
   }).on('error', err => {
-    //console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
+    assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err),
     response.end(JSON.stringify(assets))
   }))
   .catch((err, message='')=>{
@@ -55,7 +53,7 @@ function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', lo
   //fs.writeFile('./dump.html', buf, _=>console.log('::DUMPED::'));
 
   if(hasTextMime.match(/<\!DOCTYPE\s*HTML/ig)) {
-    for(let title, attrs, strip=str=>str.replace(/^\.*\//, ''), tags=['style', 'script', 'link'], cTags=['lin', 'sty', 'scr'], if_tag, canAdd, check, checkElse, i=0, j, ast, ext, tEnd=i=>loop(buf, {from:i, cb:(s,f)=>s[f-1]==='>'}), len=buf.length, tag, sort=['js', 'css'], each;
+    for(let title, attrs, strip=str=>str.replace(/^\.*\//, ''), unused =['content', 'target', 'path', 'style', 'name', 'for', 'href', 'charset'], tags=['style', 'script', 'link'], cTags=['lin', 'sty', 'scr'], if_tag, canAdd, check, checkElse, i=0, j, ast, ext, tEnd=i=>loop(buf, {from:i, cb:(s,f)=>s[f-1]==='>'}), len=buf.length, tag, sort=['js', 'css'], each;
     checkElse=if_tag=>(if_tag=if_tag[0]).charAt(0)==='/'&&cTags.find(e=>if_tag.slice(1)===e)&&(j=tEnd(i)[1]||0, canAdd=false), check=i=>tags.find(e=>(if_tag=loop(buf, {from:i+1, to:e.length}))[0]===e),
     j=ast=0, i<len;) {
       
@@ -80,6 +78,10 @@ function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', lo
         */
         else !assets.title&&/titl/.test(if_tag[0])&&(title=loop(buf, {from:tEnd(if_tag[1])[1]+1, cb:(s,f)=>s[f]+s[f+1]==='</'}))[1]>i&&(i=title[1], assets.title=title[0]);
       }
+      /**jump over known attributes that will never equal used selectors in an html file */
+      unused.forEach(attr=>{
+
+      }),
       /** the similar check below is needed to detect empty tags, both check and checkElse were created from the formerly rigid
        * if-else statements logical chain to bring dynamism into the code
        */

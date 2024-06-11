@@ -3,7 +3,7 @@
 let inBrowser=this.window,
 both = {
 
-  getAttrs: function(buf, attrs, cb, selectors={}, loop, valid) {
+  getAttrs: function(buf, attrs, cb, selectors={}, loop, valid, html) {
     /* using an object of selectors to enforce uniqueness similar to a Set*/
     loop=this.loop, valid = str=>!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|,|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str),
     attrs ||= ['class', 'id'];/* attributes believed to store used selectors */

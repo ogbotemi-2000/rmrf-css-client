@@ -278,7 +278,6 @@
 .focus\:bg-blue-200:focus{--tw-bg-opacity:1;background-color:rgba(191,219,254,var(--tw-bg-opacity))}
 .bg-gradient-to-br{background-image:linear-gradient(to bottom right,var(--tw-gradient-stops))}
 .from-gray-200{--tw-gradient-from:#e5e7eb;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to, rgba(229, 231, 235, 0))}
-.from-yellow-300{--tw-gradient-from:#fcd34d;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to, rgba(252, 211, 77, 0))}
 .from-blue-700{--tw-gradient-from:#1d4ed8;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to, rgba(29, 78, 216, 0))}
 .from-blue-900{--tw-gradient-from:#1e3a8a;--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to, rgba(30, 58, 138, 0))}
 .via-transparent{--tw-gradient-stops:var(--tw-gradient-from),transparent,var(--tw-gradient-to, rgba(0, 0, 0, 0))}
@@ -319,7 +318,7 @@
 .pt-3{padding-top:.75rem}
 .pt-4{padding-top:1rem}
 .pt-16{padding-top:4rem}
-.pt-20{padding-top:5rem}
+.pt-28{padding-top:7rem}
 .pb-0{padding-bottom:0}
 .pb-2{padding-bottom:.5rem}
 .pb-6{padding-bottom:1.5rem}
@@ -427,8 +426,6 @@
 .sm\:h-16{height:4rem}
 .sm\:h-20{height:5rem}
 .sm\:h-28{height:7rem}
-.sm\:h-48{height:12rem}
-.sm\:h-96{height:24rem}
 .sm\:w-48{width:12rem}
 .sm\:w-72{width:18rem}
 .sm\:w-80{width:20rem}

@@ -13,7 +13,7 @@ function trimCSS(styleSheets, attrs, progress, done, at, threshold, frameId, rec
   trimCSS.ease === void 0&&(trimCSS.ease = true)
   fn=()=>{
     /** added a newline to the end of the stylesheet to accommodate adding closing braces for @-rules whose closing braces ends the string */
-    used='', css='', styles = styleSheets[at]+'\n\n', threshold=trimCSS.threshold = 102468/*100.06 KB*/;
+    used='', css='', styles = styleSheets[at]+'\n\n', threshold=trimCSS.threshold = 31000;//102468/*100.06 KB*/
     /** 200 below allow up to about 500 milliseconds before applying boost, this is enough time for the speed controls to show  */
     let ease=0, easeL=0/*200*/, _canAdd=!0, is_reset, canAdd, at_rule, media_rule, keepIndex=0, index=0, len=styles.length; canAdd=!0, _used='', _css='',
         _cb=(s,f,bool)=>(!s.charAt(f)||(bool?/\}/:/\}|\{/).test(s.charAt(bool?f-1:f))),
