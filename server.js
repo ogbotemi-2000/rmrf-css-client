@@ -12,9 +12,6 @@ http.createServer((req, res, str, params={}, getParams)=>{
     req.url = decodeURIComponent(req.url),
     getParams=url=>url.replace(/\?[^]*/, e=>(query=e.replace('?', '').split('&').forEach(e=>params[(e=e.split('='))[0]]=e[1]), '')),
     
-/*test to see whether server is hit*/
-fs.writeFileSync('dump.html', fs.readFileSync('roadmap.html')),
-
     req.url = getParams(req.url),
     req.url=='/'&&(req.url='index.html'),
 
