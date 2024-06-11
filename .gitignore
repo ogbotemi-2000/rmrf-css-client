@@ -2,3 +2,7 @@ public
 *.txt
 
 *.zip
+
+.vercel
+
+api

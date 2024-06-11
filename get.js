@@ -1,21 +1,22 @@
 let conn = ['', 's'].map(e=>require('http'+e)),
   both = require('./both'),
-  splits=['_::split::_', '_08c-2a3_'],
-  __retrieve__ = {};
+  splits=['_::split::_', '_08c-2a3_'];
 
-/*refactored response.end to response.send to support vercel functiions*/
-module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
+module.exports = function(url, source, __retrieve__, response, kept, assets={css:[], js:[]}) {
 
   /*fs.writeFileSync('logs.txt', assets?JSON.stringify(assets):assets+''),
  for observing the bug in pm2 when passed the --watch flag on throttled connections
    */
+  console.log('::GET::', url, source, Object.keys(__retrieve__));
+
   if((kept=__retrieve__[source])&&url==='__retrieve__') {
     let {inlined, matches_arr} = kept;
     /* split responses on the client using hopefully unique strings below */
-    response.send(matches_arr.toString()+splits[0]+inlined.join(splits[1])),
+    response.end(matches_arr.toString()+splits[0]+inlined.join(splits[1])),
     /* remove stored data*/
     delete __retrieve__[source]; 
   }
+
   else new Promise(resolve=>resolve(new URL(url))).then(_=>conn[+!!url.match(/https/)].get(source||url, res=>{
     let data=[], st=''+res.statusCode;
     res.on('data', chunk=>{
@@ -31,14 +32,15 @@ module.exports = function(url, source, response, kept, assets={css:[], js:[]}) {
       (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers),
       
       /*send unique strings for splitting responses and get them by splitting by the pipe character*/
-      response.send(splits+'|'+JSON.stringify(assets)+splits[0]+html)
+      response.end(splits+'|'+JSON.stringify(assets)+splits[0]+html)
     })
   }).on('error', err => {
     //console.log("Error: ", assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err)),
-    response.send(JSON.stringify(assets))
+    response.end(JSON.stringify(assets))
   }))
   .catch((err, message='')=>{
-    response.send(JSON.stringify({
+    response.end(JSON.stringify({
+/*added ternary operation to cater for the ephemeral behaviour arising from setting hostname on this server's port*/
       error:"The provided URL is invalid, that's all we know\n"+formatJSON(JSON.stringify(err))
     }))
   })

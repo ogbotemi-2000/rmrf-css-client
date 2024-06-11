@@ -124,7 +124,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
       matched=t.scriptStrings,
       setTimeout(lEC=>{
         (lEC=o(sib, 'lEC')).innerHTML=matched.join('&nbsp; • &nbsp;'), o(sib, 'cL').replace('absolute', 'show'), hr.remove('border-2', 'to-fro'),
-        out.innerHTML = `Likely CSS classes or ids matched in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom p-1 relative pb-0 inline-block'>impossible selector strings<code class="shadow border-2 w-full tooltip slide-y absolute bg-gray-100 rounded-lg text-black to-top" style="--arrow-size:8px;"><p class="not-italic p-3 bg-gray-200">Strings that meet either of these criteria</p><hr><ul class="[&amp;>*]:p-2 px-3 list-disc list-inside"><li>only numbers or partial decimals - 0.5.0</li><li>Matches either <strong>/[a-z],  [A-Z]</strong></li><li>Starts or ends with with: <strong class="ml-1">$, &gt;, _, =, |, --:, , &amp;, *, #, ., /</strong></li><li>Ends with with: <strong class="ml-1">[, ]</strong></li><li>Contains: <strong>, //, {, }, ?, %, ), (, +, &lt;, @, !, ;</strong></li></ul></code></a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
+        out.innerHTML = `Likely CSS selectors found in the scripts.<br>You may further remove or add to the content of the entry box above and be "done ?" <p class='inline-block'>(pun intended, ^_^)</p>.<br>Filtered out <a class='border-b border-current align-bottom p-1 relative pb-0 inline-block'>impossible selector strings<code class="shadow border-2 w-full tooltip slide-y absolute bg-gray-100 rounded-lg text-black to-top" style="--arrow-size:8px;"><p class="not-italic p-3 bg-gray-200">Strings that meet either of these criteria</p><hr><ul class="[&amp;>*]:p-2 px-3 list-disc list-inside"><li>only numbers or partial decimals - 0.5.0</li><li>Matches either <strong>/[a-z],  [A-Z]</strong></li><li>Starts or ends with with: <strong class="ml-1">$, &gt;, _, =, |, --, :, , &amp;, *, #, ., /</strong></li><li>Ends with with: <strong class="ml-1">[, ]</strong></li><li>Contains: <strong>a comma, //, {, }, ?, %, ), (, +, &lt;, @, !, ;</strong></li></ul></code></a> as well as strings from scripts fetched from domains or subdomains different from <code class='font-semibold'>${this.domain}</code>`, lEC.setAttribute('data-dynamic', '')
         /*provide more time to read about workarounds and details for failed fetched scripts*/
       }, t.failed?4000:500)
     },
@@ -207,13 +207,11 @@ Doing what Object.freeze should have considered - preventing properties from bei
     /*the returned value is used to call the desired method defined on this function*/
     return t;
   },
-  continue:function(txt, rgx, o=objWalk, classes, out, hr, ctx) {
+  continue:function(txt, o=objWalk, classes, out, hr, ctx) {
     out=o(notify, 'fEC'), hr=o(notify,['lEC','cL']), hr.add('border-2', 'to-fro');
     if(txt&&(txt=txt.split(' ').filter(e=>e!=='class'&&e!=='id').map(e=>e.trim())).length) {
-      rgx=txt.join('|'), rgx=[`)=('|")[^("|')]+('|")`, `)=|"`].map(e=>new RegExp('('+rgx+e, 'g')),
-
       out.innerHTML=`Detecting CSS classes present in ${txt.map(e=>"<code class='font-semibold'>"+e+'</code>').join(', ')} attributes in the fetched document`,
-      (classes=both.getAttrs(this.html, rgx, each=>!~page.classes.indexOf(each)&&page.classes.push(each))).length
+      (classes=both.getAttrs(this.html, txt, each=>!~page.classes.indexOf(each)&&page.classes.push(each))).length
       ? (this.detectAttrs(classes, false, o, this.classes.length, _=>(out.textContent=`Found ${classes.length} extra CSS selector${classes.length===1?'':'s'}, preparing to find more strings in document\'s scripts` )))
       : out.textContent='FYI: No new CSS selectors were found, proceeding to interactively find strings in the document\'s scripts'
     } else {
@@ -237,7 +235,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
 
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
-    if(url) hr.add('to-fro', 'border-2'), /*making a POST but treating it as GET*/xhr.open('POST', endp+'?url='+url, true), xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'), xhr.send(endp+'?url='+url), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
+    if(url) hr.add('to-fro', 'border-2'), /*making a POST but treating it as GET*/xhr.open('GET', endp+'?url='+url, true), xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded'), xhr.send(endp+'?url='+url), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
         (res=ev.target.response).charAt(0)==='_'
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
@@ -280,7 +278,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           o(css_out, 'pES').textContent=`Fetching linked stylesheet (${css.length})`, css_out.innerHTML='',
           this.gen(css.length).map(e=>new XMLHttpRequest).forEach((xhr, i, arr, url)=>{
             css_out.innerHTML+=`<div class='truncate mr-4' style='max-width:18rem;'><hr class="border-transparent h-full absolute to-fro border-0 inset-0 bg-blue-200"><span class="relative">${css[i]}</span></div>`, css_out.setAttribute('data-dynamic', ''),
-            xhr.open('POST', this.domain+(url=css[i]), true), xhr.send(this.domain+url), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
+            xhr.open('GET', this.domain+(url=css[i]), true), xhr.send(this.domain+url), xhr.onload=xhr.onerror=(ev, t, st)=>{st=(t=ev.target).status+'', done(!(st==304||/^(1|2)/g.test(st.charAt(0)))?'':ev.target.response, count++===arr.length-1, i)}
           }),
           (title=qs('article>div>code')).textContent = '• [TITLE]:: '+ assets.title,
           assets.icon&&(o(title, 'pES').src=assets.icon.match(/^(http|www)/)?assets.icon:this.domain+assets.icon);
@@ -301,7 +299,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }),
           /*make a second request*/
           /*a timeout to prevent the browser from dropping the incoming response for the outgoing request above as it makes the delayed request below*/
-          setTimeout(_=>{xhr.open('GET', endp+'?url=__retrieve__&for='+url), setTimeout(_=>{xhr.send()})})
+          setTimeout(_=>{xhr.open('GET', endp+'?url=__retrieve__&source='+url), setTimeout(_=>{xhr.send()})})
         };
         /*reset notify.classList*/
       } else onerror();

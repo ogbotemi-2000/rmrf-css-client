@@ -5,7 +5,8 @@ let http    = require('http'),
     format  = e=>JSON.stringify(e).replace(/\{|\}|,/g, e=>e=='}'?'\n'+e:e+'\n\t'),
     mime    = require('mime-types'),
     get     = require('./get'),
-    cache   = {};
+    cache   = {},
+    store   = process.store ||={};
 
 http.createServer((req, res, str, params={}, getParams)=>{
     req.url = decodeURIComponent(req.url),
@@ -21,12 +22,12 @@ http.createServer((req, res, str, params={}, getParams)=>{
       //console.log('::POST::', [data.toString()])
     }),
    
-    //console.log('::URL::', req.url, params),
+    console.log('::URL::', req.url, params),
     res.writeHead(200, {
       'Access-Control-Allow-Origin': '*'
     }),
 
-    params.url ? get(params.url, params.for, res)
+    params.url ? get(params.url, params.source, store, res)
     : new Promise((resolve, rej, cached)=>{
     /*(cached=cache[req.url])?resolve(cached):*/fs.readFile(req.url, (err, buf)=>{
         if(err) rej(err);
@@ -45,6 +46,6 @@ http.createServer((req, res, str, params={}, getParams)=>{
         res.end(str)
       })
 //hostname - 0.0.0.0 commented out for it causes ECONNREFUSED errors when trying this file in the service
-}).listen(port=process.env.PORT||+values['-p'], /*'0.0.0.0',*/ function() {
+}).listen(port=process.env.PORT||+values['-p'], '0.0.0.0', function() {
     console.log('Server listening on <PORT>', port, 'under <DIRECTORY>', values['-d'], 'and serving assets from <DIRECTORY>', values['-a']);
 })

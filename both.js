@@ -3,17 +3,23 @@
 let inBrowser=this.window,
 both = {
 
-  getAttrs: function(buf, rgx, cb, matches_arr=[]) {
-    rgx||=[/(id|class)=('|")[^("|')]+('|")/g, /(id|class)=|"/g],
-    buf.replace(rgx[0], e=>{
-      (e.replace(rgx[1], '').split(' ')).forEach((m, el)=>{
-        m=m.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e).replace(/("|')/g, '').trim();
-        if(m&&!~matches_arr.indexOf(m)) {
-          matches_arr.push(m), cb&&cb(m)
+  getAttrs: function(buf, attrs, cb, selectors={}, loop, valid) {
+    /* using an object of selectors to enforce uniqueness similar to a Set*/
+    loop=this.loop, valid = str=>!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|,|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str),
+    attrs ||= ['class', 'id'];/* attributes believed to store used selectors */
+    for(let i=0, value, j=(html = buf.toString()).length, res; i<j; i++) {
+      attrs.forEach(attr=>{
+        /* store strings for the length of the current attr and see whether they are the same */
+        if((res = loop(html, {from:i, to:attr.length+1}))[0]===attr+'='&&/'|"/.test(html.charAt(res[1]+1))) {
+          /* the current index points to an opening quote, incrementing it points to the characters after it which are then
+              added together till the character just before the closing quote
+          */
+          (value = loop(html, {from:res[1]+2, cb:(s,f)=>/'|"/.test(s[f])}))[0].trim()&&(i=value[1], value[0].trim()).split(/\s/)
+          .forEach(val=>(val = val.trim())&&valid(val)&&(selectors[val.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e)] = val))
         }
       })
-    });
-    return matches_arr;
+    }
+    return Object.keys(selectors);
   },
   validateEmail:function(e) {
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -40,7 +46,7 @@ both = {
   }
   return res
 },
-loop: function(str, props, from, to, cb) {
+loop: function(str, props, from, to, cb, len) {
   len=str.length,
   from = Math.abs(props['from'])||0, to = Math.abs(props['to'])||0, cb = props['cb'];
   if(typeof cb !== 'function') cb =_=>!!0;
