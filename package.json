@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Private repo for client-side version of the code",
   "scripts": {
-    "build": "node noop",
+    "build": "echo '::DOING NOTHING::'",
     "start": "node server",
     "serve": "node service"
   },
