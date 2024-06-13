@@ -4,7 +4,6 @@
   "version": "1.0.0",
   "description": "Private repo for client-side version of the code",
   "scripts": {
-    "build": "mkdir public && cp roadmap.html public",
     "start": "node server",
     "serve": "node service"
   },

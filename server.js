@@ -44,6 +44,6 @@ http.createServer((req, res, str, params={}, getParams)=>{
         res.end(str)
       })
 //hostname - 0.0.0.0 commented out for it causes ECONNREFUSED errors when trying this file in the service
-}).listen(port=process.env.PORT||+values['-p'], '0.0.0.0', function() {
+}).listen(port=process.env.PORT||+values['-p'], /*'0.0.0.0',*/ function() {
     console.log('Server listening on <PORT>', port, 'under <DIRECTORY>', values['-d'], 'and serving assets from <DIRECTORY>', values['-a']);
 })
