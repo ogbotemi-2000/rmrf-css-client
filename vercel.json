@@ -1,6 +1,0 @@
-{
-  "cleanUrls": true,
-  "routes": [
-      { "src": "/(.*)", "dest": "/server.js" }
-   ]
-}
