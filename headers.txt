@@ -1,2 +1,0 @@
-200
-"{\n`\"content-type\":\"text/html\",\n\"date\":\"Thu,\n 13 Jun 2024 19:50:26 GMT\",\n\"connection\":\"close\",\n\"transfer-encoding\":\"chunked\"\n}"

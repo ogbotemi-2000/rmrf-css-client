@@ -2,9 +2,8 @@
   "name": "RemCSS-Client",
   "repository": "https://github.com/ogbotemi-2000/rmrf-css.git",
   "version": "1.0.0",
-  "description": "Private repo for client-side version of the code",
+  "description": "Private repo for client-side version of the code with a serverless Vercel backend",
   "scripts": {
-    "start": "node server",
     "serve": "node service"
   },
   "keywords": [],

@@ -64,7 +64,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
     Object.freeze(this.template)
   },
   mobile: function() {return /android|ip(hone|ad)/i.test(this.uA)},
-  endIp: _=>'./'/*location.hostname==='localhost'?'http://localhost':'https://remcss.up.railway.app'*/,
+  endIp: _=>location.hostname==='localhost'?'./':'./api/get',
   uA: navigator.userAgent,
   detectAttrs: function(classes, flag, o, i, done) {
     i||=0, setTimeout(_=>_=setInterval(n=>{
@@ -94,7 +94,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
         }}), cmt[1]&&(i=cmt[1]); /* jump over comments */
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str)&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
+        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str=str.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e))&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
         ), i+=1/*+1 to make i point to the character after the closing apostrophe*/), i++
       }
     },
@@ -237,8 +237,10 @@ Doing what Object.freeze should have considered - preventing properties from bei
 
     (out=o(notify, 'fEC')).textContent=url?'uploading url and fetching the resource it points to on the server for processing ':`fetching scripts to process the chosen file${'s'.repeat(!!--arr.length)} on the client`,
     hr=o(notify, ['lEC', 'cL']);
-    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside)=>{
-        (res=ev.target.response).charAt(0)==='_'
+    if(url) hr.add('to-fro', 'border-2'), xhr.open('GET', endp+'?url='+url), xhr.send(), xhr.onerror=e=>onerror('::[CONNECTION ERROR]:: The server was unreached - you may be offline'), xhr.onload=(ev, res, pI, json, aside, uuid, pipe_at)=>{
+        /*the pipe is never expected to start detected selectors hence why it is used to filter the first request */
+        (res=ev.target.response).charAt(0)==='|'&&(uuid = (res=res.replace('|', '')).slice(0, pipe_at = res.indexOf('|')), res = res.slice(pipe_at+1/*slice the pipe too*/))
+        &&res.charAt(0)==='_'/* never remove the underscores starting the used elements in the splits array */
         &&(this.splits=res.slice(0, pI=res.indexOf('|')).split(','), res=res.slice(pI+1)),
         this.splits&&(split=res.split((splits=page.splits)[0])),
 
@@ -298,7 +300,7 @@ Doing what Object.freeze should have considered - preventing properties from bei
           }),
           /*make a second request*/
           /*a timeout to prevent the browser from dropping the incoming response for the outgoing request above as it makes the delayed request below*/
-          setTimeout(_=>{xhr.open('GET', endp+'?url=__retrieve__&source='+url), setTimeout(_=>{xhr.send()})})
+          setTimeout(_=>{xhr.open('GET', endp+'?url=__retrieve__&source='+uuid), setTimeout(_=>{xhr.send()})})
         }
         /*reset notify.classList*/
       } else onerror();
