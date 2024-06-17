@@ -91,8 +91,8 @@ function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', lo
     }
   } else assets.error='::[ERROR]:: The provided URL does not point to an HTML resource\n\nHEADERS:' + headers;
   /**remove matching artefact '>>' and all content within tags that is from HyperText */
-  html=html.replace(/>>+/g, '').replace(/>[^<]+</g, m=>'><'), 
-  fs.writeFileSync('dump.txt', inlined.filter((e, i)=>(i%2)).join('\n_____\n'))
+  html=html.replace(/>>+/g, '').replace(/>[^<]+</g, m=>'><');
+  //fs.writeFileSync('dump.txt', inlined.filter((e, i)=>(i%2)).join('\n_____\n'))
 
   return html;
 }
