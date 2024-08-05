@@ -1,42 +1,47 @@
 let conn         = ['', 's'].map(e=>require('http'+e)),
     both         = require('../both'),
     splits       = ['_::split::_', '_08c-2a3_', '__0x+|+x0__'],
-    __retrieve__ = require('./retrieve');
+    isLocal	 = /win/i.test(require('os').platform()),
+/*added graceful support for service to work locally and on Vercel*/
+    __retrieve__ = isLocal
+    ? {
+      uuid    : function (a) { return (a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, this.uuid)) },
+      __cache : {},
+      write   : function(data, cb, id) {
+        this.__cache[id=this.uuid()] = data, cb(id)
+            },
+      read	: async function(id) {
+        return this.__cache[id]
+      },
+      rm: function(id) {
+        delete this.__cache[id]
+      }
+    }
+    : require('./retrieve');
 
-/*refactored response.end to response.send to support vercel functiions*/
 module.exports = async function(request, response, kept, assets={css:[], js:[]}) {
 
-  let {url, source} = request.query;
-
-  /*fs.writeFileSync('logs.txt', assets?JSON.stringify(assets):assets+''),
- for observing the bug in pm2 when passed the --watch flag on throttled connections
-   */
+  let { url, source } = request.query, result;
   if(source&&(kept = await __retrieve__.read(source))&&url==='__retrieve__') {
 
     let {0:inlined, 1:matches_arr} = kept.split(splits[2]);
-    /* split responses on the client using hopefully unique strings below */
+    /* split sent responses on the client-side using hopefully unique strings below */
     /* remove stored data*/
     __retrieve__.rm(source),
     response.end(matches_arr.toString()+splits[0]+inlined);
   }
-  else new Promise(resolve=>resolve(new URL(url))).then(_=>conn[+!!url.match(/https/)].get(source||url, res=>{
-    let data=[], st=''+res.statusCode;
-    res.on('data', chunk=>{
-      data.push(chunk)
-    }),
-    res.on('end', (buffer, headers, inlined=[], html)=>{
-      headers = formatJSON(JSON.stringify(res.headers)), html=getAssets((buffer=Buffer.concat(data)).toString(), headers, assets, inlined),
-
-      !(st==304||/^(1|2)/g.test(st.charAt(0)))&&
-      (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers);
+  else new Promise(resolve=>resolve(new URL(url))).then(_=>fetch(source||url).then(res=>(result=res).text()).then(res=>{
+    let st=''+result.status, inlined=[], headers = formatJSON(JSON.stringify(result.headers)), html=getAssets(res, headers, assets, inlined);
+    
+    !(st==304||/^(1|2)/g.test(st.charAt(0)))&&
+    (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers);
       
-      /**  inlined +<string to split with>+matches_arr */
-      __retrieve__.write(inlined.join(splits[1])+splits[2]+both.getAttrs(buffer.toString()), function(uuid){
-        /*send only unique strings for splitting responses and get them by splitting by the pipe character*/
-        response.end('|'+uuid+'|'+splits.filter((e, i)=>i^2)+'|'+JSON.stringify(assets)+splits[0]+html)
-      })
+    /**  inlined +<string to split with>+matches_arr */
+    __retrieve__.write(inlined.join(splits[1])+splits[2]+both.getAttrs(res), function(uuid){
+      /*send only unique strings for splitting responses and get them by splitting by the pipe character*/
+      response.end('|'+uuid+'|'+splits.filter((e, i)=>i^2)+'|'+JSON.stringify(assets)+splits[0]+html)
     })
-  }).on('error', err => {
+  }).catch(err => {
     assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err);
     response.end(JSON.stringify(assets))
   }))
