@@ -1,58 +1,47 @@
-let conn         = ['', 's'].map(e=>require('http'+e)),
-    both         = require('../both'),
-    splits       = ['_::split::_', '_08c-2a3_', '__0x+|+x0__'],
-    isLocal	 = /win/i.test(require('os').platform()),
-/*added graceful support for service to work locally and on Vercel*/
-    __retrieve__ = isLocal
-    ? {
-      uuid    : function (a) { return (a ? (a ^ ((Math.random() * 16) >> (a / 4))).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, this.uuid)) },
-      __cache : {},
-      write   : function(data, cb, id) {
-        this.__cache[id=this.uuid()] = data, cb(id)
-            },
-      read	: async function(id) {
-        return this.__cache[id]
-      },
-      rm: function(id) {
-        delete this.__cache[id]
-      }
-    }
-    : require('./retrieve');
+let conn              = ['', 's'].map(e=>require('http'+e)),
+    both              = require('../both'),
+    splits            = ['_::split::_', '_08c-2a3_', '__0x+|+x0__'],
+    { store, format } = require('../utils'),
+    __retrieve__      = store,
+    formatJSON        = format;
 
-module.exports = async function(request, response, kept, assets={css:[], js:[]}) {
+module.exports = async function(request, response, invoked, kept, assets={css:[], js:[]}) {
 
   let { url, source } = request.query, result;
   if(source&&(kept = await __retrieve__.read(source))&&url==='__retrieve__') {
 
-    let {0:inlined, 1:matches_arr} = kept.split(splits[2]);
+    let {0:inlined, 1:matches_arr} = kept.split(splits[2]), sent;
     /* split sent responses on the client-side using hopefully unique strings below */
     /* remove stored data*/
     __retrieve__.rm(source),
-    response.end(matches_arr.toString()+splits[0]+inlined);
+    sent = matches_arr.toString()+splits[0]+inlined;
+    return invoked ? sent : response.end(sent);
   }
-  else new Promise(resolve=>resolve(new URL(url))).then(_=>fetch(source||url).then(res=>(result=res).text()).then(res=>{
-    let st=''+result.status, inlined=[], headers = formatJSON(JSON.stringify(result.headers)), html=getAssets(res, headers, assets, inlined);
+  else return new Promise(resolve=>resolve(new URL(url))).then(_=>fetch(source||url).then(res=>(result=res).text()).then(res=>{
+    let sent, st=''+result.status, inlined=[], headers = formatJSON(JSON.stringify(result.headers)), html=getAssets(res, headers, assets, inlined);
     
     !(st==304||/^(1|2)/g.test(st.charAt(0)))&&
     (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers);
       
     /**  inlined +<string to split with>+matches_arr */
-    __retrieve__.write(inlined.join(splits[1])+splits[2]+both.getAttrs(res), function(uuid){
+    let { 0: tr_html, 1: selectors } = both.getAttrs(html, 0, 0, !0);
+    return new Promise(_res=>__retrieve__.write(inlined.join(splits[1])+splits[2]+selectors, function(uuid) {
       /*send only unique strings for splitting responses and get them by splitting by the pipe character*/
-      response.end('|'+uuid+'|'+splits.filter((e, i)=>i^2)+'|'+JSON.stringify(assets)+splits[0]+html)
-    })
-  }).catch(err => {
-    assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err);
-    response.end(JSON.stringify(assets))
-  }))
-  .catch((err, message='')=>{
-    response.end(JSON.stringify({
-      error:"The provided URL is invalid, that's all we know\n"+formatJSON(JSON.stringify(err))
+      sent = '|'+uuid+'|'+splits.filter((e, i)=>i^2)+'|'+JSON.stringify(assets)+splits[0]+tr_html,
+      invoked ? _res(sent) : response.end(sent);
     }))
+  }).catch(err => {
+    assets.error='::[ERROR]:: '+err.message+'\n'+JSON.stringify(err),
+    err = JSON.stringify(assets);
+    return invoked ? err : response.end(err)
+  }))
+  .catch((err, msg)=>{
+    msg = JSON.stringify({
+      error:"The provided URL is invalid, that's all we know\n"+formatJSON(JSON.stringify(err))
+    });
+    return invoked ? msg : response.end(msg)
   })
 }
-
-let fs=require('fs');
 
 function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', loop) {
   /* a clean slate to avoid adding existing matches to new ones */
@@ -97,13 +86,6 @@ function getAssets(buf, headers, assets, inlined=[], html='', hasTextMime='', lo
   } else assets.error='::[ERROR]:: The provided URL does not point to an HTML resource\n\nHEADERS:' + headers;
   /**remove matching artefact '>>' and all content within tags that is from HyperText */
   html=html.replace(/>>+/g, '').replace(/>[^<]+</g, m=>'><');
-  //fs.writeFileSync('dump.txt', inlined.filter((e, i)=>(i%2)).join('\n_____\n'))
 
   return html;
-}
-
-function formatJSON(str) {
-  return str.replace(/\{/g, e=>e+'\n`')
-  .replace(/,/g, e=>e+`\n`)
-  .replace(/\}/g, e=>'\n'+e)
 }

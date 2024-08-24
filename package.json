@@ -4,7 +4,7 @@
   "version": "1.0.0",
   "description": "Private repo for client-side version of the code with a serverless Vercel backend",
   "scripts": {
-    "serve": "node service"
+    "start": "node server.js"
   },
   "keywords": [],
   "author": "Ogbotemi Akin Ogungbamila",

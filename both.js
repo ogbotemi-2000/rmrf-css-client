@@ -3,10 +3,13 @@
 let inBrowser=this.window,
 both = {
 
-  getAttrs: function(buf, attrs, cb, selectors={}, loop, valid, html) {
+  getAttrs: function(buf, attrs, cb, flag, selectors={}, loop, valid, html, other, trimmed='') {
     /* using an object of selectors to enforce uniqueness similar to a Set*/
-    loop=this.loop, valid = str=>!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|,|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str),
-    attrs ||= ['class', 'id'];/* attributes believed to store used selectors */
+    loop=this.loop, valid = str=>!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|,|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str),
+    /** remove attributes that can never be used to hold selector class names */
+    attrs= ['class', 'id'].concat(attrs||[], other=['content', 'tabindex', 'xmlns', 'fill', 'src',  'type', 'd', 'name', 'method', 'action', 'href', 'target', 'list', 'for', 'charset', 'rel', 'style']);
+    
+    /* attributes believed to store used selectors */
     for(let i=0, value, j=(html = buf.toString()).length, res; i<j; i++) {
       attrs.forEach(attr=>{
         /* store strings for the length of the current attr and see whether they are the same */
@@ -14,12 +17,14 @@ both = {
           /* the current index points to an opening quote, incrementing it points to the characters after it which are then
               added together till the character just before the closing quote
           */
-          (value = loop(html, {from:res[1]+2, cb:(s,f)=>/'|"/.test(s[f])}))[0].trim()&&(i=value[1], value[0].trim()).split(/\s/)
-          .forEach(val=>(val = val.trim())&&valid(val)&&(selectors[val.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e)] = val))
+          (value = loop(html, {from:res[1]+2, cb:(s,f)=>/'|"/.test(s[f])}))[0].trim()&&(i=value[1]+2, ~other.indexOf(attr) ? '' : value[0].trim()).split(/\s/)
+          .forEach(val=>(val = val.trim())&&valid(val)&&(selectors[val.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e)] = val, cb&&cb.call&&cb(val)))
         }
       })
+      trimmed += html.charAt(i)
     }
-    return Object.keys(selectors);
+    selectors = Object.keys(selectors);
+    return flag ? [trimmed, selectors] : selectors;
   },
   validateEmail:function(e) {
 		var re = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
