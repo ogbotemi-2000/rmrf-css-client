@@ -24,7 +24,8 @@ module.exports = async function(request, response, invoked, kept, assets={css:[]
     (assets.error='::[HTTP ERROR CODE]:: The HTTP code `'+st+'` is usually sent returned for requests that get undesired, non-HyperText responses.\n\n[HEADER]:\t'+headers);
       
     /**  inlined +<string to split with>+matches_arr */
-    let { 0: tr_html, 1: selectors } = both.getAttrs(html, 0, 0, !0);
+    /* replaced html returned by getAssets with res for now because it is mangled and buggy */
+    let { 0: tr_html, 1: selectors } = both.getAttrs(res/**html */, 0, 0, !0);
     return new Promise(_res=>__retrieve__.write(inlined.join(splits[1])+splits[2]+selectors, function(uuid) {
       /*send only unique strings for splitting responses and get them by splitting by the pipe character*/
       sent = '|'+uuid+'|'+splits.filter((e, i)=>i^2)+'|'+JSON.stringify(assets)+splits[0]+tr_html,

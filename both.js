@@ -23,6 +23,7 @@ both = {
       })
       trimmed += html.charAt(i)
     }
+    require('fs').writeFileSync('dump.txt', trimmed),
     selectors = Object.keys(selectors);
     return flag ? [trimmed, selectors] : selectors;
   },

@@ -94,8 +94,11 @@ Doing what Object.freeze should have considered - preventing properties from bei
         }}), cmt[1]&&(i=cmt[1]); /* jump over comments */
 
         tst(i)&&(jump = loop(res, {from:i+1, cb:(s,f)=>tst(f)}), jump[1]>i&&(i=jump[1], 
-        /*validate as selector*/ str = jump[0].trim(), str.length>1&&!+str.replace(/\./g, '')&&!/\/[a-z]|[A-Z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|\/\/|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str=str.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e))&&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
-        ), i+=1/*+1 to make i point to the character after the closing apostrophe*/), i++
+        /*validate as selector*/ str = jump[0].trim(), str.length>1
+        &&!+str.replace(/\./g, '')&&!/\/[a-z]|;|\\|^(_|--|:|\||=|\!|\+|\$|;|\/|#|\.|>|\&)|@|\+|\?|\{|\}|\%|<|(\||=|\!|\+|\/|-|:|\[|\]|\$|#|\.|>|\&|_)$|\(|\)/g.test(str)
+        &&(str=str.replace(/^[0-9]+|\.|\/|\[|\]|\&|\*|\:|\>/g, e=>'\\'+e))
+        &&!page.classes.find(e=>~e.search(str))&&!t.scriptStrings.find(e=>~e.search(str))&&[arr, t.scriptStrings].forEach(e=>str.split(/\s+/).forEach(s=>(s=s.trim()).length>1&&e.push(s)))
+        ), i/*+1 to make i point to the character after the closing apostrophe*/), i++
       }
     },
     t.scriptElems = els,
@@ -207,13 +210,12 @@ Doing what Object.freeze should have considered - preventing properties from bei
     /*the returned value is used to call the desired method defined on this function*/
     return t;
   },
-  continue:function(txt, rgx, o=objWalk, classes, out, hr, ctx) {
+  continue:function(txt, o=objWalk, classes, out, hr, ctx) {
     out=o(notify, 'fEC'), hr=o(notify,['lEC','cL']), hr.add('border-2', 'to-fro');
     if(txt&&(txt=txt.split(' ').filter(e=>e!=='class'&&e!=='id').map(e=>e.trim())).length) {
-      rgx=txt.join('|'), rgx=[`)=('|")[^("|')]+('|")`, `)=|"`].map(e=>new RegExp('('+rgx+e, 'g')),
 
       out.innerHTML=`Detecting CSS classes present in ${txt.map(e=>"<code class='font-semibold'>"+e+'</code>').join(', ')} attributes in the fetched document`,
-      (classes=both.getAttrs(this.html, rgx, each=>!~page.classes.indexOf(each)&&page.classes.push(each))).length
+      (classes=both.getAttrs(this.html, txt, each=>!~page.classes.indexOf(each)&&page.classes.push(each))).length
       ? (this.detectAttrs(classes, false, o, this.classes.length, _=>(out.textContent=`Found ${classes.length} extra CSS selector${classes.length===1?'':'s'}, preparing to find more strings in document\'s scripts` )))
       : out.textContent='FYI: No new CSS selectors were found, proceeding to interactively find strings in the document\'s scripts'
     } else {

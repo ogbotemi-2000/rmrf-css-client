@@ -12,7 +12,7 @@ fn test() {
     let contract_id = env.register_contract(None, Trim);
     let trim = TrimClient::new(&env, &contract_id);
 
-    assert_eq!(trim.result("http://localhost:3000"), trim.result("http://localhost:3000"));
+    assert_eq!(trim.result(), trim.result());
 
     std::println!("{}", env.logs().all().join("\n"));
 }
