@@ -1,5 +1,4 @@
 let get     = require('./get'),
-    fs      = require('fs'),
     crypto  = require('crypto'),
     {loop}  = require('../both'),
     splits,
@@ -47,7 +46,6 @@ function resume(req, res, html, obj={}) {
     /** added html along with the scripts to obtain strings in inline event listeners */
     classes.split(',').forEach(e=>obj[e]=e),
     getStrings(scripts + html, obj), classes = Object.keys(obj),
-    fs.writeFileSync('dump.txt', classes.toString()),
 
     Object.keys(styles).forEach((key, i, a)=>{
       trim(classes, styles[key], function(trimmed) {
