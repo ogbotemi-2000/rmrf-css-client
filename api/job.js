@@ -1,5 +1,4 @@
 let get     = require('./get'),
-    crypto  = require('crypto'),
     {loop}  = require('../both'),
     splits,
     source
@@ -23,19 +22,23 @@ module.exports = function(request, response) {
         { origin }          = new URL(url), end, i=0;
     /** remove urls that do not resolve to `origin` as their domain */
     meta = JSON.parse(meta),
+    
     ['css', 'js'].forEach((prop, _i, a)=>{
       meta[prop] = meta[prop].filter((link, i, a)=>rgxs[0].test(link) ? ~link.indexOf(origin) : !0), end = ++_i===a.length&&a.map(e=>meta[e].length).reduce((e, i)=>e+i,0),
-      meta[prop].forEach(res=>fetch(res=(origin+'/').repeat(!rgxs[0].test(res))+res).then(res=>res.text()).then(str=>{
+
+      meta[prop].length ?
+      meta.forEach(res=>fetch(res=(origin+'/').repeat(!rgxs[0].test(res))+res).then(res=>res.text()).then(str=>{
         prop==='css' ? styles[res] = str  : scripts+=str+'\n\n';
-        if(++i==end) resume(request, response, html)
-      }))
+
+        if(++i>=end) resume(request, response, html)
+      })) : !a[_i]&&resume(request, response, html)
     })
   })
-  
 }
 
 function resume(req, res, html, obj={}) {
   req.query = { source, url:'__retrieve__' },
+
   get(req, res, !0).then(sent=>{
     let { 0: classes, 1: inlined } = sent.split(splits[0]), inline='';
     (inlined = inlined.split(splits[1])).forEach((e, i, a, v)=>{
@@ -43,6 +46,7 @@ function resume(req, res, html, obj={}) {
       if(e==='script') scripts += v+'\n\n';
       else if(e==='style') inline += v+'\n\n';
     }),
+    styles.inline = inline,
     /** added html along with the scripts to obtain strings in inline event listeners */
     classes.split(',').forEach(e=>obj[e]=e),
     getStrings(scripts + html, obj), classes = Object.keys(obj),
